@@ -19,10 +19,11 @@ const logger = createLogger({
     format.json()
   ),
   defaultMeta: { service: 'anjezha' },
+  // developmet show in console only
   transports: [
     new transports.Console(),
-    new transports.File({ filename: 'error.log', level: 'error' }),
-    new transports.File({ filename: 'combined.log' }),
+    // new transports.File({ filename: 'error.log', level: 'error' }),
+    // new transports.File({ filename: 'combined.log' }),
   ],
 });
 

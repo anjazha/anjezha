@@ -23,6 +23,8 @@ import dotenv from 'dotenv';
     // the second way to export the config object
  export const {
         PORT,
+        LOG_LEVEL,
+        DB_URL,
         DB_PORT,
         DB_HOST,
         DB_USER,
