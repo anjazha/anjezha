@@ -1,0 +1,48 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "esnext.asynciterable"],
+    "typeRoots": ["node_modules/@types"],
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "module": "CommonJS",
+    "pretty": true,
+    "sourceMap": true,
+    "declaration": true,
+    "outDir": "./dist",
+    "allowJs": true,
+    "noEmit": false,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "importHelpers": false,
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["*"]
+      // "@config": ["config"],
+      // "@controllers/*": ["controllers/*"],
+      // "@databases": ["databases"],
+      // "@dtos/*": ["dtos/*"],
+      // "@exceptions/*": ["exceptions/*"],
+      // "@interfaces/*": ["interfaces/*"],
+      // "@middlewares/*": ["middlewares/*"],
+      // "@models/*": ["models/*"],
+      // "@routes/*": ["routes/*"],
+      // "@services/*": ["services/*"],
+      // "@utils/*": ["utils/*"],
+      // "@app/*": ["app/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.json", ".env", "environment.d.ts"],
+  "exclude": [
+    "node_modules",
+    "src/http",
+    "src/logs",
+    "__tests__",
+    "jest.config.js",
+    "./dist"
+  ]
+}
