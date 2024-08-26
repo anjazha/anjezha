@@ -1,4 +1,4 @@
-import { IApiError } from "../../Application/interfaces/IApiError";
+import { IApiError } from "../../../Application/interfaces/IApiError";
 import { Request, Response, NextFunction } from "express";
 
 export const errorHandler = async (

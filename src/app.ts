@@ -1,12 +1,12 @@
 import express, { Application } from "express";
+import swaggerUi from  "swagger-ui-express";
 
-
-import { errorHandler } from "./Presentation/middlewares/errorHandler.middleware";
+import { errorHandler } from "./Presentation/middlewares/exceptions/errorHandler.middleware";
 import { HTTP400Error } from "./helpers/ApiError";
 import { EHttpStatusCode } from "./Application/interfaces/enums/EHttpStatusCode";
-
 import {connectDB, disconnectDB} from '@/Infrastructure/database'
 import { PORT } from "@/Config";
+import swaggerSpec from "./swager";
 
 
 export class App {
@@ -14,7 +14,7 @@ export class App {
     public app : Application
     constructor(public readonly routes: any[]){
         this.app = express()
-        this.port = Number(PORT)||5000;
+        this.port = Number(PORT) || 5000;
         this.initializeDbConnection()
         this.initialzeMiddlewares()
         this.initializeRoutes()
@@ -39,10 +39,18 @@ export class App {
         next(new HTTP400Error("this is bad request"))
     })
 
+
+// api to swager documentions 
+    this.app.use('/api-docs',swaggerUi.serve,  swaggerUi.setup(swaggerSpec));
+
  }
 
  private initializeErrorHandler() : void {
     this.app.use(errorHandler)
+ }
+
+ private async swagerRoute(){
+    this.app.use('/api-docs',swaggerUi.serve,  swaggerUi.setup(swaggerSpec));
  }
 
   private async connectDb() {

@@ -21,7 +21,7 @@ const options = {
 
         },
     },
-    apis: ['./src/routes/*.ts'],
+    apis: ['./src/Presentation/routes/*.ts'],
     };
 
 
