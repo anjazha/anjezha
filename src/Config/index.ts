@@ -31,10 +31,10 @@ import dotenv from 'dotenv';
         DB_PASSWORD,
         DB_NAME,
         DB_CA,
-        TZ_SECRET,
-        TZ_EXPIRES_IN,
-        TZ_BCRYPT_SALT,
-        TZ_JWT_SECRET   }  = process.env;
+       JWT_SECRET,
+       JWT_EXPIRES_IN,
+       JWT_BCRYPT_SALT,
+       JWT_JWT_SECRET   }  = process.env;
 
 
 //

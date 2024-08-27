@@ -17,7 +17,7 @@ export class UserRepository implements IUserRepository{
     }
 
 
-    async create(user: any): Promise<User> {
+    async create(user: User): Promise<User> {
         // await connectDB();
         const query = `INSERT INTO users (name, email, password, phone_number `;
         const values = [user.name, user.email, user.password,  user.phoneNumber];
