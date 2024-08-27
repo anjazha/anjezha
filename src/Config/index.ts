@@ -22,6 +22,7 @@ import dotenv from 'dotenv';
 
     // the second way to export the config object
  export const {
+       BASE_URL,
         PORT,
         LOG_LEVEL,
         DB_URL,
@@ -34,7 +35,11 @@ import dotenv from 'dotenv';
        JWT_SECRET,
        JWT_EXPIRES_IN,
        JWT_BCRYPT_SALT,
-       JWT_JWT_SECRET   }  = process.env;
+       JWT_JWT_SECRET,
+       EMAIL_HOST,
+       EMAIL_PORT,
+       EMAIL_USER,
+       EMAIL_PASS  }  = process.env;
 
 
 //

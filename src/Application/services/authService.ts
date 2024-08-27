@@ -6,6 +6,8 @@ import { User } from "@/Domain/entities/User";
 import { IAuthService } from "../interfaces/User/IAuthRepository";
 import { IUserRepository } from "../interfaces/User/IUserRepository";
 import { generateToken, verifyToken } from "@/helpers/tokenHelpers";
+import { sendMail } from '@/Infrastructure/mail/transportionMail';
+import { BASE_URL } from '@/Config';
 
 
 
@@ -90,8 +92,11 @@ export class AuthService implements IAuthService {
             const token = generateToken({userId: user.id});
 
             // send email with password reset link
-
-
+            // service send email then calll
+            const resetUrl = `${BASE_URL}/reset-password?token=${token}`;
+            const html = `<p>You requested a password reset. Click <a href="${resetUrl}">here</a> to reset your password.</p>`;
+            await sendMail(email, 'Password Reset', html);
+        
         } catch(err){
             throw new Error('An error occurred');
         }
