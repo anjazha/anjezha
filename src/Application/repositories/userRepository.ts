@@ -20,6 +20,11 @@ export class UserRepository implements IUserRepository {
     const query = `INSERT INTO users (name, email, password, phone_number `;
     const values = [user.name, user.email, user.password,  user.phoneNumber];
     let placeholders = `($1, $2, $3, $4`;
+    async create(user: User): Promise<User> {
+        // await connectDB();
+        const query = `INSERT INTO users (name, email, password, phone_number `;
+        const values = [user.name, user.email, user.password,  user.phoneNumber];
+        let placeholders = `($1, $2, $3, $4`;
 
     if(user.profilePicture){
         query.concat(`, profile_picture `);
