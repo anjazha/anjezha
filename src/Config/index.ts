@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 
 
 
- dotenv.config({ path: `.env.${process.env.NODE_ENV|| 'development'}.local` });
+ dotenv.config({ path: `.env.${process.env.NODE_ENV|| 'development'}.local` }); 
 
 // first way to export the config object
 // export default {

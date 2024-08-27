@@ -9,7 +9,7 @@
     "emitDecoratorMetadata": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
-    "module": "CommonJS",
+    "module": "ESNext",
     "pretty": true,
     "sourceMap": true,
     "declaration": true,
