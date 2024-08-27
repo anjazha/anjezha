@@ -5,6 +5,7 @@ async function runMigrations(): Promise<void> {
   await connectDB();
   try {
     await migrate({ client: pgClient }, "src/Infrastructure/database/migrations");
+    console.log("migration complete");
   } finally {
     await disconnectDB();
   }
