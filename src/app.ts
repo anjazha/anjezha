@@ -19,11 +19,10 @@ export class App {
         this.initialzeMiddlewares()
         this.initializeRoutes()
         this.initializeErrorHandler();
-        this.connectDb()
     }
 
-   private initializeDbConnection(){
-
+   private async initializeDbConnection(){ 
+        await connectDB()
     }
 
   private initialzeMiddlewares(){}
@@ -35,17 +34,13 @@ export class App {
         this.app.use('/api/v1', route)
     })
 
-    this.app.get('/api', (req, res, next)=>{
-        next(new HTTP400Error("this is bad request"))
-    })
-
 
 // api to swager documentions 
     this.app.use('/api-docs',swaggerUi.serve,  swaggerUi.setup(swaggerSpec));
 
  }
 
- private initializeErrorHandler() : void {
+ private initializeErrorHandler() : void { 
     this.app.use(errorHandler)
  }
 
@@ -53,9 +48,6 @@ export class App {
     this.app.use('/api-docs',swaggerUi.serve,  swaggerUi.setup(swaggerSpec));
  }
 
-  private async connectDb() {
-    await connectDB();
- }
 
  public listen() : void {
 

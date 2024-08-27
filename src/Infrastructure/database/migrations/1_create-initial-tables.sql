@@ -1,4 +1,4 @@
-CREATE TABLE "User" (
+CREATE TABLE "users" (
     "id" BIGSERIAL PRIMARY KEY,
     "name" VARCHAR(255) NOT NULL,
     "email" VARCHAR(255) NOT NULL UNIQUE,
@@ -13,27 +13,27 @@ CREATE TABLE "roles" (
     "name" VARCHAR(255) NOT NULL UNIQUE
 );
 
-CREATE TABLE "user_role" (
+CREATE TABLE "user_roles" (
     "id" BIGSERIAL PRIMARY KEY,
     "user_id" BIGINT NOT NULL,
     "role_id" BIGINT NOT NULL,
-    FOREIGN KEY ("user_id") REFERENCES "User"("id"),
+    FOREIGN KEY ("user_id") REFERENCES "users"("id"),
     FOREIGN KEY ("role_id") REFERENCES "roles"("id")
 );
 
-CREATE TABLE "category" (
+CREATE TABLE "categories" (
     "id" BIGSERIAL PRIMARY KEY,
     "name" VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE "subcategory" (
+CREATE TABLE "subcategories" (
     "id" BIGSERIAL PRIMARY KEY,
     "category_id" BIGINT NOT NULL,
     "name" VARCHAR(255) NOT NULL,
-    FOREIGN KEY ("category_id") REFERENCES "category"("id")
+    FOREIGN KEY ("category_id") REFERENCES "categories"("id")
 );
 
-CREATE TABLE "Tasker" (
+CREATE TABLE "taskers" (
     "id" BIGSERIAL PRIMARY KEY,
     "user_id" BIGINT NOT NULL,
     "bio" VARCHAR(255),
@@ -41,26 +41,26 @@ CREATE TABLE "Tasker" (
     "pricing" DECIMAL(8, 2),
     "avg_rating" DECIMAL(3, 2),
     "category_id" BIGINT,
-    FOREIGN KEY ("user_id") REFERENCES "User"("id"),
-    FOREIGN KEY ("category_id") REFERENCES "category"("id")
+    FOREIGN KEY ("user_id") REFERENCES "users"("id"),
+    FOREIGN KEY ("category_id") REFERENCES "categories"("id")
 );
 
 CREATE TABLE "tasker_skills" (
     "id" BIGSERIAL PRIMARY KEY,
     "name" VARCHAR(255) NOT NULL,
     "tasker_id" BIGINT NOT NULL,
-    FOREIGN KEY ("tasker_id") REFERENCES "Tasker"("id")
+    FOREIGN KEY ("tasker_id") REFERENCES "taskers"("id")
 );
 
-CREATE TABLE "tasker_location" (
+CREATE TABLE "tasker_locations" (
     "id" BIGSERIAL PRIMARY KEY,
     "longitude" DECIMAL(9, 6) NOT NULL,
     "latitude" DECIMAL(8, 6) NOT NULL,
     "tasker_id" BIGINT NOT NULL,
-    FOREIGN KEY ("tasker_id") REFERENCES "Tasker"("id")
+    FOREIGN KEY ("tasker_id") REFERENCES "taskers"("id")
 );
 
-CREATE TABLE "task" (
+CREATE TABLE "tasks" (
     "id" BIGSERIAL PRIMARY KEY,
     "user_id" BIGINT NOT NULL,
     "title" VARCHAR(255) NOT NULL,
@@ -71,40 +71,40 @@ CREATE TABLE "task" (
     "latitude" DECIMAL(8, 6) NOT NULL,
     "address" VARCHAR(255) NOT NULL,
     "category_id" BIGINT NOT NULL,
-    FOREIGN KEY ("user_id") REFERENCES "User"("id"),
-    FOREIGN KEY ("category_id") REFERENCES "category"("id")
+    FOREIGN KEY ("user_id") REFERENCES "users"("id"),
+    FOREIGN KEY ("category_id") REFERENCES "categories"("id")
 );
 
 CREATE TABLE "task_skills" (
     "id" BIGSERIAL PRIMARY KEY,
     "task_id" BIGINT NOT NULL,
     "name" VARCHAR(255) NOT NULL,
-    FOREIGN KEY ("task_id") REFERENCES "task"("id")
+    FOREIGN KEY ("task_id") REFERENCES "tasks"("id")
 );
 
-CREATE TABLE "task_status" (
+CREATE TABLE "task_statuses" (
     "id" BIGSERIAL PRIMARY KEY,
     "task_id" BIGINT NOT NULL,
     "status" VARCHAR(255) NOT NULL,
-    FOREIGN KEY ("task_id") REFERENCES "task"("id")
+    FOREIGN KEY ("task_id") REFERENCES "tasks"("id")
 );
 
-CREATE TABLE "task_schedule" (
+CREATE TABLE "task_schedules" (
     "id" BIGSERIAL PRIMARY KEY,
     "task_id" BIGINT NOT NULL,
     "start_time" TIME WITHOUT TIME ZONE NOT NULL,
     "schedule_type" VARCHAR(255) NOT NULL,
     "end_time" TIME WITHOUT TIME ZONE NOT NULL,
-    FOREIGN KEY ("task_id") REFERENCES "task"("id")
+    FOREIGN KEY ("task_id") REFERENCES "tasks"("id")
 );
 
-CREATE TABLE "task_attachment" (
+CREATE TABLE "task_attachments" (
     "id" BIGSERIAL PRIMARY KEY,
     "task_id" BIGINT NOT NULL,
     "file_type" VARCHAR(255) NOT NULL,
     "file_path" VARCHAR(255) NOT NULL,
     "file_size" FLOAT NOT NULL,
-    FOREIGN KEY ("task_id") REFERENCES "task"("id")
+    FOREIGN KEY ("task_id") REFERENCES "tasks"("id")
 );
 
 CREATE TABLE "tasker_assignments" (
@@ -113,28 +113,28 @@ CREATE TABLE "tasker_assignments" (
     "tasker_id" BIGINT NOT NULL,
     "assigned_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "status" VARCHAR(255) NOT NULL,
-    FOREIGN KEY ("task_id") REFERENCES "task"("id"),
-    FOREIGN KEY ("tasker_id") REFERENCES "Tasker"("id")
+    FOREIGN KEY ("task_id") REFERENCES "tasks"("id"),
+    FOREIGN KEY ("tasker_id") REFERENCES "taskers"("id")
 );
 
-CREATE TABLE "tasker_review" (
+CREATE TABLE "tasker_reviews" (
     "id" BIGSERIAL PRIMARY KEY,
     "user_id" BIGINT NOT NULL,
     "tasker_id" BIGINT NOT NULL,
     "rating" INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
     "review" TEXT NOT NULL,
     "created_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY ("user_id") REFERENCES "User"("id"),
-    FOREIGN KEY ("tasker_id") REFERENCES "Tasker"("id")
+    FOREIGN KEY ("user_id") REFERENCES "users"("id"),
+    FOREIGN KEY ("tasker_id") REFERENCES "taskers"("id")
 );
 
-CREATE TABLE "password_recovery" (
+CREATE TABLE "password_recoveries" (
     "id" BIGSERIAL PRIMARY KEY,
     "user_id" BIGINT NOT NULL,
     "recovery_code" VARCHAR(255) NOT NULL,
     "created_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "used_at" TIMESTAMP WITHOUT TIME ZONE,
-    FOREIGN KEY ("user_id") REFERENCES "User"("id")
+    FOREIGN KEY ("user_id") REFERENCES "users"("id")
 );
 
 CREATE TABLE "social_logins" (
@@ -142,25 +142,25 @@ CREATE TABLE "social_logins" (
     "user_id" BIGINT NOT NULL,
     "provider" VARCHAR(255) NOT NULL,
     "provider_user_id" VARCHAR(255) NOT NULL,
-    FOREIGN KEY ("user_id") REFERENCES "User"("id")
+    FOREIGN KEY ("user_id") REFERENCES "users"("id")
 );
 
-CREATE TABLE "email_confirmation" (
+CREATE TABLE "email_confirmations" (
     "id" BIGSERIAL PRIMARY KEY,
     "user_id" BIGINT NOT NULL,
     "confirmation_code" VARCHAR(255) NOT NULL,
     "confirmed_at" TIMESTAMP WITHOUT TIME ZONE,
-    FOREIGN KEY ("user_id") REFERENCES "User"("id")
+    FOREIGN KEY ("user_id") REFERENCES "users"("id")
 );
 
-CREATE TABLE "notification" (
+CREATE TABLE "notifications" (
     "id" BIGSERIAL PRIMARY KEY,
     "user_id" BIGINT NOT NULL,
     "message" VARCHAR(255) NOT NULL,
     "type" VARCHAR(255) NOT NULL,
     "is_read" BOOLEAN NOT NULL DEFAULT FALSE,
     "created_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY ("user_id") REFERENCES "User"("id")
+    FOREIGN KEY ("user_id") REFERENCES "users"("id")
 );
 
 CREATE TABLE "messages" (
@@ -170,15 +170,15 @@ CREATE TABLE "messages" (
     "content" TEXT NOT NULL,
     "is_read" BOOLEAN NOT NULL DEFAULT FALSE,
     "sent_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY ("sender_id") REFERENCES "User"("id"),
-    FOREIGN KEY ("receiver_id") REFERENCES "User"("id")
+    FOREIGN KEY ("sender_id") REFERENCES "users"("id"),
+    FOREIGN KEY ("receiver_id") REFERENCES "users"("id")
 );
 
-CREATE TABLE "session" (
+CREATE TABLE "sessions" (
     "id" BIGSERIAL PRIMARY KEY,
     "user_id" BIGINT NOT NULL,
     "token" VARCHAR(255) NOT NULL,
     "created_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "expires_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    FOREIGN KEY ("user_id") REFERENCES "User"("id")
+    FOREIGN KEY ("user_id") REFERENCES "users"("id")
 );
