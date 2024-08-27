@@ -21,7 +21,6 @@ import { DB_HOST,DB_PASSWORD,DB_USER,DB_NAME, DB_CA, DB_PORT } from '@/Config';
 
 
 
-
 const config = {
     user: DB_USER,
     password:DB_PASSWORD ,
@@ -42,7 +41,7 @@ const connectDB = async () => {
         await client.connect();
         console.log('Database connected');
     } catch (error) {
-        console.error('Database connection error', error);
+        console.error('Database connection error', error); 
     }
 }
 

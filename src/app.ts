@@ -67,13 +67,6 @@ export class App {
         console.error('Error occurred:', error);
         disconnectDB();
     });
-
-
-
-
-
-
-
  }
 
 }
