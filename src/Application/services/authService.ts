@@ -6,16 +6,22 @@ import { User } from "@/Domain/entities/User";
 import { IAuthService } from "../interfaces/User/IAuthService";
 import { IUserRepository } from "../interfaces/User/IUserRepository";
 import { generateToken, verifyToken } from "@/helpers/tokenHelpers";
+import { inject, injectable } from 'inversify';
+import { INTERFACE_TYPE } from '@/helpers';
 
 
 
-
+@injectable()
 export class AuthService implements IAuthService {
-    constructor(private userRepository: IUserRepository) {}
+    constructor(@inject(INTERFACE_TYPE.UserRepository) private userRepository: IUserRepository) {}
 
 
     async hasPass(pass:string, slats:number): Promise<string> {
         return await bcrypt.hash(pass, slats);
+    }
+
+    async comparePass(pass:string, hashPass:string): Promise<boolean> {
+        return await bcrypt.compare(pass, hashPass);
     }
 
     async register(user: User): Promise<User> {
@@ -28,11 +34,14 @@ export class AuthService implements IAuthService {
                     6- Refactor code
                     7- handle confirm password in express validaator 
                     */
-        const {name, email, password, phoneNumber, profilePicture} = user; 
+        try{
+        const {email, password} = user; 
 
        
         //  1- Check if user exists 
         const userExist = await this.userRepository.findByEmail(email);
+
+        console.log("userexist" , userExist);
 
        // return error if exists  1- handle unit test 1
         if(userExist){
@@ -40,13 +49,17 @@ export class AuthService implements IAuthService {
         }
 
         // hash password  // 2- handle unit test 2
-        user.password = await this.hasPass(password, 10);
+         user.password = await this.hasPass(password, 10);
 
-        // create user  // handle unit test 3
-        const data = await this.userRepository.create(user)
+         // create user  // handle unit test 3
+           const data = await this.userRepository.create(user)
 
         // return data to controller
-        return data;
+          return data;
+         } 
+          catch(err){  
+              throw new Error('An error occurred' + err); 
+         }
     }
 
     async login(email: string, password: string): Promise<string> {
@@ -64,7 +77,7 @@ export class AuthService implements IAuthService {
         }
 
         // check password  // handle unit test 5
-        if(user.password !== password){
+        if(!await this.comparePass(password, user.password)){
             throw new Error('Password is incorrect');
         }
 
@@ -98,7 +111,7 @@ export class AuthService implements IAuthService {
     }
 
 
-    async resetPassword(tokenRest: string, newPassword: string): Promise<string> {
+   async resetPassword(tokenRest: string, newPassword: string): Promise<string> {
         let decoded;
         try {
             decoded = verifyToken(tokenRest);
@@ -133,7 +146,7 @@ export class AuthService implements IAuthService {
         }
 
         // check if old password is correct
-        const isMatch = await bcrypt.compare(oldPassword, user.password);
+        const isMatch = await this.comparePass(oldPassword, user.password);
 
         if (!isMatch) {
             throw new Error('Password is incorrect');
