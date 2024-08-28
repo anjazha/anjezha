@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 
 
 import { User } from "@/Domain/entities/User";
-import { IAuthService } from "../interfaces/User/IAuthRepository";
+import { IAuthService } from "../interfaces/User/IAuthService";
 import { IUserRepository } from "../interfaces/User/IUserRepository";
 import { generateToken, verifyToken } from "@/helpers/tokenHelpers";
 
@@ -34,15 +34,15 @@ export class AuthService implements IAuthService {
         //  1- Check if user exists 
         const userExist = await this.userRepository.findByEmail(email);
 
-       // return error if exists
+       // return error if exists  1- handle unit test 1
         if(userExist){
             throw new Error('User already exists');
         }
 
-        // hash password
+        // hash password  // 2- handle unit test 2
         user.password = await this.hasPass(password, 10);
 
-        // create user
+        // create user  // handle unit test 3
         const data = await this.userRepository.create(user)
 
         // return data to controller
@@ -58,24 +58,22 @@ export class AuthService implements IAuthService {
        // 1- find user by email
         const user =  await this.userRepository.findByEmail(email);
 
-      //  3- return error if not found
+      //  3- return error if not found  // handle unit test 4
         if(!user){
             throw new Error('User not found');
         }
 
-        if((await user).password !== password){
+        // check password  // handle unit test 5
+        if(user.password !== password){
             throw new Error('Password is incorrect');
         }
 
-      //  4- generate token if exists      
-      
+      //  4- generate token if exists       // handle unit test 6
       const token = await generateToken({userId: user.id});
 
       return token;
         
     }
-
-
 
     async forgotPassword(email: string): Promise<void> {
         try{
@@ -90,6 +88,8 @@ export class AuthService implements IAuthService {
             const token = generateToken({userId: user.id});
 
             // send email with password reset link
+              // sendEmail(email,'restPassword', token);
+
 
 
         } catch(err){
@@ -98,25 +98,63 @@ export class AuthService implements IAuthService {
     }
 
 
-    async resetPassword(token: string, newPassword: string): Promise<void> {
+    async resetPassword(tokenRest: string, newPassword: string): Promise<string> {
         let decoded;
         try {
-            decoded = verifyToken(token);
+            decoded = verifyToken(tokenRest);
+            const user = await this.userRepository.findById(decoded.userId);
+            
+            // check if user exists   // handle unit test 7
+            if (!user) {
+                throw new Error('User not found');
+            }
+            
+            const hashedPassword = this.hasPass(newPassword, 10);
+            user.password = hashedPassword;
+            
+            await this.userRepository.update(user.id, user);
+
+            // generate new token  to login
+            const token = await generateToken({userId: user.id});
+            return token;
+
         } catch (err) {
             throw new Error('Invalid or expired token');
         }
 
-        const user = await this.userRepository.findById(decoded.userId);
+         
+    }
+    
+
+    async changePassword(userId: number, oldPassword: string, newPassword: string): Promise<string> {
+        const user = await this.userRepository.findById(userId);
         if (!user) {
             throw new Error('User not found');
         }
 
-        const hashedPassword = this.hasPass(newPassword, 10);
+        // check if old password is correct
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
+
+        if (!isMatch) {
+            throw new Error('Password is incorrect');
+        }
+
+        // hash new password
+        const hashedPassword = await this.hasPass(newPassword, 10);
         user.password = hashedPassword;
 
+        // update user
         await this.userRepository.update(user.id, user);
 
-    }
-    
+        return 'Password changed successfully';
     }
 
+
+    logout(userId: number) : Promise<void>{
+
+        throw new Error('Method not implemented.');
+        // handle in front end
+
+    }
+
+}
