@@ -23,10 +23,13 @@ import { INTERFACE_TYPE } from "@/helpers";
 // bind the user repository to the user repository class userRepository implemnts IUserRepository
 container.bind<IUserRepository>(INTERFACE_TYPE.UserRepository).to(UserRepository);
 
+// resolve depencies injection in userService
 container.bind<IUserService>(INTERFACE_TYPE.UserService).to(UserService)
 
+// resolve dpencies injection in userController
 container.bind<UserController>(INTERFACE_TYPE.UserController).to(UserController);
 
+// get the user controller
 const userController = container.get<UserController>(INTERFACE_TYPE.UserController);
 
 
