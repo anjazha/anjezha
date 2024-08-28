@@ -35,7 +35,7 @@ export class AuthController {
             
             try{
                 const { email, password } = req.body;
-                console.log(req.body);
+                
 
                 // await to check if user exists
                 const token = await this.authService.login(email, password);
