@@ -10,7 +10,10 @@ export const INTERFACE_TYPE = {
     AuthService: Symbol.for("AuthService"),
     AuthController: Symbol.for("AuthController"),
     AuthRoute: Symbol.for("AuthRoute"),
-    
+    TaskRepository: Symbol.for("TaskRepository"),
+    TaskService: Symbol.for("TaskService"),
+    TaskController: Symbol.for("TaskController"),
+    TaskRoute : Symbol.for("TaskRoute"),
     
     App: Symbol.for("App"),
     User: Symbol.for("User"),

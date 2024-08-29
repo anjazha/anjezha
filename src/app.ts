@@ -25,7 +25,10 @@ export class App {
         await connectDB()
     }
 
-  private initialzeMiddlewares(){}
+  private initialzeMiddlewares(){
+    this.app.use(express.json())
+    this.app.use(express.urlencoded({extended: true}))
+  }
 
  private initializeRoutes(){
 

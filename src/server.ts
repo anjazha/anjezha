@@ -1,10 +1,10 @@
 import "reflect-metadata";
 import { App } from "./app"
 ;
-import {userRouter} from "./Presentation/routes";
+import {taskRouter, userRouter} from "./Presentation/routes";
 
 
-const app = new App([userRouter]); 
+const app = new App([userRouter, taskRouter]); 
 
 app.listen()
 

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Engzha is an application that makes it easier for those with home services, such as plumbing and carpentry, to obtain the services of the appropriate worker, which saves time and effortEngzha is an application that makes it easier for those with home services, such as plumbing and carpentry, to obtain the services of the appropriate worker, which saves time and effort",
   "main": "server.ts",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "dev:start": "nodemon",
