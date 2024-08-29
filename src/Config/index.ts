@@ -24,6 +24,7 @@ import dotenv from 'dotenv';
  export const {
        BASE_URL,
         PORT,
+        NODE_ENV,
         LOG_LEVEL,
         DB_URL,
         DB_PORT,

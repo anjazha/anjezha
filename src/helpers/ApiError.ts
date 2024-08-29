@@ -1,4 +1,6 @@
 import { EHttpStatusCode } from "../Application/interfaces/enums/EHttpStatusCode";
+
+
 class ApiError extends Error {
   public readonly name: string;
   public readonly httpCode: EHttpStatusCode;
@@ -28,11 +30,15 @@ export class HTTP400Error extends ApiError {
     super("BAD REQUEST", EHttpStatusCode.BAD_REQUEST, message, true);
   }
 }
+
 export class HTTP404Error extends ApiError {
   constructor(message = "not found") {
     super("NOT FOUND", EHttpStatusCode.NOT_FOUND, message, true);
   }
 }
+
+
+
 export class HTTP401Error extends ApiError {
   constructor(message = "not authenticated") {
     super(
@@ -43,11 +49,15 @@ export class HTTP401Error extends ApiError {
     );
   }
 }
+
+
 export class HTTP403Error extends ApiError {
   constructor(message = "forbidden") {
     super("FORBIDDEN", EHttpStatusCode.FORBIDDEN, message, true);
   }
 }
+
+
 export class HTTP500Error extends ApiError {
   constructor(message = "internal server error") {
     super("INTERNAL ERROR", EHttpStatusCode.INTERNAL_SERVER, message, false);

@@ -1,24 +1,21 @@
 
-import bcrypt from 'bcryptjs';
 
+import { hasPass, comparePass } from '@/helpers/bcryptHelper';
 
 import { User } from "@/Domain/entities/User";
-import { IAuthService } from "../interfaces/User/IAuthRepository";
+import { IAuthService } from "../interfaces/User/IAuthService";
 import { IUserRepository } from "../interfaces/User/IUserRepository";
 import { generateToken, verifyToken } from "@/helpers/tokenHelpers";
 import { sendMail } from '@/Infrastructure/mail/transportionMail';
 import { BASE_URL } from '@/Config';
+import { inject, injectable } from 'inversify';
+import { INTERFACE_TYPE } from '@/helpers';
 
 
 
-
+@injectable()
 export class AuthService implements IAuthService {
-    constructor(private userRepository: IUserRepository) {}
-
-
-    async hasPass(pass:string, slats:number): Promise<string> {
-        return await bcrypt.hash(pass, slats);
-    }
+    constructor(@inject(INTERFACE_TYPE.UserRepository) private userRepository: IUserRepository) {}
 
     async register(user: User): Promise<User> {
 
@@ -30,25 +27,32 @@ export class AuthService implements IAuthService {
                     6- Refactor code
                     7- handle confirm password in express validaator 
                     */
-        const {name, email, password, phoneNumber, profilePicture} = user; 
+        try{
+        const {email, password} = user; 
 
        
         //  1- Check if user exists 
         const userExist = await this.userRepository.findByEmail(email);
 
-       // return error if exists
+        console.log("userexist" , userExist);
+
+       // return error if exists  1- handle unit test 1
         if(userExist){
             throw new Error('User already exists');
         }
 
-        // hash password
-        user.password = await this.hasPass(password, 10);
+        // hash password  // 2- handle unit test 2
+         user.password = await hasPass(password, 10);
 
-        // create user
-        const data = await this.userRepository.create(user)
+         // create user  // handle unit test 3
+           const data = await this.userRepository.create(user)
 
         // return data to controller
-        return data;
+          return data;
+         } 
+          catch(err){  
+              throw new Error('An error occurred' + err); 
+         }
     }
 
     async login(email: string, password: string): Promise<string> {
@@ -60,24 +64,22 @@ export class AuthService implements IAuthService {
        // 1- find user by email
         const user =  await this.userRepository.findByEmail(email);
 
-      //  3- return error if not found
+      //  3- return error if not found  // handle unit test 4
         if(!user){
             throw new Error('User not found');
         }
 
-        if((await user).password !== password){
+        // check password  // handle unit test 5
+        if(!await comparePass(password, user.password)){
             throw new Error('Password is incorrect');
         }
 
-      //  4- generate token if exists      
-      
-      const token = await generateToken({userId: user.id});
+      //  4- generate token if exists       // handle unit test 6
+      const token =  generateToken({userId: (user.id)});
 
       return token;
         
     }
-
-
 
     async forgotPassword(email: string): Promise<void> {
         try{
@@ -103,25 +105,34 @@ export class AuthService implements IAuthService {
     }
 
 
-    async resetPassword(token: string, newPassword: string): Promise<void> {
+   async resetPassword(tokenRest: string, newPassword: string): Promise<string> {
         let decoded;
         try {
-            decoded = verifyToken(token);
+            decoded = verifyToken(tokenRest);
+            const user = await this.userRepository.findById(decoded.userId);
+            
+            // check if user exists   // handle unit test 7
+            if (!user) {
+                throw new Error('User not found');
+            }
+            
+            const hashedPassword = await hasPass(newPassword, 10);
+            user.password = hashedPassword;
+            
+            await this.userRepository.update(user.id, user);
+
+            // generate new token  to login
+            const token = await generateToken({userId: user.id});
+            return token;
+
         } catch (err) {
             throw new Error('Invalid or expired token');
         }
 
-        const user = await this.userRepository.findById(decoded.userId);
-        if (!user) {
-            throw new Error('User not found');
-        }
-
-        const hashedPassword = this.hasPass(newPassword, 10);
-        user.password = hashedPassword;
-
-        await this.userRepository.update(user.id, user);
-
+         
     }
     
-    }
 
+   
+
+}
