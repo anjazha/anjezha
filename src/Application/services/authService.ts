@@ -1,6 +1,6 @@
 
-import bcrypt from 'bcryptjs';
 
+import { hasPass, comparePass } from '@/helpers/bcryptHelper';
 
 import { User } from "@/Domain/entities/User";
 import { IAuthService } from "../interfaces/User/IAuthService";
@@ -14,15 +14,6 @@ import { INTERFACE_TYPE } from '@/helpers';
 @injectable()
 export class AuthService implements IAuthService {
     constructor(@inject(INTERFACE_TYPE.UserRepository) private userRepository: IUserRepository) {}
-
-
-    async hasPass(pass:string, slats:number): Promise<string> {
-        return await bcrypt.hash(pass, slats);
-    }
-
-    async comparePass(pass:string, hashPass:string): Promise<boolean> {
-        return await bcrypt.compare(pass, hashPass);
-    }
 
     async register(user: User): Promise<User> {
 
@@ -49,7 +40,7 @@ export class AuthService implements IAuthService {
         }
 
         // hash password  // 2- handle unit test 2
-         user.password = await this.hasPass(password, 10);
+         user.password = await hasPass(password, 10);
 
          // create user  // handle unit test 3
            const data = await this.userRepository.create(user)
@@ -77,12 +68,12 @@ export class AuthService implements IAuthService {
         }
 
         // check password  // handle unit test 5
-        if(!await this.comparePass(password, user.password)){
+        if(!await comparePass(password, user.password)){
             throw new Error('Password is incorrect');
         }
 
       //  4- generate token if exists       // handle unit test 6
-      const token = await generateToken({userId: user.id});
+      const token =  generateToken({userId: (user.id)});
 
       return token;
         
@@ -122,7 +113,7 @@ export class AuthService implements IAuthService {
                 throw new Error('User not found');
             }
             
-            const hashedPassword = this.hasPass(newPassword, 10);
+            const hashedPassword = await hasPass(newPassword, 10);
             user.password = hashedPassword;
             
             await this.userRepository.update(user.id, user);
@@ -139,35 +130,6 @@ export class AuthService implements IAuthService {
     }
     
 
-    async changePassword(userId: number, oldPassword: string, newPassword: string): Promise<string> {
-        const user = await this.userRepository.findById(userId);
-        if (!user) {
-            throw new Error('User not found');
-        }
-
-        // check if old password is correct
-        const isMatch = await this.comparePass(oldPassword, user.password);
-
-        if (!isMatch) {
-            throw new Error('Password is incorrect');
-        }
-
-        // hash new password
-        const hashedPassword = await this.hasPass(newPassword, 10);
-        user.password = hashedPassword;
-
-        // update user
-        await this.userRepository.update(user.id, user);
-
-        return 'Password changed successfully';
-    }
-
-
-    logout(userId: number) : Promise<void>{
-
-        throw new Error('Method not implemented.');
-        // handle in front end
-
-    }
+   
 
 }

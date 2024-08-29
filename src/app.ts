@@ -1,11 +1,12 @@
-import express, { Application } from "express";
+import morgan from 'morgan';
+import express, { Application, NextFunction, Request, Response } from "express";
 import swaggerUi from  "swagger-ui-express";
 
 import { errorHandler } from "./Presentation/middlewares/exceptions/errorHandler.middleware";
 import { HTTP400Error, HTTP401Error } from "./helpers/ApiError";
 import { EHttpStatusCode } from "./Application/interfaces/enums/EHttpStatusCode";
 import {connectDB, disconnectDB} from '@/Infrastructure/database'
-import { PORT,NODE_ENV } from "./Config";
+import { PORT, NODE_ENV } from "./Config/index";
 import swaggerSpec from "./swager";
 
 
@@ -28,13 +29,19 @@ export class App {
 
   private initialzeMiddlewares(){
 
+    if (NODE_ENV === 'development') {
+        this.app.use(morgan('dev'));
+        console.log('morgan enabled')
+    }
+//    console.log(NODE_ENV)
+
         this.app.use(express.json())
         this.app.use(express.urlencoded({extended: true}))
 
 
-        this.app.use((err, req, res, next) => {
+        this.app.use((err:Error, req:Request, res:Response, next:NextFunction) => {
             
-            if(NODE_ENV != 'production'){
+            if(NODE_ENV === 'production'){
                   errorHandler(new HTTP400Error(err.message), req, res, next)
             }  else{
                 errorHandler(new HTTP400Error(`messsage:${err.message}\n stack:${err.stack}`), req, res, next)
