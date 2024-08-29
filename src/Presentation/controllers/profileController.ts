@@ -14,7 +14,8 @@ export class ProfileController {
     constructor(@inject(INTERFACE_TYPE.ProfileService) private profileService:IProfileService){}
 
     async getPRofile(req: RequestWithUserId, res: Response, next: NextFunction) {
-        const userId = Number(req.userId);
+        console.log(req.userId);
+        const userId =  Number(req.userId);
         try{
 
             const profile = await this.profileService.getProfile((userId));
@@ -29,9 +30,13 @@ export class ProfileController {
 
     async updateProfile(req: RequestWithUserId, res: Response, next: NextFunction) {
         const userId = Number(req.userId);
+        // console.log(userId)
         const data = req.body;
-
         try{
+
+           if(data.password || data.profilePicture) 
+                { delete data.password;  delete data.profilePicture;}
+
             const profile = await this.profileService.updateProfile(userId, data);
             res.status(200).json(profile);
         } catch(err){
@@ -41,6 +46,7 @@ export class ProfileController {
 
     async deleteProfile(req: RequestWithUserId, res: Response, next: NextFunction) {
         const userId = Number(req.userId);
+        // console.log(userId);
         try{
             const profile = await this.profileService.dleteProfile(userId);
             res.status(200).json(profile);

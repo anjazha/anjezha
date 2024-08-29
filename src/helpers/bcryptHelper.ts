@@ -6,4 +6,5 @@ export async function hasPass(pass:string, slats:number): Promise<string> {
 
 export async function comparePass(pass:string, hashPass:string): Promise<boolean> {
     return await bcrypt.compare(pass, hashPass);
+    
 }

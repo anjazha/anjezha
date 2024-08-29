@@ -20,21 +20,23 @@ export class ProfileService implements IProfileService {
     }
 
     async updateProfile(userID:number, data: User) {
-        try{
+        // try{
+    
             const profile = await this.userRepository.update(userID, data);
             return profile;
 
-        }
-        catch (error) {
-            throw new Error(error)
-        }
+        // // }
+        // // catch (error) {
+        //     throw new Error(error.message+ error.stack);
+        // }
     }
 
     async dleteProfile(userID:number) {
         try{
+            console.log(userID);
             return await this.userRepository.delete(userID);
         }catch (error) {
-            throw new Error(error)
+            return new Error(error)
         }
     }
 
@@ -56,6 +58,7 @@ export class ProfileService implements IProfileService {
 
     async changePassword(userId: number, oldPassword: string, newPassword: string): Promise<string> {
 
+      try{
         const user = await this.userRepository.findById(userId);
 
         if (!user) {
@@ -64,6 +67,8 @@ export class ProfileService implements IProfileService {
 
         // check if old password is correct
         const isMatch = await comparePass(oldPassword, user.password);
+
+        // console.log(is/Match, oldPassword, user.password);
 
         if (!isMatch) {
             throw new Error('Password is incorrect');
@@ -77,6 +82,9 @@ export class ProfileService implements IProfileService {
         await this.userRepository.update(user.id, user);
 
         return 'Password changed successfully';
+       } catch(err){
+            throw new Error(err)
+        }
     }
 
 

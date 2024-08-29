@@ -73,7 +73,7 @@ export class AuthService implements IAuthService {
         }
 
       //  4- generate token if exists       // handle unit test 6
-      const token = await generateToken({userId: user.id});
+      const token =  generateToken({userId: (user.id)});
 
       return token;
         
