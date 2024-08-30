@@ -1,12 +1,13 @@
 import express, { Application } from "express";
 import swaggerUi from  "swagger-ui-express";
-
+import morgan from "morgan"
 import { errorHandler } from "./Presentation/middlewares/exceptions/errorHandler.middleware";
-import { HTTP400Error } from "./helpers/ApiError";
+import { HTTP400Error, HTTP401Error } from "./helpers/ApiError";
 import { EHttpStatusCode } from "./Application/interfaces/enums/EHttpStatusCode";
 import {connectDB, disconnectDB} from '@/Infrastructure/database'
-import { PORT } from "@/Config";
+import { PORT,NODE_ENV } from "./Config";
 import swaggerSpec from "./swager";
+
 
 
 export class App {
@@ -28,6 +29,7 @@ export class App {
   private initialzeMiddlewares(){
     this.app.use(express.json())
     this.app.use(express.urlencoded({extended: true}))
+    this.app.use(morgan('dev'))
   }
 
  private initializeRoutes(){
@@ -57,7 +59,7 @@ export class App {
     this.app.listen(this.port, ()=>{
         console.log(`Server is running on port ${this.port}`); 
     })
-
+    
     this.app.on('error', (error:any) => {
         console.error('Error occurred:', error);
         disconnectDB();

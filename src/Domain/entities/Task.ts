@@ -3,18 +3,18 @@
 export class Task {
 
     constructor(
-        private readonly id?:number,
-        private readonly userId?:number,
-        private readonly title?:string,
-        private readonly description?:string,
-        private readonly date?:string,
-        private readonly budget?:number,
-        private readonly location?:{longitude:number,latitude:number},
-        private readonly address?:string,
-        private readonly status?:string,
-        private readonly category?:number,
-        private readonly schedual?:{start_time : Date, end_time: Date , schedual_type: string},
-        private readonly attachments?:string[],
-        private readonly skills ?:string[],
+        // public id?:number,
+        public userId?:number,
+        public title?:string,
+        public description?:string,
+        public date?:string,
+        public budget?:number,
+        public location?:{longitude:number,latitude:number},
+        public address?:string,
+        public status?:string,
+        public category_id?:number,
+        public schedule?:{start_time : Date, end_time: Date , schedule_type: string},
+        public attachments?:{file_type:string,file_path:string,file_size:number}[],
+        public skills ?:string[],
     ){}
 }

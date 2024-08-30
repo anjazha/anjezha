@@ -11,12 +11,13 @@ export  class User {
     // private phoneNumber?: string;
 
     // previous code  is same as below code
-    constructor(private readonly name:string,
-         private readonly email,
-         private readonly password,
-         private readonly id?:number,
-         private readonly profilePicture?:string,
-         private readonly phoneNumber?:string
+    constructor(
+         public  name:string,
+         public  email,
+         public  password,
+         public  phoneNumber:string,
+         public  id?:number,
+         public  profilePicture?:string,
         ){
         // this.name = name;
         // this.email = email;

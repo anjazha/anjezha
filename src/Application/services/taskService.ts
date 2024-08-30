@@ -14,23 +14,23 @@ export class TaskService implements ITaskService{
         }
 
 
-   async createTask(userId : number, task: any): Promise<Task> {
-        return this.taskRepository.createTask(userId, task);
+   async createTask( task: Task): Promise<Task> {
+        return this.taskRepository.createTask(task);
     }
 
    async updateTask(id: number, task: Task): Promise<Task | null> {
-        
+        return null
     }
 
    async deleteTask(id: number): Promise<boolean> {
-        
+        return false
     }
 
    async findAllTasks(): Promise<Task[]> {
-        
+        return this.taskRepository.findAllTasks();
     }
 
    async findTaskById(id: number): Promise<Task | null> {
-        
+        return null
     }
 }

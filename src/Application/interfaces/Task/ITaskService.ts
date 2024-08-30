@@ -2,7 +2,7 @@ import { Task } from "@/Domain/entities/Task";
 
 
 export interface ITaskService {
-    createTask(userId:number,task : Task) : Promise<Task>;
+    createTask(task : Task) : Promise<Task>;
     updateTask(id: number , task : Task) : Promise<Task | null>;
     deleteTask(id: number) : Promise<boolean>;
     findAllTasks() : Promise<Task[]>;

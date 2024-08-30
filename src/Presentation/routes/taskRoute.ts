@@ -6,7 +6,8 @@ import { INTERFACE_TYPE } from "@/helpers";
 import { Router } from "express";
 import { Container } from "inversify";
 import { TaskController } from "../controllers/taskController";
-import { UserController } from "../controllers/userController";
+import { createTaskValidations } from "@/helpers/validate/taskValidate";
+import isAuth from "../middlewares/isAuth";
 
 
 const container = new Container();
@@ -19,8 +20,8 @@ const taskController = container.get<TaskController>(INTERFACE_TYPE.TaskControll
 const router = Router();
 
 router.route('/tasks')
-    .post(taskController.createTask.bind(taskController))
-    .get()
+    .post(isAuth ,createTaskValidations,taskController.createTask.bind(taskController))
+    .get(taskController.getAllTasks.bind(taskController))
 
 router.route('/tasks/:taskId')
         .get()
