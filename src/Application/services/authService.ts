@@ -10,6 +10,7 @@ import { sendMail } from '@/Infrastructure/mail/transportionMail';
 import { BASE_URL } from '@/Config';
 import { inject, injectable } from 'inversify';
 import { INTERFACE_TYPE } from '@/helpers';
+import { hashCode } from '@/helpers/hashCode';
 
 
 
@@ -93,6 +94,7 @@ export class AuthService implements IAuthService {
             // generate token
             const token = await generateToken({userId: user.id});
 
+            //   const passwordRecoveryCode = hashCode()
             // send email with password reset link
             // service send email then calll
             const resetUrl = `${BASE_URL}/auth/reset-password/${token}`;
@@ -108,12 +110,14 @@ export class AuthService implements IAuthService {
     }
 
 
-   async resetPassword(tokenRest: string, newPassword: string): Promise<string> {
+     async resetPassword(tokenRest: string, newPassword: string): Promise<string> {
         let decoded;
         try {
-
             // verify token
             decoded = await verifyToken(tokenRest);
+          } catch (err) {
+            throw new Error('Invalid or expired token');
+          }
 
             const user = await this.userRepository.findById(decoded.userId);
             
@@ -132,11 +136,6 @@ export class AuthService implements IAuthService {
             // return token;
 
             return "Password reset successfully";
-
-        } catch (err) {
-            throw new Error('Invalid or expired token');
-        }
-
     }
     
 
