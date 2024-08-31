@@ -91,11 +91,11 @@ export class AuthService implements IAuthService {
             // }
 
             // generate token
-            const token = generateToken({userId: user.id});
+            const token = await generateToken({userId: user.id});
 
             // send email with password reset link
             // service send email then calll
-            const resetUrl = `${BASE_URL}/auth/reset-password?token=${token}`;
+            const resetUrl = `${BASE_URL}/auth/reset-password/${token}`;
             // console.log(BASE_URL)
             const html = `<div><h3>You requested a password reset.<h3/> <p> Click <a href="${resetUrl}">here</a> to reset your password.</p><div/>`;
 
@@ -111,7 +111,10 @@ export class AuthService implements IAuthService {
    async resetPassword(tokenRest: string, newPassword: string): Promise<string> {
         let decoded;
         try {
-            decoded = verifyToken(tokenRest);
+
+            // verify token
+            decoded = await verifyToken(tokenRest);
+
             const user = await this.userRepository.findById(decoded.userId);
             
             // check if user exists   // handle unit test 7
@@ -125,17 +128,16 @@ export class AuthService implements IAuthService {
             await this.userRepository.update(user.id, user);
 
             // generate new token  to login
-            const token = await generateToken({userId: user.id});
-            return token;
+            // const token = await generateToken({userId: user.id});
+            // return token;
+
+            return "Password reset successfully";
 
         } catch (err) {
             throw new Error('Invalid or expired token');
         }
 
-         
     }
     
-
-   
 
 }

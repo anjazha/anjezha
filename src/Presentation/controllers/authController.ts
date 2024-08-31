@@ -66,7 +66,9 @@ export class AuthController {
             // get password from req.body
             const {password } = req.body;
             // get token from headers
-            const token = req.headers.authorization.split(" ")[1];
+            const token = req.params.token;
+
+            console.log(token);
             
             
             // verfiy password
