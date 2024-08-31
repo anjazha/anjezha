@@ -16,14 +16,15 @@ export const decodeToken = (token: string) => {
   return jwt.decode(token);
 };
 
- 
 
 
-// export const generateRefreshToken = (id: string) => {
-//   return jwt.sign({ id }, JWT_SECRET as string, {
-//     expiresIn: JWT_EXPIRES_IN,
-//   });
-// };
+
+
+export const generateRefreshToken = (payload: {}) => {
+  return jwt.sign(payload, JWT_SECRET as string, {
+    expiresIn: '7d',
+  });
+};
 
 // export const verifyRefreshToken = (token: string) => {
 //   return jwt.verify(token, JWT_SECRET as string);
