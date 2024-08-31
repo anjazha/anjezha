@@ -134,7 +134,7 @@ export class UserRepository implements IUserRepository {
    }
   }
 
-  async delete(id: number): Promise<string> {
+async delete(id: number): Promise<string> {
    try{ // await connectDB();
     await this.client.query("DELETE FROM users WHERE id = $1", [id]);
     // await disconnectDB();
@@ -146,7 +146,7 @@ export class UserRepository implements IUserRepository {
 
   async findAll(): Promise<User[]> {
     try { // await connectDB();
-        const { rows } = await client.query("SELECT * FROM users");
+        const { rows } = await this.client.query("SELECT * FROM users");
         // await disconnectDB();
         return rows;
     } catch(err){

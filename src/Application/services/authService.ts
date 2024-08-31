@@ -86,21 +86,24 @@ export class AuthService implements IAuthService {
 
             const user = await this.userRepository.findByEmail(email);
 
-            if(!user){
-                throw new Error('User not found');
-            }
+            // if(!user){
+            //     throw new Error('User not found');
+            // }
 
             // generate token
             const token = generateToken({userId: user.id});
 
             // send email with password reset link
             // service send email then calll
-            const resetUrl = `${BASE_URL}/reset-password?token=${token}`;
-            const html = `<p>You requested a password reset. Click <a href="${resetUrl}">here</a> to reset your password.</p>`;
-            await sendMail(email, 'Password Reset', html);
+            const resetUrl = `${BASE_URL}/auth/reset-password?token=${token}`;
+            // console.log(BASE_URL)
+            const html = `<div><h3>You requested a password reset.<h3/> <p> Click <a href="${resetUrl}">here</a> to reset your password.</p><div/>`;
+
+            await sendMail(email, 'Reset Password', html);
+            console.log('Email sent');
         
         } catch(err){
-            throw new Error('An error occurred');
+            throw new Error('An error occurred' + err.message + err.stack);
         }
     }
 
