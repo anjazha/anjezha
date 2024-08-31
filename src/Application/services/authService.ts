@@ -6,6 +6,8 @@ import { User } from "@/Domain/entities/User";
 import { IAuthService } from "../interfaces/User/IAuthService";
 import { IUserRepository } from "../interfaces/User/IUserRepository";
 import { generateToken, verifyToken } from "@/helpers/tokenHelpers";
+import { sendMail } from '@/Infrastructure/mail/transportionMail';
+import { BASE_URL } from '@/Config';
 import { inject, injectable } from 'inversify';
 import { INTERFACE_TYPE } from '@/helpers';
 
@@ -84,20 +86,24 @@ export class AuthService implements IAuthService {
 
             const user = await this.userRepository.findByEmail(email);
 
-            if(!user){
-                throw new Error('User not found');
-            }
+            // if(!user){
+            //     throw new Error('User not found');
+            // }
 
             // generate token
             const token = generateToken({userId: user.id});
 
             // send email with password reset link
-              // sendEmail(email,'restPassword', token);
+            // service send email then calll
+            const resetUrl = `${BASE_URL}/auth/reset-password?token=${token}`;
+            // console.log(BASE_URL)
+            const html = `<div><h3>You requested a password reset.<h3/> <p> Click <a href="${resetUrl}">here</a> to reset your password.</p><div/>`;
 
-
-
+            await sendMail(email, 'Reset Password', html);
+            console.log('Email sent');
+        
         } catch(err){
-            throw new Error('An error occurred');
+            throw new Error('An error occurred' + err.message + err.stack);
         }
     }
 
