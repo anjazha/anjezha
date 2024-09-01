@@ -7,84 +7,95 @@ import { injectable } from "inversify";
 
 @injectable()
 export class TaskerRepository implements ITaskerRepository {
-
     private client: Client;
-    constructor(){
-        this.client = pgClient
+    constructor() {
+        this.client = pgClient;
     }
 
-    async createTasker(tasker: Tasker): Promise<Tasker> {
-        
-        const query = `INSERT INTO tasker (user_id, bio, pricing, longitude, latitude, category_id, biding) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
-        const values = [tasker.userId, tasker.bio, tasker.pricing, tasker.longitude, tasker.latitude, tasker.category_id, tasker.biding];
+    async createTasker(tasker: Tasker): Promise<Tasker> {      
+        try {
 
-        const result = this.client.query(query, values)
-        return result.then((res) => {
-            return res.rows[0]
-        }).catch((err) => {
-            console.log(err)
-            return err
-        })
-        
+            const { userId, bio, pricing, longitude, latitude, category_id, bidding } = tasker;
+
+            const query = 'INSERT INTO taskers (user_id, bio, pricing, longitude, latitude, category_id, bidding) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
+            const values = [userId, bio, pricing, longitude, latitude, category_id, bidding];
+            const { rows } = await this.client.query(query, values);
+            return rows[0];
+        } catch (error) {
+            throw error;
+        } 
+        // finally {
+        //     this.client.release();
+        // }
+   
+   
+   
+   
     }
 
     async getTaskerById(id: number): Promise<Tasker> {
-       const query = `select * from tasker where id = $1`;
-         const values = [id];
-        const result = this.client.query(query, values)
-        return result.then((res) => {
-            return res.rows[0]
-        }).catch((err) => {
-            console.log(err)
-            return err
-        })
-
+      
+        try {
+            const query = 'SELECT * FROM taskers WHERE user_id = $1';
+            const values = [id];
+            const { rows } = await this.client.query(query, values);
+            return rows[0];
+        } catch (error) {
+            throw error;
+        } 
+        // finally {
+        //     this.client.release();
+        // }
     }
+
     async updateTasker(tasker: Tasker): Promise<string> {
+      
+        try {
 
-        let query = `update tasker set `;
-        let values = [];
-        
-        for(let key in tasker){
-            if(tasker[key] !== undefined){
-                query += `${key} = $${values.length + 1}, `;
-                values.push(tasker[key])  
+            const query = `UPDATE taskers SET `;
+            const values = [];
+
+            // loop through tasker object and build query
+            for (const key in tasker) {
+                if (key !== 'id') {
+                    query += `${key} = $${values.length + 1}, `;
+                    values.push(tasker[key]);
+                }
             }
+
+            // remove last two string from query space and comma
+            query = query.slice(0, -2);
+
+            // add where clause to query
+            query += ` WHERE user_id = ${tasker.userId}`;
+
+            await this.client.query(query, values);
+
+            return 'Tasker updated successfully';
+
+        } catch (error) {
+            throw error;
+        } 
+        // finally {
+        //     this.client.release();
+        // }
+    }
+
+
+    async deleteTasker(id: number): Promise<string> {
+      
+        try {
+            const query = 'DELETE FROM taskers WHERE user_id = $1';
+            const values = [id];
+            await this.client.query(query, values);
+            return 'Tasker deleted successfully';
+        } catch (error) {
+            throw error;
         }
-         
 
-        query = query.slice(0, -2);
-
-        query += ` where id = $${values.length + 1} RETURNING *`;
-        values.push(tasker.id);
-
-        await this.client.query(query, values);
-        return "Tasker updated successfully"
-    }
-    async deleteTasker(Id:number): Promise<string> {
-
-        const query = `delete from tasker where id = $1`;
-        const values = [Id];
-        await this.client.query(query, values);
-        return "Tasker deleted successfully"
     }
 
-
-
-    getTaskerByEmail?(email: string): Promise<any> {
-        throw new Error("Method not implemented.");
-    }
-    getTaskerByPhoneNumber?(phoneNumber: string): Promise<any> {
-        throw new Error("Method not implemented.");
-    }
-    getTaskerByLocation?(location: string): Promise<any[]> {
-        throw new Error("Method not implemented.");
-    }
-    getTaskerByRating?(rating: number): Promise<any[]> {
-        throw new Error("Method not implemented.");
-    }
-    getTaskerByTask?(task: any): Promise<any[]> {
-        throw new Error("Method not implemented.");
-    }
 
 }
+
+

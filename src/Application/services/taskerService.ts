@@ -1,33 +1,36 @@
+import { injectable , inject} from "inversify";
+
+
 import { Tasker } from "@/Domain/entities/Tasker";
 import { ITaskerService } from "../interfaces/User/ITaskerService";
-import { injectable } from "inversify";
-
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
+import { ITaskerRepository } from "../interfaces/User/ITaskerRepository";
 
 @injectable()
 export class TaskerService implements ITaskerService {
 
-    constructor(private taskerRepository: ITaskerService) {}
+    constructor(
+        @inject(INTERFACE_TYPE.TaskerRepository) private taskerRepository: ITaskerRepository
+    ) {}
 
     async createTasker(tasker: Tasker): Promise<Tasker> {
-        return this.taskerRepository.createTasker(tasker)
+        return await this.taskerRepository.createTasker(tasker)
     }
 
     async getTaskerById(id: number): Promise<Tasker> {
-        return this.taskerRepository.getTaskerById(id)
+        return await this.taskerRepository.getTaskerById(id)
     }
 
     async updateTasker(tasker: Tasker): Promise<string> {
-         this.taskerRepository.updateTasker(tasker);
-         return "Tasker updated successfully"
+         return await await this.taskerRepository.updateTasker(tasker);
     }
 
     async deleteTasker(id: number): Promise<string> {
-        this.taskerRepository.deleteTasker(id);
-        return "Tasker deleted successfully"
+         return  await await this.taskerRepository.deleteTasker(id);
     }
 
     // async getTaskerByUserId(userId: number): Promise<Tasker> {
-    //     return this.taskerRepository.getTaskerByUserId(userId)
+    //     return await this.taskerRepository.getTaskerByUserId(userId)
     // }
 
     // async getTaskerByCategoryId(categoryId: number): Promise<Tasker[]> {
