@@ -29,19 +29,23 @@ const profileController = container.get<ProfileController>(INTERFACE_TYPE.Profil
 
 
  router.get('/profile', 
-    isAuth,
+   // allow to access only if user is authenticated, tasker 
+   isAuth,
      profileController.getPRofile.bind(profileController));
 
  router.put('/profile', 
-    isAuth,
+   // allow to access only if user is authenticated 
+   isAuth,
      profileController.updateProfile.bind(profileController));
 
  router.delete('/profile', 
-    isAuth,
+   // allow to access only if user is authenticated 
+   isAuth,
      profileController.deleteProfile.bind(profileController));
 
  router.patch('/profile/picture', 
-    isAuth,
+   // allow to access only if user is authenticated 
+   isAuth,
      profileController.updateProfilePicture.bind(profileController));
 
  router.patch('/profile/change-password',

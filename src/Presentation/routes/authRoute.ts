@@ -8,6 +8,8 @@ import { UserRepository } from "@/Application/repositories/userRepository";
 import { AuthService } from "@/Application/services/authService";
 import { INTERFACE_TYPE } from "@/helpers";
 import { AuthController } from "../controllers/authController";
+import { IRoleRepository } from "@/Application/interfaces/User/IRoleRepository";
+import { RoleRepository } from "@/Application/repositories/roleRepository";
 
 
 const router = Router();
@@ -19,6 +21,9 @@ const container = new Container();
 
 // resolve depencoes injection in user repository
 container.bind<IUserRepository>(INTERFACE_TYPE.UserRepository).to(UserRepository);
+
+// resolve depencoes injection role repository
+container.bind<IRoleRepository>(INTERFACE_TYPE.RoleRepository).to(RoleRepository);
 
 // resolve depencoes injection in auth service
 container.bind<IAuthService>(INTERFACE_TYPE.AuthService).to(AuthService);
