@@ -1,8 +1,9 @@
 import { verifyToken } from '@/helpers/tokenHelpers';
 import { Request, Response, NextFunction } from 'express';
+import { JwtPayload } from 'jsonwebtoken';
 
 interface RequestWithUserId extends Request {
-    userId?: string;
+    userId?: string | Number;
 }
 
 const isAuth = (req: RequestWithUserId, res: Response, next: NextFunction) => {
@@ -14,25 +15,32 @@ const isAuth = (req: RequestWithUserId, res: Response, next: NextFunction) => {
         4- Return error if user is not authorized
         5- Handle errors
         6- Write tests*/
-
+        
         try{
             const token = req.headers.authorization?.split(' ')[1];
+    
+            // console.log(token)
 
             if(!token){
                 return res.status(401).json({message: 'Unauthorized'});
             }
 
             // verify token
-            const decoded = verifyToken(token);
+            const decoded = verifyToken(token) as string | JwtPayload;
 
-            // attach user to request object
+            // attach user to request object  // i am not can understand why show it error but it work
+            const userId = decoded.userId;""
 
-            req.userId = decoded.userId;
+            req.userId =  Number(userId);
+
+        //     // create role by default to user 
+        //   const role = await this.roleRepository.createRole({name: 'user', userId: userId});
+        //   console.log("role", role);
 
             next();
 
         }catch(error){
-                 res.status(401).json({message: 'Unauthorized'});
+              next(error);
         }
 
 

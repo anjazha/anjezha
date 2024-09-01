@@ -1,28 +1,26 @@
 
-import bcrypt from 'bcryptjs';
 
+import { hasPass, comparePass } from '@/helpers/bcryptHelper';
 
 import { User } from "@/Domain/entities/User";
 import { IAuthService } from "../interfaces/User/IAuthService";
 import { IUserRepository } from "../interfaces/User/IUserRepository";
 import { generateToken, verifyToken } from "@/helpers/tokenHelpers";
+import { sendMail } from '@/Infrastructure/mail/transportionMail';
+import { BASE_URL } from '@/Config';
 import { inject, injectable } from 'inversify';
 import { INTERFACE_TYPE } from '@/helpers';
+import { hashCode } from '@/helpers/hashCode';
+import { IRoleRepository } from '../interfaces/User/IRoleRepository';
 
 
 
 @injectable()
 export class AuthService implements IAuthService {
-    constructor(@inject(INTERFACE_TYPE.UserRepository) private userRepository: IUserRepository) {}
-
-
-    async hasPass(pass:string, slats:number): Promise<string> {
-        return await bcrypt.hash(pass, slats);
-    }
-
-    async comparePass(pass:string, hashPass:string): Promise<boolean> {
-        return await bcrypt.compare(pass, hashPass);
-    }
+    constructor(
+        @inject(INTERFACE_TYPE.UserRepository) private userRepository: IUserRepository,
+        @inject(INTERFACE_TYPE.RoleRepository) private roleRepository: IRoleRepository   
+    ) {}
 
     async register(user: User): Promise<User> {
 
@@ -49,10 +47,12 @@ export class AuthService implements IAuthService {
         }
 
         // hash password  // 2- handle unit test 2
-         user.password = await this.hasPass(password, 10);
+         user.password = await hasPass(password, 10);
 
          // create user  // handle unit test 3
-           const data = await this.userRepository.create(user)
+           const data = await this.userRepository.create(user);
+
+          
 
         // return data to controller
           return data;
@@ -71,18 +71,24 @@ export class AuthService implements IAuthService {
        // 1- find user by email
         const user =  await this.userRepository.findByEmail(email);
 
+        // get user role 
+        // const role = await this.roleRepository.getRoleById(user.id);
       //  3- return error if not found  // handle unit test 4
         if(!user){
             throw new Error('User not found');
         }
 
+        
         // check password  // handle unit test 5
-        if(!await this.comparePass(password, user.password)){
+        if(!await comparePass(password, user.password)){
             throw new Error('Password is incorrect');
         }
 
+      //   console.log("userId", user.id);
+
+        
       //  4- generate token if exists       // handle unit test 6
-      const token = await generateToken({userId: user.id});
+      const token =  generateToken({userId: (user.id)});
 
       return token;
         
@@ -93,28 +99,38 @@ export class AuthService implements IAuthService {
 
             const user = await this.userRepository.findByEmail(email);
 
-            if(!user){
-                throw new Error('User not found');
-            }
+            // if(!user){
+            //     throw new Error('User not found');
+            // }
 
             // generate token
-            const token = generateToken({userId: user.id});
+            const token = await generateToken({userId: user.id});
 
+            //   const passwordRecoveryCode = hashCode()
             // send email with password reset link
-              // sendEmail(email,'restPassword', token);
+            // service send email then calll
+            const resetUrl = `${BASE_URL}/auth/reset-password/${token}`;
+            // console.log(BASE_URL)
+            const html = `<div><h3>You requested a password reset.<h3/> <p> Click <a href="${resetUrl}">here</a> to reset your password.</p><div/>`;
 
-
-
+            await sendMail(email, 'Reset Password', html);
+            console.log('Email sent');
+        
         } catch(err){
-            throw new Error('An error occurred');
+            throw new Error('An error occurred' + err.message + err.stack);
         }
     }
 
 
-   async resetPassword(tokenRest: string, newPassword: string): Promise<string> {
+     async resetPassword(tokenRest: string, newPassword: string): Promise<string> {
         let decoded;
         try {
-            decoded = verifyToken(tokenRest);
+            // verify token
+            decoded = await verifyToken(tokenRest);
+          } catch (err) {
+            throw new Error('Invalid or expired token');
+          }
+
             const user = await this.userRepository.findById(decoded.userId);
             
             // check if user exists   // handle unit test 7
@@ -122,52 +138,17 @@ export class AuthService implements IAuthService {
                 throw new Error('User not found');
             }
             
-            const hashedPassword = this.hasPass(newPassword, 10);
+            const hashedPassword = await hasPass(newPassword, 10);
             user.password = hashedPassword;
             
             await this.userRepository.update(user.id, user);
 
             // generate new token  to login
-            const token = await generateToken({userId: user.id});
-            return token;
+            // const token = await generateToken({userId: user.id});
+            // return token;
 
-        } catch (err) {
-            throw new Error('Invalid or expired token');
-        }
-
-         
+            return "Password reset successfully";
     }
     
-
-    async changePassword(userId: number, oldPassword: string, newPassword: string): Promise<string> {
-        const user = await this.userRepository.findById(userId);
-        if (!user) {
-            throw new Error('User not found');
-        }
-
-        // check if old password is correct
-        const isMatch = await this.comparePass(oldPassword, user.password);
-
-        if (!isMatch) {
-            throw new Error('Password is incorrect');
-        }
-
-        // hash new password
-        const hashedPassword = await this.hasPass(newPassword, 10);
-        user.password = hashedPassword;
-
-        // update user
-        await this.userRepository.update(user.id, user);
-
-        return 'Password changed successfully';
-    }
-
-
-    logout(userId: number) : Promise<void>{
-
-        throw new Error('Method not implemented.');
-        // handle in front end
-
-    }
 
 }

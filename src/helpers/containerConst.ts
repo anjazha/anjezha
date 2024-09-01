@@ -26,7 +26,14 @@ export const INTERFACE_TYPE = {
     TaskService: Symbol.for("TaskService"),
     TaskController: Symbol.for("TaskController"),
     TaskRoute: Symbol.for("TaskRoute"),
-    
+    ProfileService: Symbol.for("ProfileService"),
+    ProfileController: Symbol.for("ProfileController"),
+    ProfileRoute: Symbol.for("ProfileRoute"),
+    ProfileRepository: Symbol.for("ProfileRepository"),
+    RoleService: Symbol.for("RoleService"),
+    RoleController: Symbol.for("RoleController"),
+    RoleRoute: Symbol.for("RoleRoute"),
+    RoleRepository: Symbol.for("RoleRepository"),
     
     
     App: Symbol.for("App"),
