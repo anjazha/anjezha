@@ -33,7 +33,11 @@ const config = {
     },
 };
 
-const client = new pg.Client(config);
+// const client = new pg.Client(config);
+
+// create pool not client in order to create multiple connections
+
+const client = new pg.Pool(config);
 
 
 const connectDB = async () => {
