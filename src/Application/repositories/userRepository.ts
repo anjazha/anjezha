@@ -58,7 +58,7 @@ export class UserRepository implements IUserRepository {
 
   async findById(id: number): Promise<User | null> {
     try{// await connectDB();
-        const { rows } = await pgClient.query("SELECT * FROM users WHERE id = $1", [
+        const { rows } = await this.client.query("SELECT * FROM users WHERE id = $1", [
           id,
         ]);
     // await disconnectDB();
@@ -70,35 +70,11 @@ export class UserRepository implements IUserRepository {
 
   async update(id: number, user: any): Promise<User> {
     // await connectDB();
-      try{ 
-       let query = `UPDATE users SET `;
-        const values = [];
-    
-        // Object.keys(user).forEach((key, i) => {
-        //     query.concat(`${key} = $${i + 1}, `);
-        //     values.push(user[key]);
-        // })
-       
-        for(const key in user){
-          if(user.hasOwnProperty(key)){
-            query += `${key} = $${values.length + 1}, `;
-            values.push(user[key]);
-          }
-        }
-        console.log(query);
-
-        query = query.slice(0, -2);
-        console.log(query);
-
-    query += (` WHERE id = $${values.length + 1} RETURNING *`);
-    values.push(id);
-
-
-    const { rows } = await pgClient.query(query, values);
-    // await disconnectDB();
-    return rows[0];
-    
-  //  not sure if this is the best way to do thispre
+    // Object.keys(user).forEach((key, i) => {
+    //     query.concat(`${key} = $${i + 1}, `);
+    //     values.push(user[key]);
+    // })
+     //  not sure if this is the best way to do thispre
     // if (user.name) {
     //   query.concat(`name = $1`);
     //   values.push(user.name);
@@ -124,18 +100,45 @@ export class UserRepository implements IUserRepository {
     //   values.push(user.profilePicture);
     // }
 
+      try{ 
+
+       let query = `UPDATE users SET `;
+        const values = [];
+    
+       
+        for(const key in user){
+          if(user.hasOwnProperty(key)){
+            query += `${key} = $${values.length + 1}, `;
+            values.push(user[key]);
+          }
+        }
+
+
+        query = query.slice(0, -2);
+        
+
+        query += (` WHERE id = $${values.length + 1} RETURNING *`);
+        values.push(id);
+
+      // console.log(query);
+
+
+    const { rows } = await this.client.query(query, values);
+    // await disconnectDB();
+    return rows[0];
+    
     
     } catch(err){
-        throw new Error('Could not update user', err.message + err.stack);
+        throw new Error('Could not update user' + err.message + err.stack);
 
    }
   }
 
-  async delete(id: number): Promise<boolean> {
+async delete(id: number): Promise<string> {
    try{ // await connectDB();
-    await pgClient.query("DELETE FROM users WHERE id = $1", [id]);
+    await this.client.query("DELETE FROM users WHERE id = $1", [id]);
     // await disconnectDB();
-    return true;
+    return "user deleted";
       } catch(err){
          throw new Error('An error occurred' + err);
       }
@@ -143,7 +146,7 @@ export class UserRepository implements IUserRepository {
 
   async findAll(): Promise<User[]> {
     try { // await connectDB();
-        const { rows } = await pgClient.query("SELECT * FROM users");
+        const { rows } = await this.client.query("SELECT * FROM users");
         // await disconnectDB();
         return rows;
     } catch(err){

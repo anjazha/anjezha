@@ -1,13 +1,14 @@
-import express, { Application } from "express";
-import compression from "compression"
+import express, { Application, NextFunction, Request, Response } from "express";
 import swaggerUi from  "swagger-ui-express";
 import morgan from "morgan"
+import compression from "compression"
 import { errorHandler } from "./Presentation/middlewares/exceptions/errorHandler.middleware";
 import { HTTP400Error, HTTP401Error } from "./helpers/ApiError";
 import { EHttpStatusCode } from "./Application/interfaces/enums/EHttpStatusCode";
 import {connectDB, disconnectDB} from '@/Infrastructure/database'
-import { PORT,NODE_ENV } from "./Config";
+import { PORT, NODE_ENV } from "./Config/index";
 import swaggerSpec from "./swager";
+import { compare } from 'bcryptjs';
 
 
 
@@ -28,10 +29,17 @@ export class App {
     }
 
   private initialzeMiddlewares(){
-    this.app.use(compression())
-    this.app.use(express.json())
-    this.app.use(express.urlencoded({extended: true}))
-    this.app.use(morgan('dev'))
+
+    if (NODE_ENV === 'development') {
+        this.app.use(morgan('dev'));
+        console.log('morgan enabled')
+    }
+//    console.log(NODE_ENV)
+        this.app.use(compression())
+        this.app.use(express.json())
+        this.app.use(express.urlencoded({extended: true}))
+
+       
   }
 
  private initializeRoutes(){

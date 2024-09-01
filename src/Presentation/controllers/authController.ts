@@ -26,7 +26,7 @@ export class AuthController {
                   res.status(201).json(newUser);
             
         }  catch(error){
-            res.status(500).json({message: 'An error occurred ' + error})
+            res.status(500).json({message: 'An error occurred' + error})
         }
         
           }
@@ -35,7 +35,7 @@ export class AuthController {
             
             try{
                 const { email, password } = req.body;
-                console.log(req.body);
+                
 
                 // await to check if user exists
                 const token = await this.authService.login(email, password);
@@ -47,22 +47,37 @@ export class AuthController {
         }
 
         async forgotPassword(req:Request, res:Response, next:NextFunction) {
-            const { email } = req.body;
-            await this.authService.forgotPassword(email);
-            res.status(200).json({ message: "Password reset link sent to your email" });
+            try{
+                // get email from req.body
+                const { email } = req.body;
+
+                // await to check if user exists
+                await this.authService.forgotPassword(email);
+
+                res.status(200).json({ message: "Password reset link sent to your email" });
+            }  catch(err){
+                next(err)
+            }
         }
 
         async resetPassword(req:Request, res:Response, next:NextFunction) {
 
+          try{
+            // get password from req.body
             const {password } = req.body;
             // get token from headers
-            const token = req.headers.authorization.split(" ")[1];
+            const token = req.params.token;
 
-
+            console.log(token);
+            
+            
             // verfiy password
             const newPassword = await this.authService.resetPassword(token, password);
-
+            
             res.status(200).json({ newPassword });
+                } catch(err){
+                    next(err)
+                }
         }
 
         
