@@ -1,5 +1,6 @@
 import { verifyToken } from '@/helpers/tokenHelpers';
 import { Request, Response, NextFunction } from 'express';
+import { JwtPayload } from 'jsonwebtoken';
 
 interface RequestWithUserId extends Request {
     userId?: string | Number;
@@ -25,12 +26,16 @@ const isAuth = (req: RequestWithUserId, res: Response, next: NextFunction) => {
             }
 
             // verify token
-            const decoded = verifyToken(token);
+            const decoded = verifyToken(token) as string | JwtPayload;
 
             // attach user to request object  // i am not can understand why show it error but it work
-            const userId = decoded.userId;
+            const userId = decoded.userId;""
 
             req.userId =  Number(userId);
+
+        //     // create role by default to user 
+        //   const role = await this.roleRepository.createRole({name: 'user', userId: userId});
+        //   console.log("role", role);
 
             next();
 

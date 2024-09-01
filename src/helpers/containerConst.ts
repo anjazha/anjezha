@@ -13,6 +13,12 @@ export const INTERFACE_TYPE = {
     ProfileService: Symbol.for("ProfileService"),
     ProfileController: Symbol.for("ProfileController"),
     ProfileRoute: Symbol.for("ProfileRoute"),
+    ProfileRepository: Symbol.for("ProfileRepository"),
+    RoleService: Symbol.for("RoleService"),
+    RoleController: Symbol.for("RoleController"),
+    RoleRoute: Symbol.for("RoleRoute"),
+    RoleRepository: Symbol.for("RoleRepository"),
+    
     
     
     

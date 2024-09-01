@@ -11,12 +11,16 @@ import { BASE_URL } from '@/Config';
 import { inject, injectable } from 'inversify';
 import { INTERFACE_TYPE } from '@/helpers';
 import { hashCode } from '@/helpers/hashCode';
+import { IRoleRepository } from '../interfaces/User/IRoleRepository';
 
 
 
 @injectable()
 export class AuthService implements IAuthService {
-    constructor(@inject(INTERFACE_TYPE.UserRepository) private userRepository: IUserRepository) {}
+    constructor(
+        @inject(INTERFACE_TYPE.UserRepository) private userRepository: IUserRepository,
+        @inject(INTERFACE_TYPE.RoleRepository) private roleRepository: IRoleRepository   
+    ) {}
 
     async register(user: User): Promise<User> {
 
@@ -46,7 +50,9 @@ export class AuthService implements IAuthService {
          user.password = await hasPass(password, 10);
 
          // create user  // handle unit test 3
-           const data = await this.userRepository.create(user)
+           const data = await this.userRepository.create(user);
+
+          
 
         // return data to controller
           return data;
@@ -65,16 +71,22 @@ export class AuthService implements IAuthService {
        // 1- find user by email
         const user =  await this.userRepository.findByEmail(email);
 
+        // get user role 
+        // const role = await this.roleRepository.getRoleById(user.id);
       //  3- return error if not found  // handle unit test 4
         if(!user){
             throw new Error('User not found');
         }
 
+        
         // check password  // handle unit test 5
         if(!await comparePass(password, user.password)){
             throw new Error('Password is incorrect');
         }
 
+      //   console.log("userId", user.id);
+
+        
       //  4- generate token if exists       // handle unit test 6
       const token =  generateToken({userId: (user.id)});
 
