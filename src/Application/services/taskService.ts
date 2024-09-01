@@ -19,11 +19,11 @@ export class TaskService implements ITaskService{
     }
 
    async updateTask(id: number, task: Task): Promise<Task | null> {
-        return null
+        return this.taskRepository.updateTask(id, task);
     }
 
    async deleteTask(id: number): Promise<boolean> {
-        return false
+        return this.taskRepository.deleteTask(id);
     }
 
    async findAllTasks(): Promise<Task[]> {
@@ -31,6 +31,6 @@ export class TaskService implements ITaskService{
     }
 
    async findTaskById(id: number): Promise<Task | null> {
-        return null
+        return this.taskRepository.findTaskById(id);
     }
 }

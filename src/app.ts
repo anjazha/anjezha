@@ -1,4 +1,5 @@
 import express, { Application } from "express";
+import compression from "compression"
 import swaggerUi from  "swagger-ui-express";
 import morgan from "morgan"
 import { errorHandler } from "./Presentation/middlewares/exceptions/errorHandler.middleware";
@@ -27,6 +28,7 @@ export class App {
     }
 
   private initialzeMiddlewares(){
+    this.app.use(compression())
     this.app.use(express.json())
     this.app.use(express.urlencoded({extended: true}))
     this.app.use(morgan('dev'))

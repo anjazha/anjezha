@@ -6,7 +6,7 @@ import { INTERFACE_TYPE } from "@/helpers";
 import { Router } from "express";
 import { Container } from "inversify";
 import { TaskController } from "../controllers/taskController";
-import { createTaskValidations } from "@/helpers/validate/taskValidate";
+import { createTaskValidations, updateTaskValidations } from "@/helpers/validate/taskValidate";
 import isAuth from "../middlewares/isAuth";
 
 
@@ -24,9 +24,9 @@ router.route('/tasks')
     .get(taskController.getAllTasks.bind(taskController))
 
 router.route('/tasks/:taskId')
-        .get()
-        .put()
-        .delete()
+        .get(taskController.getTaskById.bind(taskController))
+        .put(isAuth, updateTaskValidations,taskController.updateTask.bind(taskController))
+        .delete(isAuth, taskController.deleteTask.bind(taskController))
 
 
 router.route
