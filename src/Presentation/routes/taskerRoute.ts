@@ -6,7 +6,7 @@ import { INTERFACE_TYPE } from "@/helpers";
 import { ITaskerRepository } from "@/Application/interfaces/User/ITaskerRepository";
 import { ITaskerService } from "@/Application/interfaces/User/ITaskerService";
 import { Router } from "express";
-import isAuth from "../middlewares/isAuth";
+import {isAuth, alllowTo} from "../middlewares/isAuth";
 import { IRoleRepository } from "@/Application/interfaces/User/IRoleRepository";
 import { RoleRepository } from "@/Application/repositories/roleRepository";
 import { IRoleService } from "@/Application/interfaces/User/IRoleService";
@@ -37,11 +37,11 @@ router.post('/become-tasker', isAuth,  taskerController.addTasker.bind(taskerCon
 
 
 // alllow only user authenticate and become tasker 1-creat middlware
-router.get('/about-tasker', isAuth,  taskerController.getTasker.bind(taskerController));
+router.get('/about-tasker', isAuth, alllowTo('tasker'),  taskerController.getTasker.bind(taskerController));
 
-router.put('/update-tasker', isAuth, taskerController.updateTasker.bind(taskerController));
+router.put('/update-tasker', isAuth, alllowTo('tasker'), taskerController.updateTasker.bind(taskerController));
 
-router.delete('/delete-tasker', isAuth, taskerController.deleteTasker.bind(taskerController));
+router.delete('/delete-tasker', isAuth, alllowTo('tasker'), taskerController.deleteTasker.bind(taskerController));
 
 
 export default router;

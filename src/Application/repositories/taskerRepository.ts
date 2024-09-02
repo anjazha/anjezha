@@ -86,8 +86,8 @@ export class TaskerRepository implements ITaskerRepository {
       
         try {
 
-            const query = `UPDATE taskers SET `;
-            const values = [];
+            let query = `UPDATE taskers SET `;
+            let values = [];
 
             // loop through tasker object and build query
             for (const key in tasker) {
