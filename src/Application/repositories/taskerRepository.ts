@@ -1,13 +1,13 @@
 import { Tasker } from "@/Domain/entities/Tasker";
-import { ITaskerRepository } from "../interfaces/User/ITaskerRepository";
+import { ITaskerRepository } from "../interfaces/User/Tasker/ITaskerRepository";
 import { pgClient } from "@/Infrastructure/database";
-import { Client } from "pg";
+import { Client, Pool } from "pg";
 import { injectable } from "inversify";
 
 
 @injectable()
 export class TaskerRepository implements ITaskerRepository {
-    private client: Client;
+    private client: Pool;
     constructor() {
         this.client = pgClient;
     }

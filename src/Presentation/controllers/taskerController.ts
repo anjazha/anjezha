@@ -1,4 +1,4 @@
-import { ITaskerService } from "@/Application/interfaces/User/ITaskerService";
+import { ITaskerService } from "@/Application/interfaces/User/Tasker/ITaskerService";
 import { TaskerService } from "@/Application/services/taskerService";
 import { Tasker } from "@/Domain/entities/Tasker";
 import { INTERFACE_TYPE } from "@/helpers";
