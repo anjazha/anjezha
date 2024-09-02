@@ -1,10 +1,14 @@
+import RequestWithUserId from '@/Application/interfaces/Request';
+import { HTTP401Error, HTTP500Error } from '@/helpers/ApiError';
 import { verifyToken } from '@/helpers/tokenHelpers';
 import { Request, Response, NextFunction } from 'express';
-import { RequestWithUserId } from '@/Application/interfaces/IRequestWithUserId';
-import { HTTP401Error } from '@/helpers/ApiError';
+import { JwtPayload } from 'jsonwebtoken';
 
+// interface RequestWithUserId extends Request {
+//     userId?: string | Number;
+// }
 
-const isAuth = (req: RequestWithUserId, res: Response, next: NextFunction) => {
+export const isAuth = (req: RequestWithUserId, res: Response, next: NextFunction) => {
 
     /*
      1- Check if user is authenticated
@@ -24,9 +28,18 @@ const isAuth = (req: RequestWithUserId, res: Response, next: NextFunction) => {
             // verify token
             const decoded = verifyToken(token);
 
-            // attach user to request object
+            // attach user to request object  // i am not can understand why show it error but it work
+            const {userId, role} = (decoded as JwtPayload);
 
-            req.userId = decoded.userId;
+            // const role = decoded.role;
+
+            req.userId =  Number(userId);
+
+            req.role = role;
+
+        //     // create role by default to user 
+        //   const role = await this.roleRepository.createRole({name: 'user', userId: userId});
+        //   console.log("role", role);
 
             next();
 
@@ -40,8 +53,28 @@ const isAuth = (req: RequestWithUserId, res: Response, next: NextFunction) => {
 }
 
 
+export const alllowTo = (...roles: string[]) => {
+     return (req: RequestWithUserId, res: Response, next: NextFunction) => {
+        // check if user is authorized
+        // return error if user is not authorized
+        // validate user role
+        // check if user is authorized
+        // return error if user is not authorized
+        try{
+            if(!roles.includes(req.role)){
+                next(new HTTP401Error('not alllow to access this route'));
+            }
+            next();
+        }catch(error){
+            next(error);
+        }
 
-export default isAuth;
+     }
+
+}
+
+
+// export default isAuth;
 
 // role based authorization
 // validate user role

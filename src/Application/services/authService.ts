@@ -12,6 +12,7 @@ import { inject, injectable } from 'inversify';
 import { INTERFACE_TYPE } from '@/helpers';
 import { hashCode } from '@/helpers/hashCode';
 import { IRoleRepository } from '../interfaces/User/IRoleRepository';
+import { Role } from '@/Domain/entities/role';
 
 
 
@@ -71,24 +72,28 @@ export class AuthService implements IAuthService {
        // 1- find user by email
         const user =  await this.userRepository.findByEmail(email);
 
-        // get user role 
-        // const role = await this.roleRepository.getRoleById(user.id);
-      //  3- return error if not found  // handle unit test 4
         if(!user){
             throw new Error('User not found');
         }
-
+        // create role to user
         
         // check password  // handle unit test 5
         if(!await comparePass(password, user.password)){
             throw new Error('Password is incorrect');
         }
 
+       
       //   console.log("userId", user.id);
+      // check on  it user exist roles or not
+    let role = await this.roleRepository.getRoleByUserId(user.id);
+
+     if(!role){
+          role= await this.roleRepository.createRole( new Role(user.id, 'user')); 
+     }
 
         
       //  4- generate token if exists       // handle unit test 6
-      const token =  generateToken({userId: (user.id)});
+      const token =  generateToken({userId: (user.id), role:role.name});
 
       return token;
         
