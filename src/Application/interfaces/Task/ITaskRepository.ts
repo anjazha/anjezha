@@ -7,4 +7,5 @@ export interface ITaskRepository {
     deleteTask(id: number) : Promise<boolean>;
     findAllTasks() : Promise<Task[]>;
     findTaskById(id: number) : Promise<Task | null>;
+    findTasksByUserId(userId: number) : Promise<Task[]>;
 }

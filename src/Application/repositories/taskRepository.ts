@@ -121,7 +121,7 @@ export class TaskRepository implements ITaskRepository {
 
     const client = await pgClient.connect();
     try {
-        // start the transaction
+      // start the transaction
       await client.query("BEGIN");
 
       const { rows } = await client.query(query);
@@ -129,21 +129,28 @@ export class TaskRepository implements ITaskRepository {
       if (task.schedule) {
         let scheduleQ = `INSERT INTO task_schedules (task_id, start_time, schedule_type, end_time) VALUES ($1, $2, $3, $4)`;
         await client.query(`DELETE FROM task_schedules WHERE task_id = ${id}`);
-        await client.query(scheduleQ, [id,task.schedule.start_time, task.schedule.schedule_type, task.schedule.end_time]);
+        await client.query(scheduleQ, [
+          id,
+          task.schedule.start_time,
+          task.schedule.schedule_type,
+          task.schedule.end_time,
+        ]);
       }
-      console.log(query)
+      console.log(query);
       if (task.status) {
         await client.query(
           `UPDATE task_statuses SET status = '${task.status}' WHERE task_id = ${id}`
         );
       }
-      if (task.skills?.length > 0) { 
+      if (task.skills?.length > 0) {
         await client.query(`DELETE FROM task_skills WHERE task_id = ${id}`);
         for (let key of task.skills) {
-        //   skillsQ += `${key} = '${task.skills[key]}', `;
-        await client.query(`INSERT INTO task_skills (task_id, name) VALUES ($1, $2)`, [id, key]);
+          //   skillsQ += `${key} = '${task.skills[key]}', `;
+          await client.query(
+            `INSERT INTO task_skills (task_id, name) VALUES ($1, $2)`,
+            [id, key]
+          );
         }
-        
       }
 
       if (task.attachments) {
@@ -151,7 +158,7 @@ export class TaskRepository implements ITaskRepository {
         const [error, data] = await safePromise(() =>
           client.query(`DELETE FROM task_attachments WHERE task_id = ${id}`)
         );
-        if(error) throw new Error(error)
+        if (error) throw new Error(error);
 
         task.attachments.forEach(
           async (attachment: {
@@ -275,9 +282,50 @@ GROUP BY
       throw new HTTP500Error("Error while fetching task " + error.message);
     }
   }
+
+  async findTasksByUserId(userId: number): Promise<Task[]> {
+    const [error, tasks] = await safePromise(() =>
+      pgClient.query(`
+        SELECT 
+            t.id,
+            t.user_id,
+            t.title,
+            t.description,
+            t.date,
+            t.budget,
+            t.longitude,
+            t.latitude,
+            t.address,
+            tc.name as category,
+            ARRAY_AGG(distinct ts.name) AS skills,  
+            ARRAY_AGG(distinct ta.file_path) AS attachmets ,
+            s.status,
+            sch.schedule_type,
+            sch.start_time,
+            sch.end_time
+        FROM 
+            tasks t
+        LEFT JOIN categories tc ON t.category_id = tc.id
+        LEFT JOIN 
+            task_skills ts ON t.id = ts.task_id
+        LEFT JOIN 
+            task_statuses s ON t.id = s.task_id
+        LEFT JOIN 
+            task_schedules sch ON t.id = sch.task_id
+        LEFT JOIN 
+            task_attachments ta ON t.id = ta.task_id
+        WHERE t.user_id = ${userId}
+        GROUP BY 
+            t.id, s.status, sch.schedule_type, sch.start_time, sch.end_time, tc.name;`)
+    );
+
+    if(error) throw new HTTP500Error("Error while fetching tasks " + error.message);
+
+    return tasks.rows;
+  }
 }
 
-// const repo = new TaskRepository(); 
+// const repo = new TaskRepository();
 
 // repo.createTask(5, {
 //     title: "Fix Leaky Faucet",

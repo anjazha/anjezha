@@ -33,4 +33,8 @@ export class TaskService implements ITaskService{
    async findTaskById(id: number): Promise<Task | null> {
         return this.taskRepository.findTaskById(id);
     }
+
+    async findTasksByUserId(userId: number): Promise<Task[]> {
+        return this.taskRepository.findTasksByUserId(userId);
+    }
 }
