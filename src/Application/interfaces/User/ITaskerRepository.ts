@@ -4,6 +4,8 @@ import { Tasker } from "@/Domain/entities/Tasker";
 export interface ITaskerRepository {
     createTasker(tasker: Tasker): Promise<Tasker>;
     getTaskerById(id: number): Promise<Tasker>;
+    getTaskerByUserId(userId: number): Promise<Tasker>;
+    getAllTaskers(): Promise<Tasker[]>;
     getTaskerByEmail?(email: string): Promise<Tasker>;
     getTaskerByPhoneNumber?(phoneNumber: string): Promise<Tasker>;
     getTaskerByLocation?(location: string): Promise<Tasker[]>;

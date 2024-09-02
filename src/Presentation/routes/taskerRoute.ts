@@ -7,6 +7,10 @@ import { ITaskerRepository } from "@/Application/interfaces/User/ITaskerReposito
 import { ITaskerService } from "@/Application/interfaces/User/ITaskerService";
 import { Router } from "express";
 import isAuth from "../middlewares/isAuth";
+import { IRoleRepository } from "@/Application/interfaces/User/IRoleRepository";
+import { RoleRepository } from "@/Application/repositories/roleRepository";
+import { IRoleService } from "@/Application/interfaces/User/IRoleService";
+import { RoleService } from "@/Application/services/roleService";
 
 
 const router = Router();
@@ -15,9 +19,16 @@ const container = new Container();
 
 container.bind<ITaskerRepository>(INTERFACE_TYPE.TaskerRepository).to(TaskerRepository);
 
+// resolve roelRepository with depencies injection
+container.bind<IRoleRepository>(INTERFACE_TYPE.RoleRepository).to(RoleRepository);
+
+
 container.bind<ITaskerService>(INTERFACE_TYPE.TaskerService).to(TaskerService);
 
+container.bind<IRoleService>(INTERFACE_TYPE.RoleService).to(RoleService);
+
 container.bind<TaskerController>(INTERFACE_TYPE.TaskerController).to(TaskerController);
+
 
 const taskerController = container.get<TaskerController>(INTERFACE_TYPE.TaskerController);
 
@@ -25,6 +36,7 @@ const taskerController = container.get<TaskerController>(INTERFACE_TYPE.TaskerCo
 router.post('/become-tasker', isAuth,  taskerController.addTasker.bind(taskerController));
 
 
+// alllow only user authenticate and become tasker 1-creat middlware
 router.get('/about-tasker', isAuth,  taskerController.getTasker.bind(taskerController));
 
 router.put('/update-tasker', isAuth, taskerController.updateTasker.bind(taskerController));

@@ -48,6 +48,40 @@ export class TaskerRepository implements ITaskerRepository {
         // }
     }
 
+
+    async getAllTaskers(): Promise<Tasker[]> {
+      
+        try {
+            const { rows } = await this.client.query('SELECT * FROM taskers');
+            return rows;
+        } catch (error) {
+            throw error;
+        } 
+        // finally {
+        //     this.client.release();
+        // }
+    }
+
+    async getTaskerByUserId(userId: number): Promise<Tasker> {
+        
+          try {
+                const query = 'SELECT * FROM taskers WHERE user_id = $1';
+                const values = [userId];
+                const { rows } = await this.client.query(query, values);
+                return rows[0];
+          } catch (error) {
+                throw error;
+          } 
+          // finally {
+          //     this.client.release();
+          // }
+     }
+
+
+     
+
+
+
     async updateTasker(tasker: Tasker): Promise<string> {
       
         try {
