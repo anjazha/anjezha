@@ -17,18 +17,16 @@ export const isAuth = (req: RequestWithUserId, res: Response, next: NextFunction
         4- Return error if user is not authorized
         5- Handle errors
         6- Write tests*/
-        
+
         try{
             const token = req.headers.authorization?.split(' ')[1];
-    
-            // console.log(token)
-
             if(!token){
-                return res.status(401).json({message: 'Unauthorized'});
+                // return res.status(401).json({message: 'Unauthorized'});
+                return next(new HTTP401Error());
             }
 
             // verify token
-            const decoded = verifyToken(token) as string | JwtPayload;
+            const decoded = verifyToken(token);
 
             // attach user to request object  // i am not can understand why show it error but it work
             const {userId, role} = (decoded as JwtPayload);
@@ -46,7 +44,9 @@ export const isAuth = (req: RequestWithUserId, res: Response, next: NextFunction
             next();
 
         }catch(error){
-              next(error);
+                // console.log(error);
+                //  res.status(401).json({message: 'Unauthorized'});
+                next(new HTTP401Error(error.message))
         }
 
 

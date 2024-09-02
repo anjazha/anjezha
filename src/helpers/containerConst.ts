@@ -14,6 +14,11 @@ export const INTERFACE_TYPE = {
     TaskerService: Symbol.for("TaskerService"),
     TaskerController: Symbol.for("TaskerController"),
     TaskerRoute: Symbol.for("TaskerRoute"),
+    
+    TaskRepository: Symbol.for("TaskRepository"),
+    TaskService: Symbol.for("TaskService"),
+    TaskController: Symbol.for("TaskController"),
+    TaskRoute : Symbol.for("TaskRoute"),
     // CategoryRepository: Symbol.for("CategoryRepository"),
     // CategoryService: Symbol.for("CategoryService"),
     // CategoryController: Symbol.for("CategoryController"),
