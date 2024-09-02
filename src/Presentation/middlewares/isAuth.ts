@@ -31,7 +31,7 @@ export const isAuth = (req: RequestWithUserId, res: Response, next: NextFunction
             const decoded = verifyToken(token) as string | JwtPayload;
 
             // attach user to request object  // i am not can understand why show it error but it work
-            const {userId, role} = decoded;
+            const {userId, role} = (decoded as JwtPayload);
 
             // const role = decoded.role;
 
