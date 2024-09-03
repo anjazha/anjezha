@@ -16,28 +16,31 @@ export class TaskerSkillService implements ITaskerSkillsService {
 
     async createSkill(taskerId:number, skill: string): Promise<any> {
 
+        console.log(taskerId, skill);
 
     try{
     // retrun data from the repository include id and skill
         const createskill = await this.skillsRepository.createSkill(skill);
 
+        console.log(createskill);
 
-        const { id } = createskill;
+        let {id } = createskill;
+
+          id = Number(id);
 
         // add to the tasker skill table
         await this.taskerSkillsRepository.addSkillToTasker(taskerId, id);
 
         return `skill ${skill} created`;
         }catch(err){
-           return err;
+           throw new Error(`Error creating skill ${err.message} ${err.stack}`);
         }
-
-    
 
     }
 
 
     async updateSkill(id:number, skill: string): Promise<any> {
+        console.log(id, skill);
         try{
            //  const {id} = await this.taskerSkillsRepository.findSkillsByTaskerId(taskerId);
 
@@ -45,7 +48,7 @@ export class TaskerSkillService implements ITaskerSkillsService {
 
             return updateskill;
         }catch(err){
-            return err;
+            throw new Error(`Error updating skill ${err.message} ${err.stack}`);
         }
     }
 
@@ -99,7 +102,6 @@ export class TaskerSkillService implements ITaskerSkillsService {
             return err;
         }
     }
-
 
     
 }

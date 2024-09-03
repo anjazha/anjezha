@@ -34,8 +34,10 @@ export class TaskerSkillController   {
     async updateSkill(req: RequestWithUserId, res: Response, next: NewableFunction): Promise<any> {
         try {
             const taskerId = Number(req.userId)
+        
             const { id } = req.params;
             const { skill } = req.body;
+
             if (!taskerId || !id || !skill) {
                 return next(new HTTP500Error('Tasker id, skill id and skill are required'));
             }
@@ -58,7 +60,7 @@ export class TaskerSkillController   {
 
             const deleteSkill = await this.taskerSkillsService.deleteSkill(Number(id));
 
-            return res.status(200).json(deleteSkill);
+            return res.status(200).json({message: 'skill is deleted'});
         } catch (error) {
             return next(error);
         }

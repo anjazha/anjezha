@@ -42,3 +42,5 @@ router.put('/update-skill/:id',isAuth, alllowTo('tasker'), taskerSkillController
 router.delete('/delete-skill/:id',isAuth, alllowTo('tasker'), taskerSkillController.deleteSkill.bind(taskerSkillController));
 
 router.get('/get-skills',isAuth, alllowTo('tasker'), taskerSkillController.getSkills.bind(taskerSkillController));
+
+export default router;

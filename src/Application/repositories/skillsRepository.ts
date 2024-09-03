@@ -18,12 +18,13 @@ export class SkillsRepository implements ISkillsRepository {
     async createSkill(skill: string): Promise<Skills> {
         // const { skill: skillName } = skill;
         const { rows } = await this.client.query(
-            `INSERT INTO skills (skill) VALUES ($1) RETURNING *`,
+            `INSERT INTO skills (name) VALUES ($1) RETURNING id, name`,
             [skill]
         );
 
-        const {id} = rows[0];
-        return new Skills(skill, id);
+        // const {id} = rows[0];
+        // return new Skills(skill, id);
+        return rows[0];
     }
 
     async getSkills(): Promise<Skills[]> {
@@ -31,7 +32,7 @@ export class SkillsRepository implements ISkillsRepository {
             `SELECT * FROM skills`
         );
 
-        return rows.map((skill: any) => new Skills(skill.skill, skill.id));
+        return rows.map((skill: any) => new Skills(skill.name, skill.id));
     }
 
 
@@ -42,12 +43,12 @@ export class SkillsRepository implements ISkillsRepository {
         );
 
         const skill = rows[0];
-        return new Skills(skill.skill, skill.id);
+        return new Skills(skill.name, skill.id);
     }
 
     async getSkillByName(skillName: string): Promise<Skills | null> {
         const {rows} = await this.client.query(
-            `SELECT * FROM skills WHERE skill = $1 returning *`,
+            `SELECT * FROM skills WHERE name = $1 returning *`,
             [skillName]
         );
 
@@ -56,16 +57,21 @@ export class SkillsRepository implements ISkillsRepository {
         if (!skill) {
             return null;
         }
-        return new Skills(skill.skill, skill.id);
+        return new Skills(skill.name, skill.id);
     }
 
     async updateSkill(skill: string, id:number): Promise<any> {
-        const {rows} = await this.client.query(
-            `UPDATE skills SET skill = $1 WHERE id = $2 returning *`,
-            [skill, id]
-        );
+      try{
 
-        return rows;
+          const {rows} = await this.client.query(
+              `UPDATE skills SET name = $1 WHERE id = $2 returning *`,
+              [skill, id]
+          );
+  
+          return rows;
+      } catch(err){
+        throw new Error(`Error updating skill ${err.message} ${err.stack}`);
+      }
     }
 
     async deleteSkill(id: number): Promise<any> {
