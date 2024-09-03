@@ -9,7 +9,7 @@ import { IUserRepository } from "../interfaces/User/IUserRepository";
 
 @injectable()
 export class UserRepository implements IUserRepository {
-  private client: Client;
+  private client: Pool;
   constructor() {
     //    this.pool = pgClient;
     this.client = pgClient;

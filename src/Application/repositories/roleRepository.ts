@@ -1,13 +1,13 @@
 import { Role } from "@/Domain/entities/role";
 import { pgClient } from "@/Infrastructure/database";
-import { Client } from "pg";
+import { Client, Pool } from "pg";
 import { IRoleRepository } from "../interfaces/User/IRoleRepository";
 import { injectable } from "inversify";
 
 
 @injectable()
 export class RoleRepository implements IRoleRepository {
-    client: Client;
+    client: Pool;
     constructor() {
         this.client = pgClient;
     }

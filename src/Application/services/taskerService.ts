@@ -2,9 +2,9 @@ import { injectable , inject} from "inversify";
 
 
 import { Tasker } from "@/Domain/entities/Tasker";
-import { ITaskerService } from "../interfaces/User/ITaskerService";
+import { ITaskerService } from "../interfaces/User/Tasker/ITaskerService";
 import { INTERFACE_TYPE } from "@/helpers/containerConst";
-import { ITaskerRepository } from "../interfaces/User/ITaskerRepository";
+import { ITaskerRepository } from "../interfaces/User/Tasker/ITaskerRepository";
 import { IRoleRepository } from "../interfaces/User/IRoleRepository";
 import { Role } from "@/Domain/entities/role";
 import { generateToken } from "@/helpers/tokenHelpers";

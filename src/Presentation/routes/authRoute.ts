@@ -2,7 +2,7 @@ import { Router } from "express";
 import { Container } from "inversify";
 
 
-import { IAuthService } from "@/Application/interfaces/User/IAuthService";
+import { IAuthService } from "@/Application/interfaces/User/Auth/IAuthService";
 import { IUserRepository } from "@/Application/interfaces/User/IUserRepository";
 import { UserRepository } from "@/Application/repositories/userRepository";
 import { AuthService } from "@/Application/services/authService";

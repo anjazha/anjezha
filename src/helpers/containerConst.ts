@@ -19,18 +19,8 @@ export const INTERFACE_TYPE = {
     TaskService: Symbol.for("TaskService"),
     TaskController: Symbol.for("TaskController"),
     TaskRoute : Symbol.for("TaskRoute"),
-    // CategoryRepository: Symbol.for("CategoryRepository"),
-    // CategoryService: Symbol.for("CategoryService"),
-    // CategoryController: Symbol.for("CategoryController"),
-    // CategoryRoute: Symbol.for("CategoryRoute"),
-    // SkillRepository: Symbol.for("SkillRepository"),
-    // SkillService: Symbol.for("SkillService"),
-    // SkillController: Symbol.for("SkillController"),
-    // SkillRoute: Symbol.for("SkillRoute"),
-    // TaskRepository: Symbol.for("TaskRepository"),
-    // TaskService: Symbol.for("TaskService"),
-    // TaskController: Symbol.for("TaskController"),
-    // TaskRoute: Symbol.for("TaskRoute"),
+   
+
     ProfileService: Symbol.for("ProfileService"),
     ProfileController: Symbol.for("ProfileController"),
     ProfileRoute: Symbol.for("ProfileRoute"),
@@ -40,6 +30,18 @@ export const INTERFACE_TYPE = {
     RoleRoute: Symbol.for("RoleRoute"),
     RoleRepository: Symbol.for("RoleRepository"),
     
+    
+    // skills symbol
+    SkillsRepository: Symbol.for("SkillsRepository"),
+    SkillsService: Symbol.for("SkillsService"),
+    SkillsController: Symbol.for("SkillsController"),
+    SkillsRoute: Symbol.for("SkillsRoute"),
+    TaskerSkillsRepository: Symbol.for("TaskerSkillsRepository"),
+    TaskerSkillsService: Symbol.for("TaskerSkillsService"),
+    TaskerSkillsController: Symbol.for("TaskerSkillsController"),
+    TaskerSkillsRoute: Symbol.for("TaskerSkillsRoute"),
+
+
     
     App: Symbol.for("App"),
     User: Symbol.for("User"),
