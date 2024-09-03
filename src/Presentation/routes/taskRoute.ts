@@ -7,7 +7,7 @@ import { Router } from "express";
 import { Container } from "inversify";
 import { TaskController } from "../controllers/taskController";
 import { createTaskValidations, updateTaskValidations } from "@/helpers/validate/taskValidate";
-import isAuth from "../middlewares/isAuth";
+import {isAuth} from "../middlewares/isAuth";
 
 
 const container = new Container();
