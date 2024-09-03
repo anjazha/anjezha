@@ -42,6 +42,28 @@ export const INTERFACE_TYPE = {
     TaskerSkillsRoute: Symbol.for("TaskerSkillsRoute"),
 
 
+    // category symbol
+    CategoryRepository: Symbol.for("CategoryRepository"),
+    CategoryService: Symbol.for("CategoryService"),
+    CategoryController: Symbol.for("CategoryController"),
+    CategoryRoute: Symbol.for("CategoryRoute"),
+
+    // subcategory symbol
+    SubCategoryRepository: Symbol.for("SubCategoryRepository"),
+    SubCategoryService: Symbol.for("SubCategoryService"),
+    SubCategoryController: Symbol.for("SubCategoryController"),
+    SubCategoryRoute: Symbol.for("SubCategoryRoute"),
+
+    // assign task symbol
+    AssignTaskRepository: Symbol.for("AssignTaskRepository"),
+    AssignTaskService: Symbol.for("AssignTaskService"),
+    AssignTaskController: Symbol.for("AssignTaskController"),
+    AssignTaskRoute: Symbol.for("AssignTaskRoute"),
+
+    
+
+
+
     
     App: Symbol.for("App"),
     User: Symbol.for("User"),
