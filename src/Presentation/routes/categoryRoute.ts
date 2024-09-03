@@ -37,7 +37,7 @@ categoryRoute.route('/category')
 
 categoryRoute.route('/category/:id')
 .get( categoryController.getCategoryById.bind(categoryController))
-.post( categoryController.getCategoryById.bind(categoryController))
+.put( categoryController.updateCategory.bind(categoryController))
 .delete( categoryController.deleteCategory.bind(categoryController));
 
 
