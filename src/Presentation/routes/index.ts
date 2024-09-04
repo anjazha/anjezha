@@ -5,6 +5,7 @@ import taskerRouter from './taskerRoute';
 import taskRouter from './taskRoute'
 import taskerSkillRouter from './taskerSkillRoute';
 import categoryRoute from './categoryRoute';
+import subcategoryRoute from './subcategoryRoute';
 // Ensure this matches the actual file name
 
-export { userRouter, authRouter, profileRouter, taskerRouter, taskRouter, taskerSkillRouter, categoryRoute};
+export { userRouter, authRouter, profileRouter, taskerRouter, taskRouter, taskerSkillRouter, categoryRoute, subcategoryRoute};

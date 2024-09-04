@@ -36,6 +36,7 @@ export const isAuth = (req: RequestWithUserId, res: Response, next: NextFunction
             req.userId =  Number(userId);
 
             req.role = role;
+            console.log("req.role", req.role);
 
         //     // create role by default to user 
         //   const role = await this.roleRepository.createRole({name: 'user', userId: userId});
@@ -67,6 +68,7 @@ export const alllowTo = (...roles: string[]) => {
             if(!roles.includes(req.role)){
                 next(new HTTP401Error('not alllow to access this route'));
             }
+            
             console.log(true, 'allow to access this route');
 
             next();
