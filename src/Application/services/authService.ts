@@ -33,14 +33,14 @@ export class AuthService implements IAuthService {
                     6- Refactor code
                     7- handle confirm password in express validaator 
                     */
-        try{
+    try{
         const {email, password} = user; 
 
        
         //  1- Check if user exists 
         const userExist = await this.userRepository.findByEmail(email);
 
-        console.log("userexist" , userExist);
+        // console.log("userexist" , userExist);
 
        // return error if exists  1- handle unit test 1
         if(userExist){
@@ -93,11 +93,11 @@ export class AuthService implements IAuthService {
       // check on  it user exist roles or not
        let role = await this.roleRepository.getRoleByUserId(user.id);
 
+    //    console.log()
+
     //    console.log("role", role);
 
-    //  if(!role){
-    //       role= await this.roleRepository.createRole( new Role(user.id, 'user')); 
-    //  }
+   
 
         
       //  4- generate token if exists       // handle unit test 6
