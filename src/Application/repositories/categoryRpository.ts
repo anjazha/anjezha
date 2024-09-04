@@ -11,7 +11,7 @@ export class CategoryRepository implements ICategoryRepository{
     private client: Client | Pool;
      constructor(){
         this.client = pgClient;
-     }
+     }  
 
     async createCategory(category: string): Promise<Category> {
       try{

@@ -12,8 +12,8 @@ export  class SubCategoryController {
 
     async createSubCategory(req: Request, res: Response, next: NewableFunction) {
         try {
-            const { subCategory, categoryId } = req.body;
-            const newSubCategory = await this.subCategoryService.createSubCategory(subCategory, categoryId);
+            const { subcategory, categoryId } = req.body;
+            const newSubCategory = await this.subCategoryService.createSubCategory(subcategory, categoryId);
             return res.status(201).json({
                 status: "success",
                 data: newSubCategory
@@ -78,8 +78,8 @@ export  class SubCategoryController {
     async updateSubCategory(req: Request, res: Response, next: NewableFunction) {
             try {
                 const { id } = req.params;
-                const { subCategory } = req.body;
-                const updatedSubCategory = await this.subCategoryService.updateSubCategory(subCategory, Number(id));
+                const { subcategory } = req.body;
+                const updatedSubCategory = await this.subCategoryService.updateSubCategory(subcategory, Number(id));
                 return res.status(200).json({
                     status: "success",
                     data: updatedSubCategory
