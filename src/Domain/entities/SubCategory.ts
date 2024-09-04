@@ -3,7 +3,7 @@
 export class SubCategory {
 
     constructor(
-        public name: string,
+        public subcategory: string,
         public categoryId: number,
         public id?: number,
     ) { }

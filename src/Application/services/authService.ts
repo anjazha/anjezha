@@ -70,7 +70,8 @@ export class AuthService implements IAuthService {
          }
     }
 
-    async login(email: string, password: string): Promise<string> {        /* 1- find user by email
+    async login(email: string, password: string): Promise<string> {
+        /* 1- find user by email
            2- checks email not found or not 
            3- return error if not found
            4- generate token if exists         
