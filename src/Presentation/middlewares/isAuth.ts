@@ -55,15 +55,20 @@ export const isAuth = (req: RequestWithUserId, res: Response, next: NextFunction
 
 export const alllowTo = (...roles: string[]) => {
      return (req: RequestWithUserId, res: Response, next: NextFunction) => {
+        console.log("roles", roles);
+        console.log("req.role", req.role);
         // check if user is authorized
         // return error if user is not authorized
         // validate user role
         // check if user is authorized
         // return error if user is not authorized
         try{
+
             if(!roles.includes(req.role)){
                 next(new HTTP401Error('not alllow to access this route'));
             }
+            console.log(true, 'allow to access this route');
+
             next();
         }catch(error){
             next(error);

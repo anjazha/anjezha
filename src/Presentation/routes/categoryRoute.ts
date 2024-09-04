@@ -29,16 +29,16 @@ const categoryController = container.get<CategoryController>(INTERFACE_TYPE.Cate
 
 
 
-categoryRoute.use(isAuth,alllowTo('manger, admin'));
+// categoryRoute.use(isAuth,alllowTo('manager', 'admin'));
 
 categoryRoute.route('/category')
-.post( categoryController.createCategory.bind(categoryController))
-.get( categoryController.getCategories.bind(categoryController));
+.post(isAuth, alllowTo('admin'), categoryController.createCategory.bind(categoryController))
+.get(isAuth, alllowTo('admin'), categoryController.getCategories.bind(categoryController));
 
 categoryRoute.route('/category/:id')
-.get( categoryController.getCategoryById.bind(categoryController))
-.put( categoryController.updateCategory.bind(categoryController))
-.delete( categoryController.deleteCategory.bind(categoryController));
+.get( isAuth, alllowTo('admin'),  categoryController.getCategoryById.bind(categoryController))
+.put( isAuth, alllowTo('admin'),  categoryController.updateCategory.bind(categoryController))
+.delete(isAuth, alllowTo('admin'), categoryController.deleteCategory.bind(categoryController));
 
 
 
