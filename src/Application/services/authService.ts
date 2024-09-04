@@ -53,7 +53,14 @@ export class AuthService implements IAuthService {
          // create user  // handle unit test 3
            const data = await this.userRepository.create(user);
 
-          
+        //    console.log("data", data);
+
+           // create role to user
+           let role = await this.roleRepository.getRoleByUserId(data.id);
+
+            if(!role){
+                 role= await this.roleRepository.createRole( new Role(data.id, 'user')); 
+            }
 
         // return data to controller
           return data;
@@ -63,7 +70,7 @@ export class AuthService implements IAuthService {
          }
     }
 
-    async login(email: string, password: string): Promise<string> {
+    async login(email: string, password: string): Promise<string> {g
         /* 1- find user by email
            2- checks email not found or not 
            3- return error if not found
@@ -85,11 +92,13 @@ export class AuthService implements IAuthService {
        
       //   console.log("userId", user.id);
       // check on  it user exist roles or not
-    let role = await this.roleRepository.getRoleByUserId(user.id);
+       let role = await this.roleRepository.getRoleByUserId(user.id);
 
-     if(!role){
-          role= await this.roleRepository.createRole( new Role(user.id, 'user')); 
-     }
+    //    console.log("role", role);
+
+    //  if(!role){
+    //       role= await this.roleRepository.createRole( new Role(user.id, 'user')); 
+    //  }
 
         
       //  4- generate token if exists       // handle unit test 6
