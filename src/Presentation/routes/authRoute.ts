@@ -2,7 +2,6 @@ import { Router } from "express";
 import { Container } from "inversify";
 
 
-import { IAuthService } from "@/Application/interfaces/User/Auth/IAuthService";
 import { IUserRepository } from "@/Application/interfaces/User/IUserRepository";
 import { UserRepository } from "@/Application/repositories/userRepository";
 import { AuthService } from "@/Application/services/authService";
@@ -10,6 +9,7 @@ import { INTERFACE_TYPE } from "@/helpers";
 import { AuthController } from "../controllers/authController";
 import { IRoleRepository } from "@/Application/interfaces/User/IRoleRepository";
 import { RoleRepository } from "@/Application/repositories/roleRepository";
+import { IAuthService } from "@/Application/interfaces/User/IAuthService";
 
 
 const router = Router();
