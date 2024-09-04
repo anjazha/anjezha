@@ -54,6 +54,12 @@ export const INTERFACE_TYPE = {
     SubCategoryController: Symbol.for("SubCategoryController"),
     SubCategoryRoute: Symbol.for("SubCategoryRoute"),
 
+    // review symbol
+    ReviewRepository: Symbol.for("ReviewRepository"),
+    ReviewService: Symbol.for("ReviewService"),
+    ReviewController: Symbol.for("ReviewController"),
+    ReviewRoute: Symbol.for("ReviewRoute"),
+
     // assign task symbol
     AssignTaskRepository: Symbol.for("AssignTaskRepository"),
     AssignTaskService: Symbol.for("AssignTaskService"),
