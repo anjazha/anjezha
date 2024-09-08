@@ -4,6 +4,7 @@ import { connectDB, pgClient } from "@/Infrastructure/database";
 import { safePromise } from "@/helpers/safePromise";
 import { Task } from "@/Domain/entities/Task";
 import { HTTP400Error, HTTP500Error } from "@/helpers/ApiError";
+import { faker } from "@faker-js/faker";
 
 @injectable()
 export class TaskRepository implements ITaskRepository {
@@ -319,9 +320,108 @@ GROUP BY
             t.id, s.status, sch.schedule_type, sch.start_time, sch.end_time, tc.name;`)
     );
 
-    if(error) throw new HTTP500Error("Error while fetching tasks " + error.message);
+    if (error)
+      throw new HTTP500Error("Error while fetching tasks " + error.message);
 
     return tasks.rows;
+  }
+
+  async search(
+    q: string,
+    filters: {
+      minBudget?: number;
+      maxBudget?: number;
+      government?: string;
+      status?: string;
+      skills?: string[];
+      page:number,
+      limit:number
+    },
+    sortBy: string,
+  ): Promise<Task[]> {
+    let searchQ = `
+        SELECT 
+            t.id,
+            t.user_id,
+            t.title,
+            t.description,
+            t.date,
+            t.budget,
+            t.longitude,
+            t.latitude,
+            t.address,
+            tc.category as category,
+            ARRAY_AGG(distinct ts.name) AS skills,  
+            s.status,
+            sch.schedule_type,
+            sch.start_time,
+            sch.end_time
+            ${
+              sortBy === "relevance"
+                ? `,ts_rank(to_tsvector('arabic',title || ' ' || description ), plainto_tsquery('arabic', $1)) AS rank `
+                : ""
+            }
+            ,COUNT(t.id) OVER() AS total_count
+        FROM 
+            tasks t
+        LEFT JOIN 
+            categories tc ON t.category_id = tc.id
+        LEFT JOIN 
+            task_skills ts ON t.id = ts.task_id
+        LEFT JOIN 
+            task_statuses s ON t.id = s.task_id
+        LEFT JOIN 
+            task_schedules sch ON t.id = sch.task_id
+        WHERE 
+            title || ' ' || description @@ to_tsquery($1)
+    `;
+
+    const queryParams: any[] = [q];
+
+    // Add dynamic filters
+    if (filters?.minBudget !== undefined && filters.minBudget > 0) {
+      searchQ += ` AND t.budget >= $${queryParams.length + 1}`;
+      queryParams.push(filters.minBudget);
+    }
+
+    if (filters?.maxBudget !== undefined && filters.maxBudget < 1000000) {
+      searchQ += ` AND t.budget <= $${queryParams.length + 1}`;
+      queryParams.push(filters.maxBudget);
+    }
+
+    if (filters?.government) {
+      searchQ += ` AND t.government = $${queryParams.length + 1}`;
+      queryParams.push(filters.government);
+    }
+
+    if (filters?.status) {
+      searchQ += ` AND s.status = $${queryParams.length + 1}`;
+      queryParams.push(filters.status);
+    }
+
+    searchQ += ` GROUP BY t.id, tc.category, s.status, sch.schedule_type, sch.start_time, sch.end_time`;
+
+    if (filters?.skills && filters.skills.length > 0) {
+      searchQ += ` HAVING ARRAY_AGG(DISTINCT LOWER(ts.name))::TEXT[] && LOWER($${
+        queryParams.length + 1
+      })::TEXT[]`;
+      queryParams.push(filters.skills);
+    }
+
+    searchQ += ` ORDER BY ${
+      sortBy === "relevance" ? " rank DESC" : `t.${sortBy} DESC`
+    }`;
+    searchQ += ` OFFSET ${filters.limit * (filters.page - 1)} LIMIT ${
+      filters.limit
+    }`;
+    // console.log(searchQ);
+
+    const [error, data] = await safePromise(() =>
+      pgClient.query(searchQ, queryParams)
+    );
+    // console.log(error, data);
+    if (error) throw new HTTP500Error(error.message);
+    return data.rows;
   }
 }
 
@@ -342,3 +442,58 @@ GROUP BY
 // }).catch((error) => {
 //     console.log(error);
 // })
+
+// Generate a single task with random data
+// const generateTask = () => {
+//     return {
+//       userId: 8,
+//       title: faker.company.catchPhrase(),
+//       description: faker.lorem.sentences(3),
+//       date: '2024-08-27',
+//       budget: faker.finance.amount({min:100, max:1000}),
+//       location: {
+//           longitude: faker.location.longitude(),
+//           latitude: faker.location.latitude(),
+//       },
+//       address: faker.location.streetAddress(),
+//       category_id: 3,
+//       skills: faker.helpers.arrayElements(
+//           ['سباكه', 'نجاره', 'حداده', 'نقاشه', 'محاره'],
+//           faker.number.int({ min: 1, max: 3 })
+//       ),
+//       schedule: {
+//           start_time: '11:00:00',
+//           schedule_type: faker.helpers.arrayElement(['Full-Time', 'Part-Time', 'Flexible']),
+//           end_time: '13:00:00',
+//       },
+//       attachments: [
+//           {
+//               file_type: 'pdf',
+//               file_path: faker.system.filePath(),
+//               file_size: faker.number.int({ min: 100, max: 10000 }),
+//           },]
+// };
+// }
+// // Generate multiple tasks
+// const generateTasks = (count) => {
+//     const tasks = [];
+//     for (let i = 0; i < count; i++) {
+//         tasks.push(generateTask());
+//     }
+//     return tasks;
+// };
+
+// // Example usage
+// (async () => {
+//     const tasks = generateTasks(100);
+//     let c = 0;
+//     for (let task of tasks) {
+//         try {
+//             await new TaskRepository().createTask(task); // Assuming createTask is your method
+//             console.log("done : " + ++c)
+//         } catch (error) {
+//             console.error('Failed to create task:', error.message);
+//         }
+//     }
+//     console.log('All tasks generated and inserted successfully!');
+// })();

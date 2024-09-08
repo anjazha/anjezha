@@ -55,7 +55,7 @@ const uploadToCloudinary =
           });
         }
         // console.log(attachments);
-        req.body.attachments = attachments;
+      req.body.attachments = attachments;
       }
     }
       next();

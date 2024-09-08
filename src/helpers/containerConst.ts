@@ -40,7 +40,11 @@ export const INTERFACE_TYPE = {
     RoleRoute: Symbol.for("RoleRoute"),
     RoleRepository: Symbol.for("RoleRepository"),
     
-    
+    SearchRepository: Symbol.for("SearchRepository"),
+    SearchService: Symbol.for("SearchService"),
+    SearchController: Symbol.for("SearchController"),
+    SearchRoute: Symbol.for("SearchRoute"),
+
     App: Symbol.for("App"),
     User: Symbol.for("User"),
   };
