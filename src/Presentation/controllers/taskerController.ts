@@ -1,4 +1,4 @@
-import { ITaskerService } from "@/Application/interfaces/User/ITaskerService";
+import { ITaskerService } from "@/Application/interfaces/User/Tasker/ITaskerService";
 import { TaskerService } from "@/Application/services/taskerService";
 import { Tasker } from "@/Domain/entities/Tasker";
 import { INTERFACE_TYPE } from "@/helpers";
@@ -6,6 +6,8 @@ import { inject, injectable } from "inversify";
 
 import { Request, Response, NextFunction } from "express";
 import RequestWithUserId from "@/Application/interfaces/Request";
+import { IRoleService } from "@/Application/interfaces/User/IRoleService";
+import { Role } from "@/Domain/entities/role";
 
 
 @injectable()
@@ -15,13 +17,22 @@ export class TaskerController {
         @inject(INTERFACE_TYPE.TaskerService) private taskerService: ITaskerService
     ) {}
 
-    public async addTasker(req: RequestWith, res: Response, next:NextFunction) {
+    public async addTasker(req: RequestWithUserId, res: Response, next:NextFunction) {
         try {
+          
+            const userId = Number(req.userId);
             const taskerBody = req.body;
-            taskerBody.userId = req.userId;
+            taskerBody.userId = userId;
             const tasker = new Tasker(taskerBody.userId, taskerBody.bio, taskerBody.pricing, taskerBody.longitude, taskerBody.latitude, taskerBody.categoryId, taskerBody.biding);
 
-            const newTasker = await this.taskerService.createTasker(tasker);
+            const data = await this.taskerService.createTasker(tasker);
+
+            const newTasker = await data.tasker;
+
+            //   console.log(newTasker);
+
+             req.role= await data.role;
+            //  console.log(data.role);
             res.status(201).json(newTasker);
         } catch (error) {
              next(error);
@@ -49,7 +60,7 @@ export class TaskerController {
 
     public async updateTasker(req: RequestWithUserId, res: Response, next:NextFunction) {
         try {
-            const id = parseInt(req.userId);
+            const id = Number(req.userId);
             const tasker = req.body;
             tasker.id = id;
             const updateTasker = await this.taskerService.updateTasker(tasker);
@@ -61,7 +72,7 @@ export class TaskerController {
 
     public async deleteTasker(req: RequestWithUserId, res: Response, next:NextFunction) {
         try {
-            const id = parseInt(req.userId);
+            const id = Number(req.userId);
             await this.taskerService.deleteTasker(id);
             res.status(200).json({ message: "Tasker deleted successfully" });
         } catch (error) {
