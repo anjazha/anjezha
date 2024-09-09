@@ -23,6 +23,8 @@ export class TaskController {
     res: Response,
     next: NextFunction
   ): Promise<any> {
+
+    console.log(req.attachments);
     const {
       title,
       description,
@@ -34,6 +36,7 @@ export class TaskController {
       category_id,
       schedule,
       skills,
+      attachments
     } = req.body;
     const task = new Task(
       +req.userId,
@@ -46,7 +49,7 @@ export class TaskController {
       status,
       category_id,
       schedule,
-      [],
+      attachments,
       skills
     );
     try {
@@ -144,4 +147,28 @@ export class TaskController {
     }
     res.status(200).json(apiResponse({ task: updatedTask }));
   }
+
+  // It will be implemented in api features (filter and sort)
+
+  // async getTasksByUserId(req: Request, res: Response, next: NextFunction) {
+  //   const { user } = req.query;
+  //   const [error, tasks] = await safePromise(() =>
+  //     this.taskService.findTasksByUserId(+user)
+  //   );
+  //   if (error) {
+  //     return next(new HTTP500Error(error.message));
+  //   }
+  //   res.status(200).json(apiResponse({ tasks }));
+  // }
+
+  // async recommendTasks(req: Request, res: Response, next: NextFunction) {
+  //   const { taskId } = req.params;
+  //   const [error, tasks] = await safePromise(() =>
+  //     this.taskService.recommendTasks(+taskId)
+  //   );
+  //   if (error) {
+  //     return next(new HTTP500Error(error.message));
+  //   }
+  //   res.status(200).json(apiResponse({ tasks }));
+  // }
 }
