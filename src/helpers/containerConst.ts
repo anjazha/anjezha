@@ -45,6 +45,11 @@ export const INTERFACE_TYPE = {
     SearchController: Symbol.for("SearchController"),
     SearchRoute: Symbol.for("SearchRoute"),
 
+    TaskAssignmentRepository: Symbol.for("TaskAssignmentRepository"),
+    TaskAssignmentService: Symbol.for("TaskAssignmentService"),
+    TaskAssignmentController: Symbol.for("TaskAssignmentController"),
+    TaskAssignmentRoute: Symbol.for("TaskAssignmentRoute"),
+
     App: Symbol.for("App"),
     User: Symbol.for("User"),
   };

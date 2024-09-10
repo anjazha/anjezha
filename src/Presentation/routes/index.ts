@@ -4,6 +4,7 @@ import profileRouter from './profileroute';
 import taskerRouter from './taskerRoute'; 
 import taskRouter from './taskRoute'
 import searchRouter from './searchRoute';
+import taskAssignmentRouter from './taskAssignmentRoute';
 // Ensure this matches the actual file name
 
-export { userRouter, authRouter, profileRouter, taskerRouter, taskRouter, searchRouter};
+export { userRouter, authRouter, profileRouter, taskerRouter, taskRouter, searchRouter, taskAssignmentRouter};
