@@ -35,6 +35,7 @@ export const INTERFACE_TYPE = {
     ProfileController: Symbol.for("ProfileController"),
     ProfileRoute: Symbol.for("ProfileRoute"),
     ProfileRepository: Symbol.for("ProfileRepository"),
+    
     RoleService: Symbol.for("RoleService"),
     RoleController: Symbol.for("RoleController"),
     RoleRoute: Symbol.for("RoleRoute"),
@@ -49,6 +50,11 @@ export const INTERFACE_TYPE = {
     TaskAssignmentService: Symbol.for("TaskAssignmentService"),
     TaskAssignmentController: Symbol.for("TaskAssignmentController"),
     TaskAssignmentRoute: Symbol.for("TaskAssignmentRoute"),
+
+    TaskApplicationRepository: Symbol.for("TaskApplicationRepository"),
+    TaskApplicationService: Symbol.for("TaskApplicationService"),
+    TaskApplicationController: Symbol.for("TaskApplicationController"),
+    TaskApplicationRoute: Symbol.for("TaskApplicationRoute"),
 
     App: Symbol.for("App"),
     User: Symbol.for("User"),

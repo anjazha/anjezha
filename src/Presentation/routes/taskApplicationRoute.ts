@@ -1,0 +1,24 @@
+import { ITaskApplicationRepository } from "@/Application/interfaces/TaskApplication/ITaskApplicationRepository"
+import { ITaskApplicationService } from "@/Application/interfaces/TaskApplication/ITaskApplicationService"
+import { TaskApplicationRepository } from "@/Application/repositories/taskApplicationRepository"
+import { TaskApplicationService } from "@/Application/services/taskApplicationService"
+import { INTERFACE_TYPE } from "@/helpers"
+import {Router} from "express"
+import { Container } from "inversify"
+import { TaskApplicationController } from "../controllers/taskAppliationController"
+
+const router = Router()
+
+const container = new Container()
+
+container.bind<ITaskApplicationRepository>(INTERFACE_TYPE.TaskApplicationRepository).to(TaskApplicationRepository)
+container.bind<ITaskApplicationService>(INTERFACE_TYPE.TaskApplicationService).to(TaskApplicationService)
+container.bind<TaskApplicationController>(INTERFACE_TYPE.TaskApplicationController).to(TaskApplicationController)
+
+const taskAppliationController = container.get<TaskApplicationController>(INTERFACE_TYPE.TaskApplicationController)
+router.post("/task-application", taskAppliationController.apply.bind(taskAppliationController))
+router.get('/task-application/:taskId', taskAppliationController.getApplications.bind(taskAppliationController))
+router.get('/task-application/tasker/:taskerId', taskAppliationController.getApplicationsByTaskerId.bind(taskAppliationController))
+
+
+export default router

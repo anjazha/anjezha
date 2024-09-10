@@ -8,6 +8,7 @@ import {
   taskRouter,
   searchRouter,
   taskAssignmentRouter,
+  taskApplicationRouter
 } from "./Presentation/routes";
 
 const app = new App([
@@ -18,6 +19,7 @@ const app = new App([
   taskRouter,
   searchRouter,
   taskAssignmentRouter,
+  taskApplicationRouter
 ]);
 
 app.listen();
