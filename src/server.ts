@@ -1,26 +1,13 @@
 import "reflect-metadata";
-import { App } from "./app";
-import {
-  userRouter,
-  authRouter,
-  profileRouter,
-  taskerRouter,
-  taskRouter,
-  searchRouter,
-  taskAssignmentRouter,
-} from "./Presentation/routes";
 
-const app = new App([
-  userRouter,
-  authRouter,
-  profileRouter,
-  taskerRouter,
-  taskRouter,
-  searchRouter,
-  taskAssignmentRouter,
-]);
+import { App } from "./app"
+;
+import {userRouter, authRouter, profileRouter, taskerRouter, taskRouter, taskerSkillRouter, categoryRoute, subcategoryRoute,   searchRouter, taskAssignmentRouter} from "./Presentation/routes";
 
-app.listen();
+
+const app = new App([userRouter, authRouter, profileRouter, taskerRouter, taskRouter, taskerSkillRouter, categoryRoute, subcategoryRoute, searchRouter, taskAssignmentRouter ]);
+
+app.listen()
 
 // import { UserRoute } from "./Presentation/routes/userRoute";
 

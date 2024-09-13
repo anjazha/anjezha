@@ -19,18 +19,8 @@ export const INTERFACE_TYPE = {
     TaskService: Symbol.for("TaskService"),
     TaskController: Symbol.for("TaskController"),
     TaskRoute : Symbol.for("TaskRoute"),
-    // CategoryRepository: Symbol.for("CategoryRepository"),
-    // CategoryService: Symbol.for("CategoryService"),
-    // CategoryController: Symbol.for("CategoryController"),
-    // CategoryRoute: Symbol.for("CategoryRoute"),
-    // SkillRepository: Symbol.for("SkillRepository"),
-    // SkillService: Symbol.for("SkillService"),
-    // SkillController: Symbol.for("SkillController"),
-    // SkillRoute: Symbol.for("SkillRoute"),
-    // TaskRepository: Symbol.for("TaskRepository"),
-    // TaskService: Symbol.for("TaskService"),
-    // TaskController: Symbol.for("TaskController"),
-    // TaskRoute: Symbol.for("TaskRoute"),
+   
+
     ProfileService: Symbol.for("ProfileService"),
     ProfileController: Symbol.for("ProfileController"),
     ProfileRoute: Symbol.for("ProfileRoute"),
@@ -50,6 +40,37 @@ export const INTERFACE_TYPE = {
     TaskAssignmentController: Symbol.for("TaskAssignmentController"),
     TaskAssignmentRoute: Symbol.for("TaskAssignmentRoute"),
 
+    
+    // skills symbol
+    SkillsRepository: Symbol.for("SkillsRepository"),
+    SkillsService: Symbol.for("SkillsService"),
+    SkillsController: Symbol.for("SkillsController"),
+    SkillsRoute: Symbol.for("SkillsRoute"),
+    TaskerSkillsRepository: Symbol.for("TaskerSkillsRepository"),
+    TaskerSkillsService: Symbol.for("TaskerSkillsService"),
+    TaskerSkillsController: Symbol.for("TaskerSkillsController"),
+    TaskerSkillsRoute: Symbol.for("TaskerSkillsRoute"),
+
+
+    // category symbol
+    CategoryRepository: Symbol.for("CategoryRepository"),
+    CategoryService: Symbol.for("CategoryService"),
+    CategoryController: Symbol.for("CategoryController"),
+    CategoryRoute: Symbol.for("CategoryRoute"),
+
+    // subcategory symbol
+    SubCategoryRepository: Symbol.for("SubCategoryRepository"),
+    SubCategoryService: Symbol.for("SubCategoryService"),
+    SubCategoryController: Symbol.for("SubCategoryController"),
+    SubCategoryRoute: Symbol.for("SubCategoryRoute"),
+
+    // assign task symbol
+    AssignTaskRepository: Symbol.for("AssignTaskRepository"),
+    AssignTaskService: Symbol.for("AssignTaskService"),
+    AssignTaskController: Symbol.for("AssignTaskController"),
+    AssignTaskRoute: Symbol.for("AssignTaskRoute"),
+
+    
     App: Symbol.for("App"),
     User: Symbol.for("User"),
   };

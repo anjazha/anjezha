@@ -1,3 +1,4 @@
 export interface RequestWithUserId extends Request {
-    userId?: string;
+    userId?: string|number;
+    role?: string;
 }
