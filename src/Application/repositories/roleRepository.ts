@@ -1,13 +1,13 @@
 import { Role } from "@/Domain/entities/role";
 import { pgClient } from "@/Infrastructure/database";
-import { Client } from "pg";
+import { Client, Pool } from "pg";
 import { IRoleRepository } from "../interfaces/User/IRoleRepository";
 import { injectable } from "inversify";
 
 
 @injectable()
 export class RoleRepository implements IRoleRepository {
-    client: Client;
+    client: Pool;
     constructor() {
         this.client = pgClient;
     }
@@ -41,21 +41,21 @@ export class RoleRepository implements IRoleRepository {
 
     async createRole(role: Role): Promise<Role> {
         try {
-            const { rows } = await this.client.query("INSERT INTO roles(name) VALUES($1) RETURNING *", [role.name]);
+            const { rows } = await this.client.query("INSERT INTO roles(user_id, name) VALUES($1, $2) RETURNING *", [role.userId, role.name]);
             return rows[0];
         } catch (error) {
             throw new Error(error.message);
         }
     }
 
-    async updateRole(role: Role): Promise<string> {
+    async updateRole(role: Role): Promise<Role> {
         try {
             // update query to update the role
-            await this.client.query(
-                "UPDATE roles SET user_id=$1, SET name=$2 WHERE id=$3 RETURNING *", 
-                [role.name,role.userId, role.id]);
+           const res= await this.client.query(
+                "UPDATE roles SET  name=$1 WHERE user_id=$2 RETURNING *", 
+                [role.name, role.userId]);
 
-            return "Role updated successfully";
+            return res.rows[0];
         } catch (error) {
             throw new Error(error.message);
         }

@@ -2,7 +2,7 @@ import { Tasker } from "@/Domain/entities/Tasker";
 
 
 export interface ITaskerService {
-    createTasker(tasker: Tasker): Promise<Tasker>;
+    createTasker(tasker: Tasker): Promise<any>;
     getTaskerById(id: number): Promise<Tasker>;
     updateTasker(tasker: Tasker): Promise<string>;
     deleteTasker(id: number): Promise<string>;

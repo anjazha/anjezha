@@ -11,6 +11,7 @@ import isAuth from "../middlewares/isAuth";
 import { filesUpload } from "../middlewares/filesUpload";
 
 
+
 const container = new Container();
 
 container.bind<ITaskRepository>(INTERFACE_TYPE.TaskRepository).to(TaskRepository);
