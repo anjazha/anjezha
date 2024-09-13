@@ -30,6 +30,16 @@ export const INTERFACE_TYPE = {
     RoleRoute: Symbol.for("RoleRoute"),
     RoleRepository: Symbol.for("RoleRepository"),
     
+    SearchRepository: Symbol.for("SearchRepository"),
+    SearchService: Symbol.for("SearchService"),
+    SearchController: Symbol.for("SearchController"),
+    SearchRoute: Symbol.for("SearchRoute"),
+
+    TaskAssignmentRepository: Symbol.for("TaskAssignmentRepository"),
+    TaskAssignmentService: Symbol.for("TaskAssignmentService"),
+    TaskAssignmentController: Symbol.for("TaskAssignmentController"),
+    TaskAssignmentRoute: Symbol.for("TaskAssignmentRoute"),
+
     
     // skills symbol
     SkillsRepository: Symbol.for("SkillsRepository"),
@@ -59,10 +69,6 @@ export const INTERFACE_TYPE = {
     AssignTaskService: Symbol.for("AssignTaskService"),
     AssignTaskController: Symbol.for("AssignTaskController"),
     AssignTaskRoute: Symbol.for("AssignTaskRoute"),
-
-    
-
-
 
     
     App: Symbol.for("App"),

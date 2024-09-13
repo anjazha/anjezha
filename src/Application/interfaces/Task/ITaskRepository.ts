@@ -8,4 +8,5 @@ export interface ITaskRepository {
     findAllTasks() : Promise<Task[]>;
     findTaskById(id: number) : Promise<Task | null>;
     findTasksByUserId(userId: number) : Promise<Task[]>;
+    search(q: string, filters : {}, sortBy: string) : Promise<Task[]>;
 }
