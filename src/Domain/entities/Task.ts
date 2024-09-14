@@ -16,5 +16,6 @@ export class Task {
         public schedule?:{start_time : Date, end_time: Date , schedule_type: string},
         public attachments?:{file_type:string,file_path:string,file_size:number}[],
         public skills ?:string[],
+        public total_count?:number
     ){}
 }

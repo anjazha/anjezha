@@ -1,15 +1,15 @@
 import jwt from "jsonwebtoken";
 
-import {JWT_SECRET, JWT_EXPIRES_IN} from '../Config';
+import {JWT_SECRET, JWT_EXPIRES_IN} from '../Config/index';
 
-export const generateToken = (payload:{}) => {
+export const generateToken = (payload:any) => {
   return jwt.sign(payload, JWT_SECRET as string, {
     expiresIn: '1h',
   });
 };
 
 export const verifyToken = (token: string) => {
-  return jwt.verify(token, JWT_SECRET);
+  return jwt.verify(token, String(JWT_SECRET));
 };
 
 export const decodeToken = (token: string) => {

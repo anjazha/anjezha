@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import { ITaskService } from "../interfaces/Task/ITaskService";
 import { Task } from "@/Domain/entities/Task";
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { ITaskRepository } from "../interfaces/Task/ITaskRepository";
 import { safePromise } from "@/helpers/safePromise";
 
@@ -32,5 +32,9 @@ export class TaskService implements ITaskService{
 
    async findTaskById(id: number): Promise<Task | null> {
         return this.taskRepository.findTaskById(id);
+    }
+
+    async findTasksByUserId(userId: number): Promise<Task[]> {
+        return this.taskRepository.findTasksByUserId(userId);
     }
 }

@@ -26,7 +26,7 @@ export class SubCategoryRepository implements ISubCategoryRepository {
         const { rows } = await this.client.query(query, values);
         // map rows to subcategory object
         return  new SubCategory(rows[0].subcategory, rows[0].category_id, rows[0].id);
-        } catch(err){
+        } catch(err:any){
         throw new Error(`Error creating subcategory: ${err.message} ${err.stack}`);
         }
     }
@@ -40,7 +40,7 @@ export class SubCategoryRepository implements ISubCategoryRepository {
            const { rows } = await this.client.query(query);
               // map rows to subcategory object
            return rows.map((subcategory: SubCategory) => new SubCategory(subcategory.subcategory, subcategory.categoryId, subcategory.id));
-        } catch(err){
+        } catch(err:any){
         throw new Error(`Error getting subcategories: ${err.message} ${err.stack}`);
         }
     }
@@ -57,7 +57,7 @@ export class SubCategoryRepository implements ISubCategoryRepository {
               //  rows[0] to subcategory object
            return new SubCategory(rows[0].subcategory, rows[0].category_id, rows[0].id);
 
-        } catch(err){
+        } catch(err:any){
            throw new Error(`Error getting subcategory by id: ${err.message} ${err.stack}`);
         }
     }
@@ -73,7 +73,7 @@ export class SubCategoryRepository implements ISubCategoryRepository {
              // map rows to subcategory object
              return new SubCategory(rows[0].subcategory, rows[0].category_id, rows[0].id);
 
-        } catch(err){
+        } catch(err:any){
             throw new Error(`Error getting subcategory by name: ${err.message} ${err.stack}`);
         }
     }
@@ -88,7 +88,7 @@ export class SubCategoryRepository implements ISubCategoryRepository {
              const { rows } = await this.client.query(query, values);
              // map rows to subcategory object
              return  new SubCategory(rows[0].subcategory, rows[0].category_id, rows[0].id);
-        } catch(err){
+        } catch(err:any){
             throw new Error(`Error updating subcategory: ${err.message} ${err.stack}`);
         }
     }
@@ -103,7 +103,7 @@ export class SubCategoryRepository implements ISubCategoryRepository {
         await this.client.query(query, values);
         // return message
         return 'Subcategory deleted';
-        } catch(err){
+        } catch(err:any){
          throw new Error(`Error deleting subcategory: ${err.message} ${err.stack}`);
         }
     }
@@ -118,7 +118,7 @@ export class SubCategoryRepository implements ISubCategoryRepository {
         const { rows } = await this.client.query(query, values);
         // map rows to subcategory object
         return rows.map((subcategory: SubCategory) => new SubCategory(subcategory.subcategory, subcategory.categoryId, subcategory.id));
-        } catch(err){
+        } catch(err:any){
           throw new Error(`Error getting subcategories by category: ${err.message} ${err.stack}`);
         }
     }

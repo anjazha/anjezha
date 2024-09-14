@@ -5,7 +5,7 @@ import { Container } from "inversify";
 import { IUserRepository } from "@/Application/interfaces/User/IUserRepository";
 import { UserRepository } from "@/Application/repositories/userRepository";
 import { AuthService } from "@/Application/services/authService";
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { AuthController } from "../controllers/authController";
 import { IRoleRepository } from "@/Application/interfaces/User/IRoleRepository";
 import { RoleRepository } from "@/Application/repositories/roleRepository";

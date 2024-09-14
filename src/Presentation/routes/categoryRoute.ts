@@ -2,7 +2,7 @@ import { Router } from "express";
 import { Container } from "inversify";
 import { CategoryController } from "../controllers/categoryController";
 import { ICategoryRepository } from "@/Application/interfaces/ICategoryRepositoy";
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { createInflateRaw } from "zlib";
 import { CategoryRepository } from "@/Application/repositories/categoryRpository";
 import { ICategoryService } from "@/Application/interfaces/ICategoryService";

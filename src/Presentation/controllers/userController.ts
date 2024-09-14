@@ -1,10 +1,10 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from 'express';
 
 
 import { IUserService } from "@/Application/interfaces/User/IUserService";
 import { inject, injectable } from "inversify";
 import { UserService } from "@/Application/services/userService";
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 
 
 
@@ -21,7 +21,7 @@ export class UserController{
 }
 
 
-    async createUser(req:Request, res:Response, next:NewableFunction): Promise<any> {
+    async createUser(req:Request, res:Response, next:NextFunction): Promise<any> {
         try {
             const { name, email, password, phoneNumber, profilePicture } = req.body;
             if (!name || !email || !password || !phoneNumber) {
@@ -42,7 +42,7 @@ export class UserController{
     }
 
 
-    async getUser(req:Request, res:Response, next:NewableFunction): Promise<any> {
+    async getUser(req:Request, res:Response, next:NextFunction): Promise<any> {
         try {
             const { id } = req.params;
             if (!id) {
@@ -62,7 +62,7 @@ export class UserController{
     }
 
 
-    async updateUser(req:Request, res:Response, next:NewableFunction): Promise<any> {
+    async updateUser(req:Request, res:Response, next:NextFunction): Promise<any> {
         try {
             const { id } = req.params;
             if (!id) {
@@ -82,7 +82,7 @@ export class UserController{
     }
 
 
-    async deleteUser(req:Request, res:Response, next:NewableFunction): Promise<any> {
+    async deleteUser(req:Request, res:Response, next:NextFunction): Promise<any> {
         try {
             const { id } = req.params;
             if (!id) {
@@ -102,7 +102,7 @@ export class UserController{
     }
 
 
-    async getUsers(req:Request, res:Response, next:NewableFunction): Promise<any> {
+    async getUsers(req:Request, res:Response, next:NextFunction): Promise<any> {
         try {
             // get all users
             const users = await this.userService.findAll();

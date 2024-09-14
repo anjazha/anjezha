@@ -2,12 +2,12 @@ import { Router } from "express";
 import { Container } from "inversify";
 
 // call all classes used in depecencies injection
-import { UserController } from "../controllers/userController";
+import { UserController } from "@/Presentation/controllers/userController";
 import { IUserRepository } from "@/Application/interfaces/User/IUserRepository";
 import { UserRepository } from "@/Application/repositories/userRepository";
 import { IUserService } from "@/Application/interfaces/User/IUserService";
 import { UserService } from "@/Application/services/userService";
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 
 
 
@@ -34,7 +34,7 @@ const userController = container.get<UserController>(INTERFACE_TYPE.UserControll
 
 
 router.route('/user')
- .get(userController.getUsers.bind(userController))
+.get(userController.getUsers.bind(userController))
  .post(userController.createUser.bind(userController));
 
 router.route('/user/:id')

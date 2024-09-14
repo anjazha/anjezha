@@ -1,7 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "target": "ES2022",
+    "target": "ESNext",
     "lib": ["ES2022", "esnext.asynciterable"],
     "typeRoots": ["node_modules/@types"],
     "allowSyntheticDefaultImports": true,
@@ -9,20 +9,24 @@
     "emitDecoratorMetadata": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
-    "module": "ESNext",
+    "module": "CommonJS",
+    "strict": true,
+    "skipLibCheck": true,
     "pretty": true,
     "sourceMap": true,
     "declaration": true,
+
     "outDir": "./dist",
+    // "rootDir": "./src",
     "allowJs": true,
     "noEmit": false,
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "importHelpers": false,
-    "baseUrl": "src",
+    "baseUrl": "./src",
     "paths": {
-      "@/*": ["*"]
-      // "@config": ["config"],
+      // "@/*": ["*"]
+      // "@Config/*": ["Config/*"],
       // "@controllers/*": ["controllers/*"],
       // "@databases": ["databases"],
       // "@dtos/*": ["dtos/*"],
@@ -33,16 +37,26 @@
       // "@routes/*": ["routes/*"],
       // "@services/*": ["services/*"],
       // "@utils/*": ["utils/*"],
-      // "@app/*": ["app/*"]
+      // "@app/*": ["app/*"],
+      "@/Application/*": ["Application/*"],
+      "@/Domain/*": ["Domain/*"],
+      "@/Infrastructure/*": ["Infrastructure/*"],
+      // "@Presentation/*": ["Presentation/*"],
+      "@/Presentation/*": ["Presentation/*"],
+      "@/Shared/*": ["Shared/*"],
+      "@/helpers/*": ["helpers/*"],
+      "@/config/*": ["Config/*"],
+      
+      
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.json", ".env", "environment.d.ts"],
+  "include": ["src/**/*.ts", "src/**/*.json", ".env", "environment.d.ts", "src/**/*"],
   "exclude": [
     "node_modules",
     "src/http",
     "src/logs",
     "__tests__",
     "jest.config.js",
-    "./dist"
+    //"./dist"
   ]
 }

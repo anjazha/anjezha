@@ -46,7 +46,7 @@ export class SkillsRepository implements ISkillsRepository {
         return new Skills(skill.name, skill.id);
     }
 
-    async getSkillByName(skillName: string): Promise<Skills | null> {
+    async getSkillByName(skillName: string): Promise<Skills> {
         const {rows} = await this.client.query(
             `SELECT * FROM skills WHERE name = $1 returning *`,
             [skillName]
@@ -54,9 +54,9 @@ export class SkillsRepository implements ISkillsRepository {
 
         const skill = rows[0];
 
-        if (!skill) {
-            return null;
-        }
+        // if (!skill) {
+        //     return new Error('Skill not found'); ;
+        // }
         return new Skills(skill.name, skill.id);
     }
 
@@ -69,7 +69,7 @@ export class SkillsRepository implements ISkillsRepository {
           );
   
           return rows;
-      } catch(err){
+      } catch(err:any){
         throw new Error(`Error updating skill ${err.message} ${err.stack}`);
       }
     }

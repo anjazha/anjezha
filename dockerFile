@@ -1,5 +1,5 @@
 # Step 1: Specify the base image
-FROM node:18-alpine
+FROM node:20-alpine
 
 # Step 2: Set the working directory
 WORKDIR /app
@@ -7,7 +7,7 @@ WORKDIR /app
 # Step 3: Copy package files
 COPY package*.json ./
 
-# Step 4: Install dependencies
+# Step 4: Install dependencies excutate any comamnd in the container
 RUN npm install
 
 # Step 5: Copy application code
@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 3000
 
 # Step 7: Specify the command to run the application
-CMD ["npm", "dev:start"]
+CMD ["npm", "run", "dev:start"]

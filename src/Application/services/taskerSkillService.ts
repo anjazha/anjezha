@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import { ITaskerSkillsService } from "../interfaces/Skills/ITaskerSkillsService";
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { ISkillsRepository } from "../interfaces/Skills/ISkiilsRepository";
 import { ITaskerSkillsRepository } from "../interfaces/Skills/ITaskerSkillsRepository";
 
@@ -32,7 +32,7 @@ export class TaskerSkillService implements ITaskerSkillsService {
         await this.taskerSkillsRepository.addSkillToTasker(taskerId, id);
 
         return `skill ${skill} created`;
-        }catch(err){
+        }catch(err:any){
            throw new Error(`Error creating skill ${err.message} ${err.stack}`);
         }
 
@@ -47,7 +47,7 @@ export class TaskerSkillService implements ITaskerSkillsService {
             const updateskill = await this.skillsRepository.updateSkill(skill, id);
 
             return updateskill;
-        }catch(err){
+        }catch(err:any){
             throw new Error(`Error updating skill ${err.message} ${err.stack}`);
         }
     }

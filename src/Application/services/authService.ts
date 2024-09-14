@@ -7,12 +7,13 @@ import { IAuthService } from "../interfaces/User/IAuthService";
 import { IUserRepository } from "../interfaces/User/IUserRepository";
 import { generateToken, verifyToken } from "@/helpers/tokenHelpers";
 import { sendMail } from '@/Infrastructure/mail/transportionMail';
-import { BASE_URL } from '@/Config';
+import { BASE_URL } from '@/config/index';
 import { inject, injectable } from 'inversify';
-import { INTERFACE_TYPE } from '@/helpers';
+import { INTERFACE_TYPE } from '@/helpers/containerConst';
 import { hashCode } from '@/helpers/hashCode';
 import { IRoleRepository } from '../interfaces/User/IRoleRepository';
 import { Role } from '@/Domain/entities/role';
+import { JwtPayload } from 'jsonwebtoken';
 
 
 
@@ -56,10 +57,10 @@ export class AuthService implements IAuthService {
         //    console.log("data", data);
 
            // create role to user
-           let role = await this.roleRepository.getRoleByUserId(data.id);
+           let role = await this.roleRepository.getRoleByUserId(Number(data.id));
 
             if(!role){
-                 role= await this.roleRepository.createRole( new Role(data.id, 'user')); 
+                 role= await this.roleRepository.createRole( new Role(Number(data.id), 'user')); 
             }
 
         // return data to controller
@@ -92,7 +93,7 @@ export class AuthService implements IAuthService {
        
       //   console.log("userId", user.id);
       // check on  it user exist roles or not
-       let role = await this.roleRepository.getRoleByUserId(user.id);
+       let role = await this.roleRepository.getRoleByUserId(Number(user.id));
 
     //    console.log("role", role);
 
@@ -118,7 +119,7 @@ export class AuthService implements IAuthService {
             // }
 
             // generate token
-            const token = await generateToken({userId: user.id});
+            const token = await generateToken({userId:Number(user?.id)});
 
             //   const passwordRecoveryCode = hashCode()
             // send email with password reset link
@@ -130,14 +131,15 @@ export class AuthService implements IAuthService {
             await sendMail(email, 'Reset Password', html);
             console.log('Email sent');
         
-        } catch(err){
+        } catch(err:any){
             throw new Error('An error occurred' + err.message + err.stack);
         }
     }
 
 
      async resetPassword(tokenRest: string, newPassword: string): Promise<string> {
-        let decoded;
+        let decoded: string | JwtPayload;
+
         try {
             // verify token
             decoded = await verifyToken(tokenRest);
@@ -145,7 +147,13 @@ export class AuthService implements IAuthService {
             throw new Error('Invalid or expired token');
           }
 
-            const user = await this.userRepository.findById(decoded.userId);
+          if (typeof decoded === 'string' || !('userId' in decoded)) {
+            throw new Error('Invalid token payload');
+        }
+
+
+            const userId = Number(decoded.userId);
+            const user = await this.userRepository.findById(userId);
             
             // check if user exists   // handle unit test 7
             if (!user) {
@@ -155,7 +163,7 @@ export class AuthService implements IAuthService {
             const hashedPassword = await hasPass(newPassword, 10);
             user.password = hashedPassword;
             
-            await this.userRepository.update(user.id, user);
+            await this.userRepository.update(Number(user.id), user);
 
             // generate new token  to login
             // const token = await generateToken({userId: user.id});

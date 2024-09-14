@@ -2,10 +2,11 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import swaggerUi from  "swagger-ui-express";
 import morgan from "morgan"
 import compression from "compression"
+
 import { errorHandler } from "./Presentation/middlewares/exceptions/errorHandler.middleware";
 import { HTTP400Error, HTTP401Error } from "./helpers/ApiError";
 import { EHttpStatusCode } from "./Application/interfaces/enums/EHttpStatusCode";
-import {connectDB, disconnectDB} from '@/Infrastructure/database'
+import {connectDB, disconnectDB} from '@/Infrastructure/database/index'
 import { PORT, NODE_ENV } from "./Config/index";
 import swaggerSpec from "./swager";
 import { compare } from 'bcryptjs';

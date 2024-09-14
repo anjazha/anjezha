@@ -4,7 +4,7 @@ import { injectable, inject } from "inversify";
 import { IUserRepository } from "../interfaces/User/IUserRepository";
 import { IUserService } from "../interfaces/User/IUserService";
 import { UserRepository } from "../repositories/userRepository";
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 
 
 
@@ -35,7 +35,7 @@ export class UserService implements IUserService{
         return this.userRepository.update(id, data);
     }
 
-    async delete(id: number): Promise<boolean> {
+    async delete(id: number): Promise<string> {
         return this.userRepository.delete(id);
     }
 

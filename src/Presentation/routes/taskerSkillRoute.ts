@@ -5,7 +5,7 @@ import { ITaskerRepository } from "@/Application/interfaces/User/Tasker/ITaskerR
 import { SkillsRepository } from "@/Application/repositories/skillsRepository";
 import { TaskerSkillsRepository } from "@/Application/repositories/taskerSkillsRepository";
 import { TaskerSkillService } from "@/Application/services/taskerSkillService";
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { Router } from "express";
 import { Container } from "inversify";
 import { TaskerSkillController } from "../controllers/taskerSkillController";

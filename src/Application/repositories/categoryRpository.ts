@@ -20,7 +20,7 @@ export class CategoryRepository implements ICategoryRepository{
           const values = [category];
           const { rows } = await this.client.query(query, values);
           return new Category(rows[0].name, rows[0].id);
-        } catch(err){
+        } catch(err:any){
           throw new Error(`Error creating category: ${err.message} ${err.stack}`);
       }
     }
@@ -37,7 +37,7 @@ export class CategoryRepository implements ICategoryRepository{
             // console.log(rows);
            return rows.map((category: Category) => new Category(category.category, category.id));
 
-        } catch(err){
+        } catch(err:any){
             throw new Error(`Error getting categories: ${err.message} ${err.stack}`);
         }
     }
@@ -54,7 +54,7 @@ export class CategoryRepository implements ICategoryRepository{
             // map rows to category object
             return new Category(rows[0].category, rows[0].id);
 
-        } catch(err){
+        } catch(err:any){
             throw new Error(`Error getting category by id: ${err.message} ${err.stack}`);
         }
     }
@@ -65,7 +65,7 @@ export class CategoryRepository implements ICategoryRepository{
             const values = [categoryName];
             const { rows } = await this.client.query(query, values);
             return rows[0];
-        } catch(err){
+        } catch(err:any){
             throw new Error(`Error getting category by name: ${err.message} ${err.stack}`);
         }
     }
@@ -78,7 +78,7 @@ export class CategoryRepository implements ICategoryRepository{
 
             return new Category(rows[0].category, rows[0].id);
 
-        } catch(err){
+        } catch(err:any){
             throw new Error(`Error updating category: ${err.message} ${err.stack}`);
         }
     }
@@ -89,7 +89,7 @@ export class CategoryRepository implements ICategoryRepository{
             const values = [id];
             await this.client.query(query, values);
             return {message: 'category is deleted'};
-        } catch(err){
+        } catch(err:any){
             throw new Error(`Error deleting category: ${err.message} ${err.stack}`);
         }
     }

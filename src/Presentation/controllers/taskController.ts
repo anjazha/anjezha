@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 
 import { ITaskService } from "@/Application/interfaces/Task/ITaskService";
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { inject, injectable } from "inversify";
 import { safePromise } from "@/helpers/safePromise";
 import { HTTP404Error, HTTP500Error } from "@/helpers/ApiError";
@@ -23,6 +23,8 @@ export class TaskController {
     res: Response,
     next: NextFunction
   ): Promise<any> {
+
+    console.log(req.attachments);
     const {
       title,
       description,
@@ -34,9 +36,10 @@ export class TaskController {
       category_id,
       schedule,
       skills,
+      attachments
     } = req.body;
     const task = new Task(
-      +req.userId,
+      +req.userId!,
       title,
       description,
       date,
@@ -46,7 +49,7 @@ export class TaskController {
       status,
       category_id,
       schedule,
-      [],
+      attachments,
       skills
     );
     try {
@@ -54,16 +57,16 @@ export class TaskController {
       return res
         .status(201)
         .json(apiResponse({ task: newTask }, "Task created successfully"));
-    } catch (error) {
+    } catch (error:any) {
       return next(
         new HTTP500Error(
-          error.message || "Some thing went wrong while creating new task"
+            error.message || "Some thing went wrong while creating new task"
         )
       );
     }
   }
 
-  async getAllTasks(req: Request, res: Response, next: NextFunction) {
+  async getAllTasks(req: RequestWithUserId, res: Response, next: NextFunction) {
     // try {
     //   const tasks = await this.taskService.findAllTasks();
     //   res.status(200).json(apiResponse(tasks));
@@ -77,7 +80,7 @@ export class TaskController {
     res.status(200).json(apiResponse(tasks));
   }
 
-  async getTaskById(req: Request, res: Response, next: NextFunction) {
+  async getTaskById(req: RequestWithUserId, res: Response, next: NextFunction) {
     const { taskId } = req.params;
     const [error, task] = await safePromise(() =>
       this.taskService.findTaskById(+taskId)
@@ -91,7 +94,7 @@ export class TaskController {
     res.status(200).json(apiResponse({ task }));
   }
 
-  async deleteTask(req: Request, res: Response, next: NextFunction) {
+  async deleteTask(req: RequestWithUserId, res: Response, next: NextFunction) {
     const { taskId } = req.params;
     const [error, isDeleted] = await safePromise(() =>
       this.taskService.deleteTask(+taskId)
@@ -105,7 +108,7 @@ export class TaskController {
     res.status(200).json(apiResponse({}, "Task deleted successfully"));
   }
 
-  async updateTask(req: Request, res: Response, next: NextFunction) {
+  async updateTask(req: RequestWithUserId, res: Response, next: NextFunction) {
     const { taskId } = req.params;
     const {
       title,
@@ -120,7 +123,7 @@ export class TaskController {
       skills,
     } = req.body;
     const task = new Task(
-      +req.userId,
+      +req.userId!,
       title,
       description,
       date,
@@ -144,4 +147,28 @@ export class TaskController {
     }
     res.status(200).json(apiResponse({ task: updatedTask }));
   }
+
+  // It will be implemented in api features (filter and sort)
+
+  // async getTasksByUserId(req: Request, res: Response, next: NextFunction) {
+  //   const { user } = req.query;
+  //   const [error, tasks] = await safePromise(() =>
+  //     this.taskService.findTasksByUserId(+user)
+  //   );
+  //   if (error) {
+  //     return next(new HTTP500Error(error.message));
+  //   }
+  //   res.status(200).json(apiResponse({ tasks }));
+  // }
+
+  // async recommendTasks(req: Request, res: Response, next: NextFunction) {
+  //   const { taskId } = req.params;
+  //   const [error, tasks] = await safePromise(() =>
+  //     this.taskService.recommendTasks(+taskId)
+  //   );
+  //   if (error) {
+  //     return next(new HTTP500Error(error.message));
+  //   }
+  //   res.status(200).json(apiResponse({ tasks }));
+  // }
 }

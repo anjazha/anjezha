@@ -38,7 +38,7 @@ export class UserRepository implements IUserRepository {
       // console.log(rows[0]);
       // await disconnectDB();
       return new User(rows[0].name, rows[0].email, rows[0].password, rows[0].phone_number, rows[0].id, rows[0].profile_picture);
-    } catch(err){
+    } catch(err:any){
       throw new Error('An error occurred' + err.message + err.stack);
     }
   }
@@ -51,19 +51,19 @@ export class UserRepository implements IUserRepository {
     );
     // await disconnectDB();
        return rows[0] || null;
-      } catch(err){
+      } catch(err:any){
         throw new Error('An error occurred ' + err.message + err.stack);
     }
   }
 
-  async findById(id: number): Promise<User | null> {
+  async findById(id: number): Promise<User> {
     try{// await connectDB();
         const { rows } = await this.client.query("SELECT * FROM users WHERE id = $1", [
           id,
         ]);
     // await disconnectDB();
         return rows[0] || null;
-      }  catch(err){
+      }  catch(err:any){
       throw new Error('An error occurred' + err);
       }
   }
@@ -128,7 +128,7 @@ export class UserRepository implements IUserRepository {
     return rows[0];
     
     
-    } catch(err){
+    } catch(err:any){
         throw new Error('Could not update user' + err.message + err.stack);
 
    }
@@ -139,7 +139,7 @@ async delete(id: number): Promise<string> {
     await this.client.query("DELETE FROM users WHERE id = $1", [id]);
     // await disconnectDB();
     return "user deleted";
-      } catch(err){
+      } catch(err:any){
          throw new Error('An error occurred' + err);
       }
   }
@@ -149,7 +149,7 @@ async delete(id: number): Promise<string> {
         const { rows } = await this.client.query("SELECT * FROM users");
         // await disconnectDB();
         return rows;
-    } catch(err){
+    } catch(err:any){
       throw new Error('An error occurred' + err.message + err.stack);
     }
 }

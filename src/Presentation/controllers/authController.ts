@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 
 import { AuthService } from "@/Application/services/authService";
 import { User } from "@/Domain/entities/User";
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { inject, injectable } from "inversify";
 
 

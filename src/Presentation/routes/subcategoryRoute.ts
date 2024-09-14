@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { Container } from "inversify";
 
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { alllowTo, isAuth } from "../middlewares/isAuth";
 import { SubCategoryRepository } from "@/Application/repositories/subcategoryRepository";
 import { ISubCategoryRepository } from "@/Application/interfaces/ISubCategoryRepository";

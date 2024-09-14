@@ -82,12 +82,12 @@ export class TaskerRepository implements ITaskerRepository {
 
 
 
-    async updateTasker(tasker: Tasker): Promise<string> {
+    async updateTasker(tasker: any): Promise<string> {
       
         try {
 
             let query = `UPDATE taskers SET `;
-            let values = [];
+            let values:any = [];
 
             // loop through tasker object and build query
             for (const key in tasker) {

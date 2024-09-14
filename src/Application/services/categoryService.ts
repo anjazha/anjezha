@@ -1,4 +1,4 @@
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { inject, injectable } from "inversify";
 import { ICategoryRepository } from "../interfaces/ICategoryRepositoy";
 import { ICategoryService } from "../interfaces/ICategoryService";
@@ -18,7 +18,7 @@ export class CategoryService implements ICategoryService {
     async createCategory(category: string): Promise<Category> {
         try {
             return await this.categoryRepository.createCategory(category);
-        } catch (err) {
+        } catch (err:any) {
             throw new Error(`Error creating category: ${err.message} ${err.stack}`);
         }
     }
@@ -26,7 +26,7 @@ export class CategoryService implements ICategoryService {
     async getCategories(): Promise<Category[]> {
         try {
             return await this.categoryRepository.getCategories();
-        } catch (err) {
+        } catch (err:any) {
             throw new Error(`Error getting categories: ${err.message} ${err.stack}`);
         }
     }
@@ -34,7 +34,7 @@ export class CategoryService implements ICategoryService {
     async getCategoryById(id: number): Promise<Category> {
         try {
             return await this.categoryRepository.getCategoryById(id);
-        } catch (err) {
+        } catch (err:any) {
             throw new Error(`Error getting category by id: ${err.message} ${err.stack}`);
         }
     }
@@ -42,7 +42,7 @@ export class CategoryService implements ICategoryService {
     async getCategoryByName(categoryName: string): Promise<Category | null> {
         try {
             return await this.categoryRepository.getCategoryByName(categoryName);
-        } catch (err) {
+        } catch (err:any) {
             throw new Error(`Error getting category by name: ${err.message} ${err.stack}`);
         }
     }
@@ -50,7 +50,7 @@ export class CategoryService implements ICategoryService {
     async updateCategory(category: string, id: number): Promise<any> {
         try {
             return await this.categoryRepository.updateCategory(category, id);
-        } catch (err) {
+        } catch (err:any) {
             throw new Error(`Error updating category: ${err.message} ${err.stack}`);
         }
     }
@@ -58,7 +58,7 @@ export class CategoryService implements ICategoryService {
     async deleteCategory(id: number): Promise<any> {
         try {
             return await this.categoryRepository.deleteCategory(id);
-        } catch (err) {
+        } catch (err:any) {
             throw new Error(`Error deleting category: ${err.message} ${err.stack}`);
         }
     }
