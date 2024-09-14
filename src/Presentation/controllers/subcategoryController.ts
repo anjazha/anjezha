@@ -6,6 +6,7 @@ import { INTERFACE_TYPE } from "@/helpers/containerConst";
 
 @injectable()
 export  class SubCategoryController {
+    
     constructor(
         @inject(INTERFACE_TYPE.SubCategoryService) private subCategoryService: ISubCategoryService
     ) { }

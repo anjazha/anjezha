@@ -9,9 +9,9 @@ import { inject, injectable } from "inversify";
 
 @injectable()
 export class TaskApplicationController {
+
   constructor(
-    @inject(INTERFACE_TYPE.TaskApplicationService)
-    private readonly taskApplicationService: ITaskApplicationService
+    @inject(INTERFACE_TYPE.TaskApplicationService) private readonly taskApplicationService: ITaskApplicationService
   ) {}
 
   async apply(req: Request, res: Response, next: NextFunction): Promise<any> {
