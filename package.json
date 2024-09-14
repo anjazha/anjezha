@@ -15,6 +15,9 @@
     "start:devM": "cross-env tsx -r tsconfig-paths/register  ./src/server.ts",
     "migrate": "npx tsx src/Infrastructure/database/migrations/index.ts"
   },
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "author": "",
   "license": "ISC",
   "devDependencies": {
