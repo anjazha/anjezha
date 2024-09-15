@@ -4,7 +4,6 @@
   "description": "Engzha is an application that makes it easier for those with home services, such as plumbing and carpentry, to obtain the services of the appropriate worker, which saves time and effortEngzha is an application that makes it easier for those with home services, such as plumbing and carpentry, to obtain the services of the appropriate worker, which saves time and effort",
   "main": "./dist/server.js",
   "type": "commonjs",
-  
   "scripts": {
     "build": "tsc && tsc-alias",
     "start": "node  dist/server.js",
@@ -28,6 +27,8 @@
     "@types/faker": "^6.6.9",
     "@types/jest": "^29.5.12",
     "@types/jsonwebtoken": "^9.0.6",
+    "@types/morgan": "^1.9.9",
+    "@types/multer": "^1.4.12",
     "@types/node": "^22.5.0",
     "@types/nodemailer": "^6.4.15",
     "@types/pg": "^8.11.6",

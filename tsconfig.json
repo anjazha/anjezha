@@ -1,7 +1,7 @@
 {
-  "compileOnSave": false,
+  // "compileOnSave": false,
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "ES6",
     // "lib": ["es6", "dom"]
 
     "lib": ["ES2022", "esnext.asynciterable", "es6", "dom", "es2015", "es2016", "es2017", "es2018", "es2019", "es2020", "es2021", "es2022"],
@@ -26,6 +26,8 @@
     "resolveJsonModule": true,
     "importHelpers": false,
     "baseUrl": "./src",
+    
+
     "paths": {
       // "@/*": ["*"]
       // "@Config/*": ["Config/*"],
@@ -59,6 +61,5 @@
     "src/logs",
     "__tests__",
     "jest.config.js",
-    //"./dist"
   ]
 }
