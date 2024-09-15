@@ -1,20 +1,23 @@
-# Step 1: Specify the base image
-FROM node:20-alpine
+# base inage 
+FROM node:14.17.0-alpine3.13 AS build
 
-# Step 2: Set the working directory
-WORKDIR /app
+# Create app directory
+WORKDIR Anjezha
 
-# Step 3: Copy package files
-COPY package*.json ./
+# copy app dependencies
+COPY  package.json .
 
-# Step 4: Install dependencies excutate any comamnd in the container
+# install app dependencies
 RUN npm install
 
-# Step 5: Copy application code
+# copy app source code
 COPY . .
 
-# Step 6: Expose the port
-EXPOSE 3000
+# build app 
+RUN npm run build
 
-# Step 7: Specify the command to run the application
-CMD ["npm", "run", "dev:start"]
+# production environment
+EXPOSE 5000
+
+# start app
+CMD ["node", "start"]
