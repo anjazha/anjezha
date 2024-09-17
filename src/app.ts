@@ -2,7 +2,7 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import swaggerUi from  "swagger-ui-express";
 import morgan from "morgan"
 import compression from "compression"
-
+import cors from 'cors'
 import { errorHandler } from "./Presentation/middlewares/exceptions/errorHandler.middleware";
 import { HTTP400Error, HTTP401Error } from "./helpers/ApiError";
 import { EHttpStatusCode } from "./Application/interfaces/enums/EHttpStatusCode";
@@ -36,6 +36,7 @@ export class App {
         console.log('morgan enabled')
     }
 //    console.log(NODE_ENV)
+        this.app.use(cors())
         this.app.use(compression())
         this.app.use(express.json())
         this.app.use(express.urlencoded({extended: true}))
