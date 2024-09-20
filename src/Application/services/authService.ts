@@ -5,7 +5,7 @@ import { hasPass, comparePass } from '@/helpers/bcryptHelper';
 import { User } from "@/Domain/entities/User";
 import { IAuthService } from "../interfaces/User/IAuthService";
 import { IUserRepository } from "../interfaces/User/IUserRepository";
-import { generateToken, verifyToken } from "@/helpers/tokenHelpers";
+import { generateAccessToken, generateRefreshToken, generateToken, verifyRefreshToken, verifyToken } from "@/helpers/tokenHelpers";
 import { sendMail } from '@/Infrastructure/mail/transportionMail';
 import { BASE_URL } from '@/config/index';
 import { inject, injectable } from 'inversify';
@@ -71,7 +71,7 @@ export class AuthService implements IAuthService {
          }
     }
 
-    async login(email: string, password: string): Promise<string> {
+    async login(email: string, password: string): Promise<{accessToken: string, refreshToken: string}> {
         /* 1- find user by email
            2- checks email not found or not 
            3- return error if not found
@@ -105,7 +105,13 @@ export class AuthService implements IAuthService {
       //  4- generate token if exists       // handle unit test 6
       const token =  generateToken({userId: (user.id), role:role.name});
 
-      return token;
+      // generate access token 
+       const accessToken = generateAccessToken({userId: Number(user.id), role:role.name});
+
+
+       const refreshToken =  generateRefreshToken({userId: Number(user.id), role:role.name});
+
+       return {accessToken, refreshToken };
         
     }
 
@@ -173,31 +179,32 @@ export class AuthService implements IAuthService {
     }
     
 
-    async refreshToken(token: string): Promise<string> {
-        let decoded: string | JwtPayload;
+    async refreshToken(refreshToken: string): Promise<string> {
+        let decoded: string | JwtPayload | null;
 
         try {
             // verify token
-            decoded = await verifyToken(token);
-          } catch (err) {
-            throw new Error('Invalid or expired token');
+             decoded = verifyRefreshToken(refreshToken);
+
+            // check verify
+            if (!decoded){
+                throw new Error('Invalid or expired token');
+            }
+
+            const {userId, role} = decoded as JwtPayload;
+            // await to check if user exists
+            const accessToken = generateAccessToken({userId, role});
+
+            return accessToken;
+
+          } catch (err:any) {
+
+               throw new Error('Invalid or expired token '+ err.message + err.stack);
+
           }
 
-          if (typeof decoded === 'string' || !('userId' in decoded)) {
-            throw new Error('Invalid token payload');
-        }
-
-        const userId = Number(decoded.userId);
-        const user = await this.userRepository.findById(userId);
-        
-        // check if user exists
-        if (!user) {
-            throw new Error('User not found');
-        }
-
-        // generate new token
-        const newToken = generateToken({userId: user.id});
-        return newToken;
+       
+       
     }
 
 }

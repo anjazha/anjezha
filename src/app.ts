@@ -3,14 +3,15 @@ import swaggerUi from  "swagger-ui-express";
 import morgan from "morgan"
 import compression from "compression"
 import cors from 'cors'
+import cookieParser from 'cookie-parser';
+import { compare } from 'bcryptjs';
+
+import swaggerSpec from "./swager";
 import { errorHandler } from "./Presentation/middlewares/exceptions/errorHandler.middleware";
-import { HTTP400Error, HTTP401Error } from "./helpers/ApiError";
 import { EHttpStatusCode } from "./Application/interfaces/enums/EHttpStatusCode";
 import {connectDB, disconnectDB} from '@/Infrastructure/database/index'
 import { PORT, NODE_ENV } from "./Config/index";
-import swaggerSpec from "./swager";
-import { compare } from 'bcryptjs';
-
+import { HTTP400Error, HTTP401Error } from "./helpers/ApiError";
 
 
 export class App {
@@ -40,6 +41,7 @@ export class App {
         this.app.use(compression())
         this.app.use(express.json())
         this.app.use(express.urlencoded({extended: true}))
+        this.app.use(cookieParser());
 
        
   }
@@ -59,6 +61,8 @@ export class App {
 
  private initializeErrorHandler() : void { 
     this.app.use(errorHandler)
+
+    
  }
 
  private async swagerRoute(){

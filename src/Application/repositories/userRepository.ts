@@ -64,7 +64,7 @@ export class UserRepository implements IUserRepository {
     // await disconnectDB();
         return rows[0] || null;
       }  catch(err:any){
-      throw new Error('An error occurred' + err);
+          throw new Error('An error occurred' + err);
       }
   }
 
@@ -143,6 +143,7 @@ async delete(id: number): Promise<string> {
          throw new Error('An error occurred' + err);
       }
   }
+  
 
   async findAll(): Promise<User[]> {
     try { // await connectDB();

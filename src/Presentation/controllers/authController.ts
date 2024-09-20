@@ -4,6 +4,10 @@ import { AuthService } from "@/Application/services/authService";
 import { User } from "@/Domain/entities/User";
 import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { inject, injectable } from "inversify";
+import { cookie } from "express-validator";
+import { generateAccessToken, verifyRefreshToken } from "@/helpers/tokenHelpers";
+import { JwtPayload } from "jsonwebtoken";
+import { HTTP400Error, HTTP401Error } from "@/helpers/ApiError";
 
 
 @injectable()
@@ -29,37 +33,57 @@ export class AuthController {
             res.status(500).json({message: 'An error occurred' + error})
         }
         
-          }
+ }
 
         async login(req:Request, res:Response, next:NextFunction) {
             
             try{
                 const { email, password } = req.body;
                 
+                const {accessToken, refreshToken} = await this.authService.login(email, password);
+
 
                 // await to check if user exists
-                const token = await this.authService.login(email, password);
+                // const token = await this.authService.login(email, password);
 
-                res.status(200).json({ token });
+
+                // console.log
+            
+                // store refersh token in cookeis 
+                res.cookie('refreshToken', refreshToken, {
+                    httpOnly:true,
+                    secure:true,
+                    maxAge: 1000 * 60 * 60 * 24 * 7  // 7d
+                })
+
+                // console.log(refreshToken);
+
+                // console.log(req.cookies?.refreshToken);
+
+                res.status(200).json({ accessToken });
+
             }  catch(err){
                 res.status(500).json({message: 'An error occurred' + err})
             }
         }
-
         async refreshToken(req:Request, res:Response, next:NextFunction) {
+
             try{
-                // get token from req.body
-                const { token } = req.body;
+                const refreshToken = req.cookies?.refreshToken;
+                
+                if(!refreshToken) return next(new HTTP401Error('No token found'));
+               
+                const accessToken = await this.authService.refreshToken(refreshToken);
 
-                // await to check if user exists
-                const newToken = await this.authService.refreshToken(token);
+                if(!accessToken) return next(new HTTP401Error('Invalid token'));
 
-                res.status(200).json({ newToken });
-            }  catch(err){
-                next(err)
+                res.status(200).json({accessToken});
+
+            }catch(err:any){
+                res.json({message:"an error occured"+ err.message, stack:err.stack})
             }
         }
-
+     
         async forgotPassword(req:Request, res:Response, next:NextFunction) {
             try{
                 // get email from req.body

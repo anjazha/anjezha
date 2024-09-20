@@ -32,12 +32,12 @@ export const decodeToken = (token: string) => {
 // const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || 'your-refresh-token-secret';
 
 interface JwtPayload {
-  userId: string;
-  roles: string[];
+  userId: number;
+  role: string;
 }
 
 
-export const generateRefreshToken = (payload: {}) => {
+export const generateRefreshToken = (payload: JwtPayload) => {
   return  jwt.sign(payload, REFRESH_TOKEN_SECRET as string, { expiresIn: REFRESH_TOKEN_EXPIRES_IN });
 };
 // REFRESH_TOKEN_SECRET
