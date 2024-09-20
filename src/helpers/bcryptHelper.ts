@@ -8,3 +8,4 @@ export async function comparePass(pass:string, hashPass:string): Promise<boolean
     return await bcrypt.compare(pass, hashPass);
     
 }
+

@@ -46,6 +46,20 @@ export class AuthController {
             }
         }
 
+        async refreshToken(req:Request, res:Response, next:NextFunction) {
+            try{
+                // get token from req.body
+                const { token } = req.body;
+
+                // await to check if user exists
+                const newToken = await this.authService.refreshToken(token);
+
+                res.status(200).json({ newToken });
+            }  catch(err){
+                next(err)
+            }
+        }
+
         async forgotPassword(req:Request, res:Response, next:NextFunction) {
             try{
                 // get email from req.body

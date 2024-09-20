@@ -39,6 +39,8 @@ const authController = container.get<AuthController>(INTERFACE_TYPE.AuthControll
 
 router.post("/auth/signup", authController.register.bind(authController));
 router.post("/auth/login", authController.login.bind(authController));
+router.post('/refresh-token', authController.refreshToken.bind(authController));
+// router.get("/auth/logout", authController.logout.bind(authController));
 router.patch("/auth/forgot-password", authController.forgotPassword.bind(authController));
 // router.get("/auth/reset-password/:token", authController.resetPassword.bind(authController));
 router.post("/auth/reset-password/:token", authController.resetPassword.bind(authController));

@@ -40,7 +40,11 @@ import dotenv from 'dotenv';
        EMAIL_HOST,
        EMAIL_PORT,
        EMAIL_USER,
-       EMAIL_PASS  }  = process.env;
+       EMAIL_PASS,
+       ACCESS_TOKEN_SECRET,
+       REFRESH_TOKEN_SECRET,
+       ACCESS_TOKEN__EXPIRES_IN,
+       REFRESH_TOKEN_EXPIRES_IN  }  = process.env;
 
 
 //

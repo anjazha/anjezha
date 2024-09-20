@@ -173,4 +173,31 @@ export class AuthService implements IAuthService {
     }
     
 
+    async refreshToken(token: string): Promise<string> {
+        let decoded: string | JwtPayload;
+
+        try {
+            // verify token
+            decoded = await verifyToken(token);
+          } catch (err) {
+            throw new Error('Invalid or expired token');
+          }
+
+          if (typeof decoded === 'string' || !('userId' in decoded)) {
+            throw new Error('Invalid token payload');
+        }
+
+        const userId = Number(decoded.userId);
+        const user = await this.userRepository.findById(userId);
+        
+        // check if user exists
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        // generate new token
+        const newToken = generateToken({userId: user.id});
+        return newToken;
+    }
+
 }
