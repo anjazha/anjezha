@@ -1,56 +1,21 @@
-# 1-base inage 
-FROM node:14.17.0-alpine3.13 AS build
+# Base image
+FROM node:14-alpine as base
 
-# 2-Create app directory
-WORKDIR Anjezha
-
-# 3-copy app dependencies
-COPY  package.json .
-
-# 4-install app dependencies
-# RUN npm install
-
-#5-copy app source code
+# Development stage
+FROM base as development
+WORKDIR /Anjezha
+COPY package.json package-lock.json ./
+RUN npm install
 COPY . .
-
-
-# 6-build app 
-# RUN npm run build
-# 7-production environment
-
-
-#  production stage
-
-# multi stage => dev , test production
-
-
-# development stage
-
-FROM build as development
-
-# WORKDIR Anjezha
- # install all development dependencies
-RUN npm  install
-# run dev
 EXPOSE 5000
-CMD [ "npm", "run", "dev:start" ]
+CMD ["npm", "run", "start:dev"]
 
-
-
-
-FROM build as production
-
-WORKDIR Anjezha
-
-COPY  --from=build /Anjezha/package.json /Anjezha/package-lock.json ./
-COPY --from=build /Anjezha/dist ./dest
-# Install only production dependencies
-RUN  npm install --only=production
-
+# Production stage
+FROM base as production
+WORKDIR /Anjezha
+COPY package.json ./
+RUN npm install --only=production
+COPY . .
 RUN npm run build
-
-# expose
 EXPOSE 5000
-
-#8- start app
-CMD ["npm", "start"]
+CMD ["npm", "run", "start"]

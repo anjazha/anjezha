@@ -47,6 +47,12 @@ export class App {
  private initializeRoutes(){
 
 
+    // homw route 
+    this.app.get('/', (req:Request, res:Response, next:NextFunction) => {
+        res.status(200).json({message: 'Welcome to  Anjezha API:v1'})
+    })
+
+
     this.routes.forEach(route => {
         this.app.use('/api/v1', route)
     })

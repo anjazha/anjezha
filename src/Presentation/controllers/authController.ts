@@ -10,7 +10,7 @@ import { inject, injectable } from "inversify";
 export class AuthController {
     constructor(@inject(INTERFACE_TYPE.AuthService) private authService:AuthService) {}
       
-    async register(req:Request, res:Response, next:NextFunction) {
+       async register(req:Request, res:Response, next:NextFunction) {
 
         
         try{

@@ -25,7 +25,7 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "importHelpers": false,
-    "baseUrl": "./src",
+    "baseUrl": ".",
     
 
     "paths": {
@@ -42,18 +42,19 @@
       // "@services/*": ["services/*"],
       // "@utils/*": ["utils/*"],
       // "@app/*": ["app/*"],
-      "@/Application/*": ["Application/*"],
-      "@/Domain/*": ["Domain/*"],
-      "@/Infrastructure/*": ["Infrastructure/*"],
-      // "@Presentation/*": ["Presentation/*"],
-      "@/Presentation/*": ["Presentation/*"],
-      "@/Shared/*": ["Shared/*"],
-      "@/helpers/*": ["helpers/*"],
-      "@/config/*": ["Config/*"],
+      "@/Application/*": ["src/Application/*"],
+      "@/Domain/*": ["src/Domain/*"],
+      "@/Infrastructure/*": ["src/Infrastructure/*"],
+      // "@Presentation/*": ["src/Presentation/*"],
+      "@/Presentation/*": ["src/Presentation/*"],
+      "@/Shared/*": ["src/Shared/*"],
+      "@/helpers/*": ["src/helpers/*"],
+      "@/config/*": ["src/Config/*"],
       
       
     }
   },
+  
   "include": ["src/**/*.ts", "src/**/*.json", ".env", "environment.d.ts", "src/**/*"],
   "exclude": [
     "node_modules",

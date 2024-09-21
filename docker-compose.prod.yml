@@ -17,7 +17,7 @@ services:
         - "3000:5000"
         - "4000:5000"
       
-      command: ['npm', 'run', 'start']
+      command: npm run start
       
       
 
