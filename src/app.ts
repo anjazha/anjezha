@@ -37,7 +37,7 @@ export class App {
     }
 //    console.log(NODE_ENV)
 // handle cors 
-        const allowedOrigins = ['http://localhost:3000','http://localhost:5000',  'https://e-learning-0wji.onrender.com/'];
+        const allowedOrigins = ['http://localhost:3000','http://localhost:5000','http://localhost:5173'];
 
         const options:CorsOptions = {
             origin: allowedOrigins,
@@ -47,8 +47,8 @@ export class App {
           };
 
           // preflight request
-        this.app.options('*', cors(options));
         this.app.use(cors(options))
+        this.app.options('*', cors(options));
         this.app.use(compression())
         this.app.use(express.json())
         this.app.use(express.urlencoded({extended: true}))
