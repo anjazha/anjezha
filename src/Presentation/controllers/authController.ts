@@ -118,5 +118,11 @@ export class AuthController {
                 }
         }
 
+       async logout (req:Request, res:Response, next:NextFunction) {
+            res.clearCookie('refreshToken');
+            res.sendStatus(204); // No Content
+          }
+          
+
         
 }
