@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc && tsc-alias",
     "start": "node  dist/server.js",
-    "dev:start": "cross-env NODE_ENV=development nodemon",
+    "dev:start": "cross-env NODE_ENV=development nodemon -L",
     "test:sart": "cross-env NODE_ENV=testing jest",
     "prod:start": "cross-env NODE_ENV=production tsx ./src/server.js",
     "start:dev": "cross-env ts-node --esm -r tsconfig-paths/register --transpile-only ./src/server.ts",
