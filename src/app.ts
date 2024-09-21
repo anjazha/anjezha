@@ -46,10 +46,13 @@ export class App {
             allowedHeaders: 'Content-Type,Authorization'
           };
 
+          // preflight request
+        this.app.options('*', cors(options));
         this.app.use(cors(options))
         this.app.use(compression())
         this.app.use(express.json())
         this.app.use(express.urlencoded({extended: true}))
+
 
         // this.app.set('allow-access-contorl', 'https://e-learning-0wji.onrender.com/' )
 
