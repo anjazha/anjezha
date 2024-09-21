@@ -2,7 +2,7 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import swaggerUi from  "swagger-ui-express";
 import morgan from "morgan"
 import compression from "compression"
-import cors from 'cors'
+import cors, {CorsOptions} from 'cors'
 import { errorHandler } from "./Presentation/middlewares/exceptions/errorHandler.middleware";
 import { HTTP400Error, HTTP401Error } from "./helpers/ApiError";
 import { EHttpStatusCode } from "./Application/interfaces/enums/EHttpStatusCode";
@@ -36,7 +36,16 @@ export class App {
         console.log('morgan enabled')
     }
 //    console.log(NODE_ENV)
-        this.app.use(cors())
+// handle cors 
+        const allowedOrigins = ['http://localhost:3000','http://localhost:5000',  'https://e-learning-0wji.onrender.com/'];
+
+        const options:CorsOptions = {
+            origin: allowedOrigins,
+            methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+            credentials: true,
+          };
+
+        this.app.use(cors(options))
         this.app.use(compression())
         this.app.use(express.json())
         this.app.use(express.urlencoded({extended: true}))
