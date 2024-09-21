@@ -43,12 +43,15 @@ export class App {
             origin: allowedOrigins,
             methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
             credentials: true,
+            allowedHeaders: 'Content-Type,Authorization'
           };
 
         this.app.use(cors(options))
         this.app.use(compression())
         this.app.use(express.json())
         this.app.use(express.urlencoded({extended: true}))
+
+        // this.app.set('allow-access-contorl', 'https://e-learning-0wji.onrender.com/' )
 
        
   }
