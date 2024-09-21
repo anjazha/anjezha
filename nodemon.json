@@ -4,7 +4,5 @@
   "ext": "js,json,yaml,ts",
   "ignore": ["src/logs/*", "src/**/*.{spec,test}.ts"],
   "exec": "tsx -r tsconfig-paths/register  ./src/server.ts",
-  "events":{
-    "restart":"kill-port 5000" 
-  }
+  "events":{"restart":"kill-port 5000" }
 }

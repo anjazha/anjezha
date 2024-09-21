@@ -1,25 +1,21 @@
-# base inage 
-FROM node:lts-alpine AS build
+# Base image
+FROM node:14-alpine as base
 
-# Create app directory
-WORKDIR /anjezha
-
-# update npm to latest version
-RUN npm install -g npm@10.8.3
-# copy app dependencies
-COPY  package.json .
-
-# install app dependencies
+# Development stage
+FROM base as development
+WORKDIR /Anjezha
+COPY package.json package-lock.json ./
 RUN npm install
-
-# copy app source code
 COPY . .
-
-# build app 
-RUN npm run build
-
-# production environment
 EXPOSE 5000
+CMD ["npm", "run", "start:dev"]
 
-# start app
-CMD ["node", "start"]
+# Production stage
+FROM base as production
+WORKDIR /Anjezha
+COPY package.json ./
+RUN npm install --only=production
+COPY . .
+RUN npm run build
+EXPOSE 5000
+CMD ["npm", "run", "start"]

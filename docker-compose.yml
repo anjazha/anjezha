@@ -1,14 +1,16 @@
+
+version: '4'
 services:
-  anjezha-server:
-    image: anjezha-server
-    build:
-      context: .
-      dockerfile: dockerFile
-    command: npm run dev:start
+  anjezha:
+    container_name: anjezha-api-container
     ports:
       - "5000:5000"
-      # - "5000:3000"
-    env_file:
-      - ".env.development.local"
-    volumes:
-      - ./src:/anjezha/src
+    # build: .
+    # volumes:
+    #   - ./src:/anjezha/src:ro
+    # environment:
+    # env_file:
+    #   - .env.production.local
+    
+
+   
