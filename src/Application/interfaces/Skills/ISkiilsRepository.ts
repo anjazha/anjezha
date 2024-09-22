@@ -4,7 +4,7 @@ import { Skills } from "@/Domain/entities/Skills";
 export interface ISkillsRepository {
     getSkills: () => Promise<Skills[]>;
     getSkillById: (id: number) => Promise<Skills>;
-    getSkillByName: (skill: string) => Promise<Skills>;
+    getSkillByName: (skill: string) => Promise<Skills|null>;
     createSkill: (skill: string) => Promise<Skills>;
     updateSkill: (skill: string, id:number) => Promise<any>;
     deleteSkill: (id: number) => Promise<any>;

@@ -32,12 +32,12 @@ const subcateroyController = container.get<SubCategoryController>(INTERFACE_TYPE
 
 
 // subcategoryRoute.use(isAuth,alllowTo('manger, admin'),);
-subcategoryRoute.use(isAuth,alllowTo('manger', 'admin'));
+// subcategoryRoute.use(isAuth,alllowTo('manger', 'admin'));
 
 subcategoryRoute.route('/subcategory')
 .post( 
-    // isAuth,
-    // alllowTo('manger', 'admin'),
+    isAuth,
+    alllowTo('manger', 'admin'),
     subcateroyController.createSubCategory.bind(subcateroyController))
 .get(
     // isAuth,
@@ -52,10 +52,12 @@ subcategoryRoute.route('/subcategory/:id')
     //   alllowTo('manger, admin'),
       subcateroyController.getSubCategoryById.bind(subcateroyController))
 .put( 
+      isAuth,
+      alllowTo('manger, admin'),
     subcateroyController.updateSubCategory.bind(subcateroyController))
 .delete( 
-    // isAuth,
-    // alllowTo('manger, admin'), 
+    isAuth,
+    alllowTo('manger, admin'), 
     subcateroyController.deleteSubCategory.bind(subcateroyController));
 
 

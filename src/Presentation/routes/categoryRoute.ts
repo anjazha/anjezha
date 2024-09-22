@@ -33,10 +33,10 @@ const categoryController = container.get<CategoryController>(INTERFACE_TYPE.Cate
 
 categoryRoute.route('/category')
 .post(isAuth, alllowTo('admin'), categoryController.createCategory.bind(categoryController))
-.get(isAuth, alllowTo('admin'), categoryController.getCategories.bind(categoryController));
+.get( categoryController.getCategories.bind(categoryController));
 
 categoryRoute.route('/category/:id')
-.get( isAuth, alllowTo('admin'),  categoryController.getCategoryById.bind(categoryController))
+.get(categoryController.getCategoryById.bind(categoryController))
 .put( isAuth, alllowTo('admin'),  categoryController.updateCategory.bind(categoryController))
 .delete(isAuth, alllowTo('admin'), categoryController.deleteCategory.bind(categoryController));
 
