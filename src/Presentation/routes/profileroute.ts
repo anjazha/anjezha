@@ -4,7 +4,7 @@ import { IProfileService } from "@/Application/interfaces/User/IProfileService";
 import { IUserRepository } from "@/Application/interfaces/User/IUserRepository";
 import { UserRepository } from "@/Application/repositories/userRepository";
 import { ProfileService } from "@/Application/services/profileService";
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { Container } from "inversify";
 import { ProfileController } from "../controllers/profileController";
 import {isAuth, alllowTo} from "../middlewares/isAuth";

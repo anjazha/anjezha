@@ -2,7 +2,7 @@ import { inject, injectable } from "inversify";
 import { Request, Response, NextFunction} from "express";
 
 import { ICategoryService } from "@/Application/interfaces/ICategoryService";
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { start } from "repl";
 
 @injectable()
@@ -12,7 +12,7 @@ export class CategoryController {
        @inject(INTERFACE_TYPE.CategoryService)  private categoryService: ICategoryService
     ) {}
 
-    async createCategory(req: Request, res: Response, next:NewableFunction) {
+    async createCategory(req: Request, res: Response, next:NextFunction) {
         try {
             const { category } = req.body;
             const newCategory = await this.categoryService.createCategory(category);
@@ -20,7 +20,7 @@ export class CategoryController {
                 status: "success",
                 data: newCategory
             });
-        } catch (err) {
+        } catch (err:any) {
             return res.status(500).json({
                 status: "error",
                 message: err.message,
@@ -30,7 +30,7 @@ export class CategoryController {
     }
 
 
-    async getCategories(req: Request, res: Response, next:NewableFunction) {
+    async getCategories(req: Request, res: Response, next:NextFunction) {
 
         try {
             const categories = await this.categoryService.getCategories();
@@ -38,7 +38,7 @@ export class CategoryController {
                 status: "success",
                 data: categories
             });
-        } catch (err) {
+        } catch (err:any) {
             return res.status(500).json({
                 status: "error",
                 message: err.message
@@ -46,7 +46,7 @@ export class CategoryController {
         }
     }
 
-    async getCategoryById(req: Request, res: Response, next:NewableFunction) {
+    async getCategoryById(req: Request, res: Response, next:NextFunction) {
 
         try {
             const { id } = req.params;
@@ -55,7 +55,7 @@ export class CategoryController {
                 status: "success",
                 data: category
             });
-        } catch (err) {
+        } catch (err:any) {
             return res.status(500).json({
                 status: "error",
                 message: err.message,
@@ -65,7 +65,7 @@ export class CategoryController {
     }
 
 
-    async getCategoryByName(req: Request, res: Response, next:NewableFunction) {
+    async getCategoryByName(req: Request, res: Response, next:NextFunction) {
             
             try {
                 const { categoryName } = req.params;
@@ -74,7 +74,7 @@ export class CategoryController {
                     status: "success",
                     data: category
                 });
-            } catch (err) {
+            } catch (err:any) {
                 return res.status(500).json({
                     status: "error",
                     message: err.message,
@@ -83,7 +83,7 @@ export class CategoryController {
             }
         }
 
-    async updateCategory(req: Request, res: Response, next:NewableFunction) {
+    async updateCategory(req: Request, res: Response, next:NextFunction) {
         try {
             const { category } = req.body;
             const { id } = req.params;
@@ -92,7 +92,7 @@ export class CategoryController {
                 status: "success",
                 data: updatedCategory
             });
-        } catch (err) {
+        } catch (err:any) {
             return res.status(500).json({
                 status: "error",
                 message: err.message,
@@ -101,7 +101,7 @@ export class CategoryController {
         }
     }
 
-    async deleteCategory(req: Request, res: Response, next:NewableFunction) {
+    async deleteCategory(req: Request, res: Response, next:NextFunction) {
         try {
             const { id } = req.params;
             await this.categoryService.deleteCategory(Number(id));
@@ -109,7 +109,7 @@ export class CategoryController {
                 status: "success",
                 message: "category is deleted"
             });
-        } catch (err) {
+        } catch (err:any) {
             return res.status(500).json({
                 status: "error",
                 message: err.message,

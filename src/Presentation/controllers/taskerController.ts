@@ -1,7 +1,7 @@
 import { ITaskerService } from "@/Application/interfaces/User/Tasker/ITaskerService";
 import { TaskerService } from "@/Application/services/taskerService";
 import { Tasker } from "@/Domain/entities/Tasker";
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { inject, injectable } from "inversify";
 
 import { Request, Response, NextFunction } from "express";

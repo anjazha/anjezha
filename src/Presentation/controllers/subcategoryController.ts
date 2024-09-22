@@ -2,15 +2,16 @@ import { inject, injectable } from "inversify";
 import { Request, Response, NextFunction } from "express";
 
 import { ISubCategoryService } from "@/Application/interfaces/ISubCategoryService";
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 
 @injectable()
 export  class SubCategoryController {
+    
     constructor(
         @inject(INTERFACE_TYPE.SubCategoryService) private subCategoryService: ISubCategoryService
     ) { }
 
-    async createSubCategory(req: Request, res: Response, next: NewableFunction) {
+    async createSubCategory(req: Request, res: Response, next: NextFunction) {
         try {
             const { subcategory, categoryId } = req.body;
             const newSubCategory = await this.subCategoryService.createSubCategory(subcategory, categoryId);
@@ -18,7 +19,7 @@ export  class SubCategoryController {
                 status: "success",
                 data: newSubCategory
             });
-        } catch (err) {
+        } catch (err:any) {
             return res.status(500).json({
                 status: "error",
                 message: err.message,
@@ -27,7 +28,7 @@ export  class SubCategoryController {
         }
     }
 
-    async getSubCategories(req: Request, res: Response, next: NewableFunction) {
+    async getSubCategories(req: Request, res: Response, next: NextFunction) {
             
             try {
                 const subCategories = await this.subCategoryService.getSubCategories();
@@ -35,7 +36,7 @@ export  class SubCategoryController {
                     status: "success",
                     data: subCategories
                 });
-            } catch (err) {
+            } catch (err:any) {
                 return res.status(500).json({
                     status: "error",
                     message: err.message
@@ -43,7 +44,7 @@ export  class SubCategoryController {
             }
         }
 
-    async getSubCategoryById(req: Request, res: Response, next: NewableFunction) {
+    async getSubCategoryById(req: Request, res: Response, next: NextFunction) {
             try {
                 const { id } = req.params;
                 const subCategory = await this.subCategoryService.getSubCategoryById(Number(id));
@@ -51,7 +52,7 @@ export  class SubCategoryController {
                     status: "success",
                     data: subCategory
                 });
-            } catch (err) {
+            } catch (err:any) {
                 return res.status(500).json({
                     status: "error",
                     message: err.message
@@ -59,7 +60,7 @@ export  class SubCategoryController {
             }
         }
 
-    async getSubCategoryByName(req: Request, res: Response, next: NewableFunction) {
+    async getSubCategoryByName(req: Request, res: Response, next: NextFunction) {
             try {
                 const { subCategoryName } = req.params;
                 const subCategory = await this.subCategoryService.getSubCategoryByName(subCategoryName);
@@ -67,7 +68,7 @@ export  class SubCategoryController {
                     status: "success",
                     data: subCategory
                 });
-            } catch (err) {
+            } catch (err:any) {
                 return res.status(500).json({
                     status: "error",
                     message: err.message
@@ -75,7 +76,7 @@ export  class SubCategoryController {
             }
         }
 
-    async updateSubCategory(req: Request, res: Response, next: NewableFunction) {
+    async updateSubCategory(req: Request, res: Response, next: NextFunction) {
             try {
                 const { id } = req.params;
                 const { subcategory } = req.body;
@@ -84,7 +85,7 @@ export  class SubCategoryController {
                     status: "success",
                     data: updatedSubCategory
                 });
-            } catch (err) {
+            } catch (err:any) {
                 return res.status(500).json({
                     status: "error",
                     message: err.message
@@ -92,7 +93,7 @@ export  class SubCategoryController {
             }
         }
     
-    async deleteSubCategory(req: Request, res: Response, next: NewableFunction) {
+    async deleteSubCategory(req: Request, res: Response, next: NextFunction) {
             try {
                 const { id } = req.params;
                 await this.subCategoryService.deleteSubCategory(Number(id));
@@ -100,7 +101,7 @@ export  class SubCategoryController {
                     status: "success",
                     message: "Subcategory deleted"
                 });
-            } catch (err) {
+            } catch (err:any) {
                 return res.status(500).json({
                     status: "error",
                     message: err.message
@@ -108,7 +109,7 @@ export  class SubCategoryController {
             }
         }
 
-    async getSubCategoriesByCategory(req: Request, res: Response, next: NewableFunction) {
+    async getSubCategoriesByCategory(req: Request, res: Response, next: NextFunction) {
             try {
                 const { categoryId } = req.params;
                 const subCategories = await this.subCategoryService.getSubCategoriesByCategory(Number(categoryId));
@@ -116,7 +117,7 @@ export  class SubCategoryController {
                     status: "success",
                     data: subCategories
                 });
-            } catch (err) {
+            } catch (err:any) {
                 return res.status(500).json({
                     status: "error",
                     message: err.message

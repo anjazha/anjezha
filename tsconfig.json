@@ -1,28 +1,36 @@
 {
-  "compileOnSave": false,
+  // "compileOnSave": false,
   "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["ES2022", "esnext.asynciterable"],
-    "typeRoots": ["node_modules/@types"],
+    "target": "ES6",
+    // "lib": ["es6", "dom"]
+
+    "lib": ["ES2022", "esnext.asynciterable", "es6", "dom", "es2015", "es2016", "es2017", "es2018", "es2019", "es2020", "es2021", "es2022"],
+    "typeRoots": ["./node_modules/@types", "./types"],
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
-    "module": "ESNext",
+    "module": "CommonJS",
+    "strict": true,
+    "skipLibCheck": true,
     "pretty": true,
     "sourceMap": true,
     "declaration": true,
+
     "outDir": "./dist",
+    // "rootDir": "./src",
     "allowJs": true,
     "noEmit": false,
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "importHelpers": false,
-    "baseUrl": "src",
+    "baseUrl": ".",
+    
+
     "paths": {
-      "@/*": ["*"]
-      // "@config": ["config"],
+      // "@/*": ["*"]
+      // "@Config/*": ["Config/*"],
       // "@controllers/*": ["controllers/*"],
       // "@databases": ["databases"],
       // "@dtos/*": ["dtos/*"],
@@ -33,16 +41,26 @@
       // "@routes/*": ["routes/*"],
       // "@services/*": ["services/*"],
       // "@utils/*": ["utils/*"],
-      // "@app/*": ["app/*"]
+      // "@app/*": ["app/*"],
+      "@/Application/*": ["src/Application/*"],
+      "@/Domain/*": ["src/Domain/*"],
+      "@/Infrastructure/*": ["src/Infrastructure/*"],
+      // "@Presentation/*": ["src/Presentation/*"],
+      "@/Presentation/*": ["src/Presentation/*"],
+      "@/Shared/*": ["src/Shared/*"],
+      "@/helpers/*": ["src/helpers/*"],
+      "@/config/*": ["src/Config/*"],
+      
+      
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.json", ".env", "environment.d.ts"],
+  
+  "include": ["src/**/*.ts", "src/**/*.json", ".env", "environment.d.ts", "src/**/*"],
   "exclude": [
     "node_modules",
     "src/http",
     "src/logs",
     "__tests__",
     "jest.config.js",
-    "./dist"
   ]
 }

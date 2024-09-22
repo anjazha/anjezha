@@ -1,6 +1,7 @@
 import { User } from "@/Domain/entities/User";
 
 export interface IProfileService {
+    // getProfile
     getProfile(id:number): Promise<User>;
     updateProfile(userID:number, data: User): Promise<User>;
     dleteProfile(userID:number): Promise<any>;

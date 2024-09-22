@@ -1,5 +1,5 @@
 import { IProfileService } from "@/Application/interfaces/User/IProfileService";
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { inject, injectable } from "inversify";
 
 import { Request, Response, NextFunction } from "express";
@@ -21,7 +21,7 @@ export class ProfileController {
             const profile = await this.profileService.getProfile((userId));
             res.status(200).json(profile);
 
-        } catch(err){
+        } catch(err:any){
 
            next(new HTTP500Error(`An error occurred message:${err.message}\n stack:${err.stack}`));
 
@@ -39,7 +39,7 @@ export class ProfileController {
 
             const profile = await this.profileService.updateProfile(userId, data);
             res.status(200).json(profile);
-        } catch(err){
+        } catch(err:any){
             next(new HTTP500Error(`An error occurred message:${err.message}\n stack:${err.stack}`));
         }
     }
@@ -50,7 +50,7 @@ export class ProfileController {
         try{
             const profile = await this.profileService.dleteProfile(userId);
             res.status(200).json(profile);
-        } catch(err){
+        } catch(err:any){
             next(new HTTP500Error(`An error occurred message:${err.message}\n stack:${err.stack}`));
         }
     }
@@ -63,7 +63,7 @@ export class ProfileController {
         try{
             const profile = await this.profileService.updateProfilePicture(userId, profilePicture);
             res.status(200).json(profile);
-        } catch(err){
+        } catch(err:any){
             next(new HTTP500Error(`An error occurred message:${err.message}\n stack:${err.stack}`));
         }
     }
@@ -78,7 +78,7 @@ export class ProfileController {
             
             const profile = await this.profileService.changePassword(userId, oldPassword, newPassword);
             res.status(200).json(profile);
-        } catch(err){
+        } catch(err:any){
             next(new HTTP500Error(`An error occurred message:${err.message}\n stack:${err.stack}`));
         }
     }
@@ -88,7 +88,7 @@ export class ProfileController {
         try{
             await this.profileService.logout(userId);
             res.status(200).json({message: 'User logged out successfully'});
-        } catch(err){
+        } catch(err:any){
             next(new HTTP500Error(`An error occurred message:${err.message}\n stack:${err.stack}`));
         }
     }

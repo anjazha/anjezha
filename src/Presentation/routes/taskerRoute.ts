@@ -2,7 +2,7 @@ import { Container } from "inversify";
 import { TaskerController } from "../controllers/taskerController";
 import { TaskerService } from "@/Application/services/taskerService";
 import { TaskerRepository } from "@/Application/repositories/taskerRepository";
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { ITaskerRepository } from "@/Application/interfaces/User/Tasker/ITaskerRepository";
 import { ITaskerService } from "@/Application/interfaces/User/Tasker/ITaskerService";
 import { Router } from "express";

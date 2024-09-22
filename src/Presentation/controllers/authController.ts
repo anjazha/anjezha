@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 
 import { AuthService } from "@/Application/services/authService";
 import { User } from "@/Domain/entities/User";
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { inject, injectable } from "inversify";
 
 
@@ -10,7 +10,7 @@ import { inject, injectable } from "inversify";
 export class AuthController {
     constructor(@inject(INTERFACE_TYPE.AuthService) private authService:AuthService) {}
       
-    async register(req:Request, res:Response, next:NextFunction) {
+       async register(req:Request, res:Response, next:NextFunction) {
 
         
         try{

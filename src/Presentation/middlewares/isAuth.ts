@@ -44,7 +44,7 @@ export const isAuth = (req: RequestWithUserId, res: Response, next: NextFunction
 
             next();
 
-        }catch(error){
+        }catch(error:any){
                 // console.log(error);
                 //  res.status(401).json({message: 'Unauthorized'});
                 next(new HTTP401Error(error.message))
@@ -65,7 +65,7 @@ export const alllowTo = (...roles: string[]) => {
         // return error if user is not authorized
         try{
 
-            if(!roles.includes(req.role)){
+            if(!roles.includes(req.role!)){
                 next(new HTTP401Error('not alllow to access this route'));
             }
             

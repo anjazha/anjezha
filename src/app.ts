@@ -2,10 +2,11 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import swaggerUi from  "swagger-ui-express";
 import morgan from "morgan"
 import compression from "compression"
+import cors, {CorsOptions} from 'cors'
 import { errorHandler } from "./Presentation/middlewares/exceptions/errorHandler.middleware";
 import { HTTP400Error, HTTP401Error } from "./helpers/ApiError";
 import { EHttpStatusCode } from "./Application/interfaces/enums/EHttpStatusCode";
-import {connectDB, disconnectDB} from '@/Infrastructure/database'
+import {connectDB, disconnectDB} from '@/Infrastructure/database/index'
 import { PORT, NODE_ENV } from "./Config/index";
 import swaggerSpec from "./swager";
 import { compare } from 'bcryptjs';
@@ -35,14 +36,36 @@ export class App {
         console.log('morgan enabled')
     }
 //    console.log(NODE_ENV)
+// handle cors 
+        const allowedOrigins = ['http://localhost:3000','http://localhost:5000','http://localhost:5173'];
+
+        const options:CorsOptions = {
+            origin: allowedOrigins,
+            methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+            credentials: true,
+            allowedHeaders: 'Content-Type,Authorization'
+          };
+
+          // preflight request
+        this.app.use(cors(options))
+        this.app.options('*', cors(options));
         this.app.use(compression())
         this.app.use(express.json())
         this.app.use(express.urlencoded({extended: true}))
+
+
+        // this.app.set('allow-access-contorl', 'https://e-learning-0wji.onrender.com/' )
 
        
   }
 
  private initializeRoutes(){
+
+
+    // homw route 
+    this.app.get('/', (req:Request, res:Response, next:NextFunction) => {
+        res.status(200).json({message: 'Welcome to  Anjezha API:v1'})
+    })
 
 
     this.routes.forEach(route => {
