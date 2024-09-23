@@ -51,7 +51,7 @@ const uploadToCloudinary =
             return next(
               new HTTP500Error(
                 "Error uploading file to cloudinary " + error.message
-              )
+              ) 
             );
 
           attachments.push({
@@ -61,7 +61,7 @@ const uploadToCloudinary =
           });
         }
         // console.log(attachments);
-      req.body.attachments = attachments;
+        req.body.attachments = attachments;
       }
     }
       next();

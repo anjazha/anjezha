@@ -15,15 +15,27 @@ export class CategoryRepository implements ICategoryRepository{
         this.client = pgClient;
      }  
 
-    async createCategory(category: string): Promise<Category> {
+    async createCategory(categoryData: Category): Promise<Category> {
       try{
 
-          const query = 'INSERT INTO categories (category) VALUES ($1) RETURNING *';
-          const values = [category];
+        let {category, imageUrl, description} = categoryData;
+
+         description = description? description: '';
+
+         imageUrl= imageUrl? imageUrl: '';
+          
+          const query = 'INSERT INTO categories (category, image_url, description ) VALUES ($1, $2, $3) RETURNING *';
+
+          const values = [category, imageUrl, description];
+
           const { rows } = await this.client.query(query, values);
-          return new Category(rows[0].name, rows[0].id);
+
+          return new Category(rows[0].name, rows[0].image_url, rows[0].description, rows[0].id);
+
         } catch(err:any){
+
           throw new Error(`Error creating category: ${err.message} ${err.stack}`);
+
       }
     }
 
@@ -34,7 +46,11 @@ export class CategoryRepository implements ICategoryRepository{
             SELECT 
                 categories.id as category_id, 
                 categories.category as category_name, 
+                categories.image_url as category_image_url,
+                categories.description as category_description,
                 subcategories.id as subcategory_id, 
+                subcategories.image_url as subcategory_image_url
+                subcategories.description as subcategory_description
                 subcategories.subcategory as subcategory_name 
               FROM categories 
               LEFT JOIN subcategories ON categories.id = subcategories.category_id`;
@@ -53,14 +69,14 @@ export class CategoryRepository implements ICategoryRepository{
                 if(row.category_id in categoriesMap){ 
                     // check if subcategory is exist or not
                     if(row.subcategory_id){
-                        categoriesMap[row.category_id].subcategories.push(new SubCategory(row.subcategory_name, row.subcategory_id));
+                        categoriesMap[row.category_id].subcategories.push(new SubCategory(row.subcategory_name, row.subcategory_id, row.subcategory_image_url, row.subcategory_description));
                     }
 
                  } else {
-                    categoriesMap[row.category_id] = new Category(row.category_name, row.category_id, []);
+                    categoriesMap[row.category_id] = new Category(row.category_name, row.category_id,row.category_image_url, row.category_description , []);
 
                     if(row.subcategory_id){
-                        categoriesMap[row.category_id].subcategories.push(new SubCategory(row.subcategory_name, row.subcategory_id))
+                        categoriesMap[row.category_id].subcategories.push(new SubCategory(row.subcategory_name, row.subcategory_id, row.subcategory_image_url, row.subcategory_description))
                     }
     
                  }
@@ -102,13 +118,32 @@ export class CategoryRepository implements ICategoryRepository{
         }
     }
 
-    async updateCategory(category: string, id: number): Promise<any> {
+    async updateCategory(categoryData: Category, id: number): Promise<any> {
         try{
-            const query = 'UPDATE categories SET category = $1 WHERE id = $2 RETURNING *';
-            const values = [category, id];
+
+            let query = 'UPDATE categories SET ';
+            const values=[];
+            let index=1;
+
+            for (let key in categoryData){
+                if(categoryData.hasOwnProperty(key)){
+                    query += `${key} = $${index}, `; // imageUrl => 
+                    values.push((categoryData as any)[key]); // cateting type from category to any
+                    index++;
+                }
+            }
+
+            query = query.slice(0, -2); // remove last comma
+
+            query+= ` WHERE id = $${index} RETURNING *`;
+            values.push(id);
+
+
+            //  query = 'UPDATE categories SET category = $1 WHERE id = $2 RETURNING *';
+            // const values = [category, id];
             const { rows } = await this.client.query(query, values);
 
-            return new Category(rows[0].category, rows[0].id);
+            return new Category(rows[0].category,rows[0].image_url, rows[0].description, rows[0].id);
 
         } catch(err:any){
             throw new Error(`Error updating category: ${err.message} ${err.stack}`);
