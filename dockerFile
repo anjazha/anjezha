@@ -1,10 +1,10 @@
-# Base image
+# Base image, stage
 FROM node:lts-alpine as base
 
 # Development stage
 FROM base as development
 WORKDIR /Anjezha
-COPY package.json package-lock.json ./
+COPY package.json  ./
 RUN npm install
 COPY . .
 EXPOSE 5000
