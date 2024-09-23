@@ -17,7 +17,7 @@ services:
     command: npm run start:dev
   
   anjezha-db:
-    image: mongo:latest
+    image: postgres:latest
     restart: always
     container_name: anjezha-db
     ports:

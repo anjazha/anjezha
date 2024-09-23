@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 
 import { ISubCategoryService } from "@/Application/interfaces/ISubCategoryService";
 import { INTERFACE_TYPE } from "@/helpers/containerConst";
+import { SubCategory } from "@/Domain/entities/SubCategory";
 
 @injectable()
 export  class SubCategoryController {
@@ -13,12 +14,21 @@ export  class SubCategoryController {
 
     async createSubCategory(req: Request, res: Response, next: NextFunction) {
         try {
-            const { subcategory, categoryId } = req.body;
-            const newSubCategory = await this.subCategoryService.createSubCategory(subcategory, categoryId);
+
+            const { subcategory, categoryId, attachments, description} = req.body;
+
+            const imageUrl = attachments[0].file_path;
+            
+
+            const newSubCategory = await this.subCategoryService.createSubCategory(
+                new SubCategory(subcategory, categoryId, imageUrl, description)
+            );
+
             return res.status(201).json({
                 status: "success",
                 data: newSubCategory
             });
+
         } catch (err:any) {
             return res.status(500).json({
                 status: "error",
@@ -77,10 +87,17 @@ export  class SubCategoryController {
         }
 
     async updateSubCategory(req: Request, res: Response, next: NextFunction) {
-            try {
+         try {
                 const { id } = req.params;
-                const { subcategory } = req.body;
-                const updatedSubCategory = await this.subCategoryService.updateSubCategory(subcategory, Number(id));
+
+                const { subcategory, categoryId, attachments, description} = req.body;
+                
+                const imageUrl =  attachments[0].file_path;
+
+                const updatedSubCategory = await this.subCategoryService.updateSubCategory(
+                    new SubCategory(subcategory, categoryId, attachments, description),
+                     Number(id));
+
                 return res.status(200).json({
                     status: "success",
                     data: updatedSubCategory
