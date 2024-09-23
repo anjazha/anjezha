@@ -5,10 +5,13 @@ import { safePromise } from "@/helpers/safePromise";
 import { HTTP500Error } from "@/helpers/ApiError";
 
 const storage = multer.memoryStorage();
-const upload = multer({ storage, limits: { fieldSize: 5 * 1025 * 1024 } }); // files size limit will be 5MB
+export const upload = multer({ storage, limits: { fieldSize: 5 * 1025 * 1024 } }); // files size limit will be 5MB
 
 cloudinary.config({
   secure: true,
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 
@@ -31,6 +34,7 @@ const uploadBuffer = (file:any) => {
   });
 };
 
+
 const uploadToCloudinary =
   (collectionName:any) =>
   async (req: Request, res: Response, next: NextFunction) => {
@@ -49,6 +53,7 @@ const uploadToCloudinary =
                 "Error uploading file to cloudinary " + error.message
               )
             );
+
           attachments.push({
             file_path: fileUrl,
             file_type: file.mimetype,
@@ -67,3 +72,7 @@ const uploadToCloudinary =
 export const filesUpload = (fieldName: string, collectionName: string) => {
   return [upload.array(fieldName, 5), uploadToCloudinary(collectionName)]; // 5 files can be uploaded at a time
 };
+
+export const fileUpload = (fielName:string, collectionName:string) => {
+  return [upload.single(fielName), uploadToCloudinary(collectionName) ]
+}
