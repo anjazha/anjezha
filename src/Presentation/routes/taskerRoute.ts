@@ -43,7 +43,7 @@ router.post(
   taskerController.addTasker.bind(taskerController)
 );
 
-// alllow only user authenticate and become tasker 1-creat middlware
+// allow only user authenticate and become tasker 1-creat middlware
 router.get(
   "/about-tasker",
   isAuth,

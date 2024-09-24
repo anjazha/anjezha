@@ -218,7 +218,7 @@ SELECT
     t.longitude,
     t.latitude,
     t.address,
-    tc.name as category,
+    tc.category as category,
     ARRAY_AGG(distinct ts.name) AS skills,  
 	ARRAY_AGG(distinct ta.file_path) AS attachmets ,
     s.status,
@@ -237,7 +237,7 @@ LEFT JOIN
 LEFT JOIN 
     task_attachments ta ON t.id = ta.task_id
 GROUP BY 
-    t.id, s.status, sch.schedule_type, sch.start_time, sch.end_time, tc.name;`);
+    t.id, s.status, sch.schedule_type, sch.start_time, sch.end_time, tc.category;`);
       return rows;
     } catch (error:any) {
       throw new HTTP500Error("Error while fetching tasks " + error.message);
@@ -257,7 +257,7 @@ GROUP BY
       t.longitude,
       t.latitude,
       t.address,
-      tc.name as category,
+      tc.category as category,
       ARRAY_AGG(distinct ts.name) AS skills,  
       ARRAY_AGG(distinct ta.file_path) AS attachmets ,
       s.status,
@@ -277,7 +277,7 @@ GROUP BY
       task_attachments ta ON t.id = ta.task_id
   WHERE t.id = ${id}
   GROUP BY 
-      t.id, s.status, sch.schedule_type, sch.start_time, sch.end_time, tc.name;`);
+      t.id, s.status, sch.schedule_type, sch.start_time, sch.end_time, tc.category;`);
       return rows[0];
     } catch (error:any) {
       throw new HTTP500Error("Error while fetching task " + error.message);
@@ -297,7 +297,7 @@ GROUP BY
             t.longitude,
             t.latitude,
             t.address,
-            tc.name as category,
+            tc.category as category,
             ARRAY_AGG(distinct ts.name) AS skills,  
             ARRAY_AGG(distinct ta.file_path) AS attachmets ,
             s.status,
@@ -317,7 +317,7 @@ GROUP BY
             task_attachments ta ON t.id = ta.task_id
         WHERE t.user_id = ${userId}
         GROUP BY 
-            t.id, s.status, sch.schedule_type, sch.start_time, sch.end_time, tc.name;`)
+            t.id, s.status, sch.schedule_type, sch.start_time, sch.end_time, tc.category;`)
     );
 
     if (error)

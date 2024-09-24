@@ -11,8 +11,6 @@ import { SubCategoryController } from "../controllers/subcategoryController";
 import { Interface } from "readline";
 import { fileUpload } from "../middlewares/filesUpload";
 
-
-
 const subcategoryRoute = Router();
 
 const container = new Container();
@@ -36,39 +34,41 @@ const subcateroyController = container.get<SubCategoryController>(
   INTERFACE_TYPE.SubCategoryController
 );
 
-// subcategoryRoute.use(isAuth,alllowTo('manger, admin'),);
-// subcategoryRoute.use(isAuth,alllowTo('manger', 'admin'));
+// subcategoryRoute.use(isAuth,allowTo('manger, admin'),);
+// subcategoryRoute.use(isAuth,allowTo('manger', 'admin'));
 
-subcategoryRoute.route('/subcategory')
-.post( 
+subcategoryRoute
+  .route("/subcategory")
+  .post(
     isAuth,
-    allowTo('manger', 'admin'),
-    fileUpload('imageUrl', 'subcategories'),
-    subcateroyController.createSubCategory.bind(subcateroyController))
-.get(
+    allowTo("manger", "admin"),
+    fileUpload("imageUrl", "subcategories"),
+    subcateroyController.createSubCategory.bind(subcateroyController)
+  )
+  .get(
     // isAuth,
-    // alllowTo('manger', 'admin'),
-    subcateroyController.getSubCategories.bind(subcateroyController));
+    // allowTo('manger', 'admin'),
+    subcateroyController.getSubCategories.bind(subcateroyController)
+  );
 
-    
-subcategoryRoute.route('/subcategory/:id')
-// .all(isAuth,alllowTo('manger', 'admin'))
-.get( 
+subcategoryRoute
+  .route("/subcategory/:id")
+  // .all(isAuth,allowTo('manger', 'admin'))
+  .get(
     //   isAuth,
-    //   alllowTo('manger, admin'),
-      subcateroyController.getSubCategoryById.bind(subcateroyController))
-.put( 
-      isAuth,
-      allowTo('manger, admin'),
-      fileUpload('imageUrl', 'categories'),
-    subcateroyController.updateSubCategory.bind(subcateroyController))
-.delete( 
+    //   allowTo('manger, admin'),
+    subcateroyController.getSubCategoryById.bind(subcateroyController)
+  )
+  .put(
     isAuth,
-    allowTo('manger, admin'), 
-    subcateroyController.deleteSubCategory.bind(subcateroyController));
-
-
-
-
+    allowTo("manger, admin"),
+    fileUpload("imageUrl", "categories"),
+    subcateroyController.updateSubCategory.bind(subcateroyController)
+  )
+  .delete(
+    isAuth,
+    allowTo("manger, admin"),
+    subcateroyController.deleteSubCategory.bind(subcateroyController)
+  );
 
 export default subcategoryRoute;

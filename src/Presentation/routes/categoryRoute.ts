@@ -11,8 +11,6 @@ import { CategoryService } from "@/Application/services/categoryService";
 import { allowTo, isAuth } from "../middlewares/isAuth";
 import { fileUpload, upload } from "../middlewares/filesUpload";
 
-
-
 const categoryRoute = Router();
 
 const container = new Container();
@@ -36,30 +34,33 @@ const categoryController = container.get<CategoryController>(
   INTERFACE_TYPE.CategoryController
 );
 
-// categoryRoute.use(isAuth,alllowTo('manager', 'admin'));
+// categoryRoute.use(isAuth,allowTo('manager', 'admin'));
 // const upload = multer({ storage: multer.memoryStorage() }, fi);
 
-categoryRoute.route('/category')
-.post(
-       isAuth, 
-       alllowTo('admin'), 
-        fileUpload('imageUrl', 'categories'),
-       categoryController.createCategory.bind(categoryController))
+categoryRoute
+  .route("/category")
+  .post(
+    isAuth,
+    allowTo("admin"),
+    fileUpload("imageUrl", "categories"),
+    categoryController.createCategory.bind(categoryController)
+  )
 
-.get( categoryController.getCategories.bind(categoryController));
+  .get(categoryController.getCategories.bind(categoryController));
 
-categoryRoute.route('/category/:id')
-.get(categoryController.getCategoryById.bind(categoryController))
-.put( 
-    isAuth, 
-    alllowTo('admin'),  
-    fileUpload('imageUrl', 'categories'),
-    categoryController.updateCategory.bind(categoryController))
-.delete(
-    isAuth, 
-    alllowTo('admin'), 
-    categoryController.deleteCategory.bind(categoryController));
-
-
+categoryRoute
+  .route("/category/:id")
+  .get(categoryController.getCategoryById.bind(categoryController))
+  .put(
+    isAuth,
+    allowTo("admin"),
+    fileUpload("imageUrl", "categories"),
+    categoryController.updateCategory.bind(categoryController)
+  )
+  .delete(
+    isAuth,
+    allowTo("admin"),
+    categoryController.deleteCategory.bind(categoryController)
+  );
 
 export default categoryRoute;
