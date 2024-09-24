@@ -3,6 +3,7 @@ import swaggerUi from  "swagger-ui-express";
 import morgan from "morgan"
 import compression from "compression"
 import cors, {CorsOptions} from 'cors'
+import bodyParser from 'body-parser';
 import { errorHandler } from "./Presentation/middlewares/exceptions/errorHandler.middleware";
 import { HTTP400Error, HTTP401Error } from "./helpers/ApiError";
 import { EHttpStatusCode } from "./Application/interfaces/enums/EHttpStatusCode";
@@ -51,6 +52,7 @@ export class App {
         this.app.options('*', cors(options));
         this.app.use(compression())
         this.app.use(express.json())
+        this.app.use(bodyParser.json({ type: 'application/json; charset=utf-8' }));
         this.app.use(express.urlencoded({extended: true}))
 
 

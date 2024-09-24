@@ -5,6 +5,7 @@ import {injectable } from "inversify";
 import { pgClient } from "@/Infrastructure/database";
 import { SubCategory } from "@/Domain/entities/SubCategory";
 import { ISubCategoryRepository } from "../interfaces/ISubCategoryRepository";
+import { HTTP500Error } from "@/helpers/ApiError";
 
 
 
@@ -19,22 +20,23 @@ export class SubCategoryRepository implements ISubCategoryRepository {
     async createSubCategory(subCategoryData: SubCategory): Promise<SubCategory> {
       try {
 
-        let {subcategory,categoryId, imageUrl, description } = subCategoryData;
+        let {subcategory, categoryId, imageUrl, description } = subCategoryData;
+        console.log('repository ', description);
 
         description = description? description: '';
 
         imageUrl = imageUrl? imageUrl: '';
         
         // write query to insert subcategory
-        const query = 'INSERT INTO subcategories (subcategory, category_id, image_url, desscription) VALUES ($1, $2, $3, $4) RETURNING *';
+        const query = 'INSERT INTO subcategories (subcategory, category_id, image_url, description) VALUES ($1, $2, $3, $4) RETURNING *';
         // pass subcategory
-        const values = [subcategory, categoryId, imageUrl, description];
+        const values = [subcategory, +categoryId, imageUrl, description];
         // execute query
         const { rows } = await this.client.query(query, values);
         // map rows to subcategory object
         return  new SubCategory(rows[0].subcategory, rows[0].category_id, rows[0].image_url, rows[0].description, rows[0].id);
         } catch(err:any){
-        throw new Error(`Error creating subcategory: ${err.message} ${err.stack}`);
+           throw new HTTP500Error(`Error creating subcategory: ${err.message} ${err.stack}`);
         }
     }
 
@@ -94,6 +96,10 @@ export class SubCategoryRepository implements ISubCategoryRepository {
 
 
              for(let key in subCategoryData) {
+
+                  key = key == 'imageUrl'?'image_url': key;
+                  key = key == 'categoryId'?'category_id': key;
+
                   if(subCategoryData.hasOwnProperty(key)){
                      query += `${key} = $${index}, `;
                      values.push((subCategoryData as any)[key]);
@@ -111,7 +117,7 @@ export class SubCategoryRepository implements ISubCategoryRepository {
               return  new SubCategory(rows[0].subcategory, rows[0].category_id,rows[0].imageUrl, rows[0].description, rows[0].id);
 
              } catch(err:any){
-               throw new Error(`Error updating subcategory: ${err.message} ${err.stack}`);
+               throw new HTTP500Error(`Error updating subcategory: ${err.message} ${err.stack}`);
         }
     }
 
@@ -126,7 +132,7 @@ export class SubCategoryRepository implements ISubCategoryRepository {
         // return message
         return 'Subcategory deleted';
         } catch(err:any){
-            throw new Error(`Error deleting subcategory: ${err.message} ${err.stack}`);
+            throw new HTTP500Error(`Error deleting subcategory: ${err.message} ${err.stack}`);
         }
     }
 
@@ -141,7 +147,7 @@ export class SubCategoryRepository implements ISubCategoryRepository {
         // map rows to subcategory object
         return rows.map((subcategory: SubCategory) => new SubCategory(subcategory.subcategory, subcategory.categoryId,subcategory.imageUrl, subcategory.description, subcategory.id));
         } catch(err:any){
-           throw new Error(`Error getting subcategories by category: ${err.message} ${err.stack}`);
+           throw new HTTP500Error(`Error getting subcategories by category: ${err.message} ${err.stack}`);
         }
     }
 }

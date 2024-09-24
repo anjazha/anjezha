@@ -4,6 +4,7 @@ import { Request, Response, NextFunction } from "express";
 import { ISubCategoryService } from "@/Application/interfaces/ISubCategoryService";
 import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { SubCategory } from "@/Domain/entities/SubCategory";
+import { console } from "inspector";
 
 @injectable()
 export  class SubCategoryController {
@@ -15,13 +16,15 @@ export  class SubCategoryController {
     async createSubCategory(req: Request, res: Response, next: NextFunction) {
         try {
 
-            const { subcategory, categoryId, attachments, description} = req.body;
+            const { subcategory, categoryId, imageUrl, description} = req.body;
 
-            const imageUrl = attachments[0].file_path;
+            // const imageUrl = attachments[0].file_path;
+
+            console.log(subcategory, categoryId, imageUrl, description)
             
 
             const newSubCategory = await this.subCategoryService.createSubCategory(
-                new SubCategory(subcategory, categoryId, imageUrl, description)
+                new SubCategory(subcategory, Number(categoryId), imageUrl, description)
             );
 
             return res.status(201).json({
@@ -41,6 +44,7 @@ export  class SubCategoryController {
     async getSubCategories(req: Request, res: Response, next: NextFunction) {
             
             try {
+
                 const subCategories = await this.subCategoryService.getSubCategories();
                 return res.status(200).json({
                     status: "success",
@@ -90,12 +94,12 @@ export  class SubCategoryController {
          try {
                 const { id } = req.params;
 
-                const { subcategory, categoryId, attachments, description} = req.body;
+                const { subcategory, categoryId, imageUrl, description} = req.body;
 
-                const imageUrl =  attachments[0].file_path;
+                // const imageUrl =  attachments[0].file_path;
 
                 const updatedSubCategory = await this.subCategoryService.updateSubCategory(
-                    new SubCategory(subcategory, categoryId, imageUrl, description),
+                    new SubCategory(subcategory, Number(categoryId), imageUrl, description),
                      Number(id));
 
                 return res.status(200).json({
@@ -105,7 +109,8 @@ export  class SubCategoryController {
             } catch (err:any) {
                 return res.status(500).json({
                     status: "error",
-                    message: err.message
+                    err: err.message,
+                    stack:err.stack
                 });
             }
         }

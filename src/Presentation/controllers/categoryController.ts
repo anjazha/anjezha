@@ -15,13 +15,17 @@ export class CategoryController {
 
     async createCategory(req: Request, res: Response, next:NextFunction) {
         try {
-            const { category , attachments, description} = req.body;
+            const { category , imageUrl, description} = req.body;
+            
+            console.log(category , imageUrl, description)
+
+            // console.log(attachments);
             // const { attachments } = req.body;
-            const imageUrl = attachments[0].file_path;
+            // const imageUrl = attachments[0].file_path;
 
             const categoryData= new Category(category, imageUrl, description);
 
-            const newCategory = await this.categoryService.createCategory(category);
+            const newCategory = await this.categoryService.createCategory(categoryData);
             return res.status(201).json({
                 status: "success",
                 data: newCategory
@@ -47,7 +51,8 @@ export class CategoryController {
         } catch (err:any) {
             return res.status(500).json({
                 status: "error",
-                message: err.message
+                err: err.message,
+                stack:err.stack
             });
         }
     }
