@@ -19,13 +19,14 @@ export class SearchController {
     next: NextFunction
   ): Promise<any> {
     const q = req.query.q as string;
-    let { skills, minBudget, maxBudget, government, status, sortBy, fields } =
+    let { skills, minBudget, maxBudget, government, status, sortBy, fields, category} =
       req.query;
     let filters = {
       skills: skills ? skills.toString().split(",") : [],
       minBudget: minBudget ? +minBudget : 0,
       maxBudget: maxBudget ? +maxBudget : 1000000,
       government,
+      category,
       status,
       fields,
       page: Number(req.query.page) || 1,
