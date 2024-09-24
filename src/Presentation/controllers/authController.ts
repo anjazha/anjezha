@@ -7,6 +7,7 @@ import { inject, injectable } from "inversify";
 import { INotificationService } from "@/Application/interfaces/Notification/INotificationService";
 import { Notification } from "@/Domain/entities/Notification";
 import { ENOTIFICATION_TYPES } from "@/Application/interfaces/enums/ENotificationTypes";
+import { HTTP500Error } from "@/helpers/ApiError";
 
 
 @injectable()
@@ -47,8 +48,9 @@ export class AuthController {
                 // await this.notificationService.sendNotification(notification)
 
                 res.status(200).json({ token });
-            }  catch(err:any){
-                res.status(500).json({message: 'An error occurred' ,err: err.message, stack:err.stack})
+            }  catch(err : any){
+                // res.status(500).json({message: 'An error occurred' + err})
+                next(new HTTP500Error("An error ocurred " + err.message))
             }
         }
 
@@ -61,8 +63,8 @@ export class AuthController {
                 await this.authService.forgotPassword(email);
 
                 res.status(200).json({ message: "Password reset link sent to your email" });
-            }  catch(err){
-                next(err)
+            }  catch(err : any){
+                next(new HTTP500Error("An error ocurred " + err.message))
             }
         }
 
@@ -81,8 +83,8 @@ export class AuthController {
             const newPassword = await this.authService.resetPassword(token, password);
             
             res.status(200).json({ newPassword });
-                } catch(err){
-                    next(err)
+                } catch(err : any){
+                    next(new HTTP500Error("An error ocurred " + err.message))
                 }
         }
 
