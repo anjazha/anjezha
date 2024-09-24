@@ -8,6 +8,7 @@ enum MessageStatus{
 export class Messages{
     constructor(
         public senderId:number,
+        public caht_id:number,
         public message: string, 
         public messageStatus:MessageStatus,
         public change_status_at:Date,

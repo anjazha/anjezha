@@ -5,9 +5,14 @@ import { App } from "./app"
 import {userRouter, authRouter, profileRouter, taskerRouter, taskRouter, taskerSkillRouter, categoryRoute, subcategoryRoute,   searchRouter, taskAssignmentRouter, taskApplicationRouter} from "./Presentation/routes";
 
 
-const app = new App([userRouter, authRouter, profileRouter, taskerRouter, taskRouter, taskerSkillRouter, categoryRoute, subcategoryRoute, searchRouter, taskAssignmentRouter, taskApplicationRouter ]);
+// build 
+const appInstance = new App([userRouter, authRouter, profileRouter, taskerRouter, taskRouter, taskerSkillRouter, categoryRoute, subcategoryRoute, searchRouter, taskAssignmentRouter, taskApplicationRouter ]);
 
-app.listen()
+appInstance.listen();
+const app = appInstance.getExpressApp();
+// const app = getExpressApp();
+
+export {app}
 
 // import { UserRoute } from "./Presentation/routes/userRoute";
 

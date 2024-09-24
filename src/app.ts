@@ -14,10 +14,11 @@ import { compare } from 'bcryptjs';
 
 
 export class App {
-    public port : number ;
-    public app : Application
+    private port : number ;
+    private app : Application
     constructor(public readonly routes: any[]){
-        this.app = express()
+        this.app = express();
+       // console.log(this.app);
         this.port = Number(PORT) || 5000;
         this.initializeDbConnection()
         this.initialzeMiddlewares()
@@ -59,7 +60,7 @@ export class App {
        
   }
 
- private initializeRoutes(){
+  private initializeRoutes(){
 
 
     // homw route 
@@ -86,17 +87,22 @@ export class App {
     this.app.use('/api-docs',swaggerUi.serve,  swaggerUi.setup(swaggerSpec));
  }
 
+  public getExpressApp(): Application {
+    return this.app;
+  }
 
  public listen() : void {
+     this.app.listen(this.port, () => {
+        console.log("app is running on port " + this.port);
+     })
 
-    this.app.listen(this.port, ()=>{
-        console.log(`Server is running on port ${this.port}`); 
-    })
-    
-    this.app.on('error', (error:any) => {
-        console.error('Error occurred:', error);
-        disconnectDB();
-    });
- }
+     this.app.on('error', (err) => {
+        console.error('server error', err);
+      }
+    );
+}
+
+
+
 
 }
