@@ -8,28 +8,33 @@ import { createInflateRaw } from "zlib";
 import { CategoryRepository } from "@/Application/repositories/categoryRpository";
 import { ICategoryService } from "@/Application/interfaces/ICategoryService";
 import { CategoryService } from "@/Application/services/categoryService";
-import { alllowTo, isAuth } from "../middlewares/isAuth";
+import { allowTo, isAuth } from "../middlewares/isAuth";
 import { fileUpload, upload } from "../middlewares/filesUpload";
 
 
 
 const categoryRoute = Router();
 
-
 const container = new Container();
 
 // resolve depenceies injedction category repository
-container.bind<ICategoryRepository>(INTERFACE_TYPE.CategoryRepository).to(CategoryRepository);
+container
+  .bind<ICategoryRepository>(INTERFACE_TYPE.CategoryRepository)
+  .to(CategoryRepository);
 
 // resolve depenceies injection category service
-container.bind<ICategoryService>(INTERFACE_TYPE.CategoryService).to(CategoryService);
+container
+  .bind<ICategoryService>(INTERFACE_TYPE.CategoryService)
+  .to(CategoryService);
 
 // resolve depenceies injection category controller
-container.bind<CategoryController>(INTERFACE_TYPE.CategoryController).to(CategoryController);
+container
+  .bind<CategoryController>(INTERFACE_TYPE.CategoryController)
+  .to(CategoryController);
 
-const categoryController = container.get<CategoryController>(INTERFACE_TYPE.CategoryController);
-
-
+const categoryController = container.get<CategoryController>(
+  INTERFACE_TYPE.CategoryController
+);
 
 // categoryRoute.use(isAuth,alllowTo('manager', 'admin'));
 // const upload = multer({ storage: multer.memoryStorage() }, fi);
