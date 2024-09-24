@@ -9,5 +9,18 @@ import taskApplicationRouter from './taskApplicationRoute';
 import taskerSkillRouter from './taskerSkillRoute';
 import categoryRoute from './categoryRoute';
 import subcategoryRoute from './subcategoryRoute';
+import chatRouter from './chat'
 
-export { userRouter, authRouter, profileRouter, taskerRouter, taskRouter, taskerSkillRouter, categoryRoute, subcategoryRoute, taskAssignmentRouter, searchRouter, taskApplicationRouter};
+export { 
+       userRouter, 
+       authRouter, 
+       profileRouter, 
+       taskerRouter, 
+       taskRouter, 
+       taskerSkillRouter, 
+       categoryRoute, 
+       subcategoryRoute, 
+       taskAssignmentRouter, 
+       searchRouter, 
+       taskApplicationRouter,
+       chatRouter};

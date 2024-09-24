@@ -2,11 +2,25 @@ import "reflect-metadata";
 
 import { App } from "./app"
 ;
-import {userRouter, authRouter, profileRouter, taskerRouter, taskRouter, taskerSkillRouter, categoryRoute, subcategoryRoute,   searchRouter, taskAssignmentRouter, taskApplicationRouter} from "./Presentation/routes";
+import {userRouter, authRouter, profileRouter, taskerRouter, taskRouter, taskerSkillRouter, categoryRoute, subcategoryRoute,   searchRouter, taskAssignmentRouter, taskApplicationRouter, chatRouter} from "./Presentation/routes";
 
 
 // build 
-const appInstance = new App([userRouter, authRouter, profileRouter, taskerRouter, taskRouter, taskerSkillRouter, categoryRoute, subcategoryRoute, searchRouter, taskAssignmentRouter, taskApplicationRouter ]);
+const appInstance = new App(
+    [
+        userRouter,
+        authRouter,
+        profileRouter,
+        taskerRouter,
+        taskRouter,
+        taskerSkillRouter,
+        categoryRoute,
+        subcategoryRoute,
+        searchRouter,
+        taskAssignmentRouter,
+        taskApplicationRouter,
+        chatRouter
+    ]);
 
 appInstance.listen();
 const app = appInstance.getExpressApp();

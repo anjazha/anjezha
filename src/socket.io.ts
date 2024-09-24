@@ -28,6 +28,10 @@ class SocketIo{
     async initializeSocket(){
         this.io.on('connection', (socket: any) => {
             console.log('a user connected');
+
+            socket.on('chat message', (mesg:string)=>{
+                this.io.emit('message', mesg)
+            })
             socket.on('disconnect', () => {
                 console.log('user disconnected');
             });
