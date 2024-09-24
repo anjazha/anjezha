@@ -3,7 +3,7 @@ import { SubCategory } from "@/Domain/entities/SubCategory";
 
 export interface ISubCategoryService {
         
-            createSubCategory(subCategory: string, categoryId: number): Promise<SubCategory>;
+            createSubCategory(subCategory: SubCategory): Promise<SubCategory>;
         
             getSubCategories(): Promise<SubCategory[]>;
         
@@ -11,7 +11,7 @@ export interface ISubCategoryService {
         
             getSubCategoryByName(subCategoryName: string): Promise<SubCategory>;
         
-            updateSubCategory(subCategory: string, id: number): Promise<any>;
+            updateSubCategory(subCategory: SubCategory, id: number): Promise<any>;
         
             deleteSubCategory(id: number): Promise<any>;
 

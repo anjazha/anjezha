@@ -2,7 +2,8 @@ import express, { Application, NextFunction, Request, Response, Router } from "e
 import swaggerUi from  "swagger-ui-express";
 import morgan from "morgan"
 import compression from "compression"
-import cors from 'cors'
+import cors, {CorsOptions} from 'cors'
+import bodyParser from 'body-parser';
 import { createServer, Server } from "http";
 import { errorHandler } from "./Presentation/middlewares/exceptions/errorHandler.middleware";
 import {connectDB, disconnectDB} from '@/Infrastructure/database/index'
@@ -40,10 +41,26 @@ export class App {
         console.log('morgan enabled')
     }
 //    console.log(NODE_ENV)
-        this.app.use(cors())
+// handle cors 
+        const allowedOrigins = ['http://localhost:3000','http://localhost:5000','http://localhost:5173'];
+
+        const options:CorsOptions = {
+            origin: allowedOrigins,
+            methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+            credentials: true,
+            allowedHeaders: 'Content-Type,Authorization'
+          };
+
+          // preflight request
+        this.app.use(cors(options))
+        this.app.options('*', cors(options));
         this.app.use(compression())
         this.app.use(express.json())
+        this.app.use(bodyParser.json({ type: 'application/json; charset=utf-8' }));
         this.app.use(express.urlencoded({extended: true}))
+
+
+        // this.app.set('allow-access-contorl', 'https://e-learning-0wji.onrender.com/' )
 
        
   }

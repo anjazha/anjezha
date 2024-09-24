@@ -9,6 +9,9 @@ import { ISubCategoryService } from "@/Application/interfaces/ISubCategoryServic
 import { SubCategoryService } from "@/Application/services/subcategoryService";
 import { SubCategoryController } from "../controllers/subcategoryController";
 import { Interface } from "readline";
+import { fileUpload } from "../middlewares/filesUpload";
+
+
 
 const subcategoryRoute = Router();
 
@@ -33,38 +36,39 @@ const subcateroyController = container.get<SubCategoryController>(
   INTERFACE_TYPE.SubCategoryController
 );
 
-// subcategoryRoute.use(isAuth,allowTo('manger, admin'),);
+// subcategoryRoute.use(isAuth,alllowTo('manger, admin'),);
+// subcategoryRoute.use(isAuth,alllowTo('manger', 'admin'));
 
- // this line caused in global auth error 
-// subcategoryRoute.use(isAuth, allowTo("manger", "admin"));
-
-
-subcategoryRoute
-  .route("/subcategory")
-  .post(
+subcategoryRoute.route('/subcategory')
+.post( 
     isAuth,
     allowTo('manger', 'admin'),
-    subcateroyController.createSubCategory.bind(subcateroyController)
-  )
-  .get(
-    isAuth,
-    allowTo('manger', 'admin'),
-    subcateroyController.getSubCategories.bind(subcateroyController)
-  );
+    fileUpload('imageUrl', 'subcategories'),
+    subcateroyController.createSubCategory.bind(subcateroyController))
+.get(
+    // isAuth,
+    // alllowTo('manger', 'admin'),
+    subcateroyController.getSubCategories.bind(subcateroyController));
 
-subcategoryRoute
-  .route("/subcategory/:id")
-  // .all(isAuth,allowTo('manger', 'admin'))
-  .get(
+    
+subcategoryRoute.route('/subcategory/:id')
+// .all(isAuth,alllowTo('manger', 'admin'))
+.get( 
+    //   isAuth,
+    //   alllowTo('manger, admin'),
+      subcateroyController.getSubCategoryById.bind(subcateroyController))
+.put( 
       isAuth,
       allowTo('manger, admin'),
-    subcateroyController.getSubCategoryById.bind(subcateroyController)
-  )
-  .put(subcateroyController.updateSubCategory.bind(subcateroyController))
-  .delete(
+      fileUpload('imageUrl', 'categories'),
+    subcateroyController.updateSubCategory.bind(subcateroyController))
+.delete( 
     isAuth,
-    allowTo('manger, admin'),
-    subcateroyController.deleteSubCategory.bind(subcateroyController)
-  );
+    allowTo('manger, admin'), 
+    subcateroyController.deleteSubCategory.bind(subcateroyController));
+
+
+
+
 
 export default subcategoryRoute;
