@@ -4,11 +4,14 @@ import { AuthService } from "@/Application/services/authService";
 import { User } from "@/Domain/entities/User";
 import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { inject, injectable } from "inversify";
+import { INotificationService } from "@/Application/interfaces/Notification/INotificationService";
+import { Notification } from "@/Domain/entities/Notification";
+import { ENOTIFICATION_TYPES } from "@/Application/interfaces/enums/ENotificationTypes";
 
 
 @injectable()
 export class AuthController {
-    constructor(@inject(INTERFACE_TYPE.AuthService) private authService:AuthService) {}
+    constructor(@inject(INTERFACE_TYPE.AuthService) private authService:AuthService,@inject(INTERFACE_TYPE.NotificationService) private readonly notificationService : INotificationService) {}
       
        async register(req:Request, res:Response, next:NextFunction) {
 
@@ -34,11 +37,14 @@ export class AuthController {
         async login(req:Request, res:Response, next:NextFunction) {
             
             try{
-                const { email, password } = req.body;
+                const { email, password } = req.body; 
                 
 
                 // await to check if user exists
                 const token = await this.authService.login(email, password);
+
+                // const notification = new Notification(8, "مرحبا بك", ENOTIFICATION_TYPES.DEFAULT, false, new Date());
+                // await this.notificationService.sendNotification(notification)
 
                 res.status(200).json({ token });
             }  catch(err){
