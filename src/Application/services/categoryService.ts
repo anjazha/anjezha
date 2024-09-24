@@ -15,7 +15,7 @@ export class CategoryService implements ICategoryService {
        
     }
 
-    async createCategory(category: string): Promise<Category> {
+    async createCategory(category: Category): Promise<Category> {
         try {
             return await this.categoryRepository.createCategory(category);
         } catch (err:any) {
@@ -47,7 +47,7 @@ export class CategoryService implements ICategoryService {
         }
     }
 
-    async updateCategory(category: string, id: number): Promise<any> {
+    async updateCategory(category: Category, id: number): Promise<any> {
         try {
             return await this.categoryRepository.updateCategory(category, id);
         } catch (err:any) {

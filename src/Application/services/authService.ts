@@ -80,6 +80,8 @@ export class AuthService implements IAuthService {
        // 1- find user by email
         const user =  await this.userRepository.findByEmail(email);
 
+        console.log(user)
+
         if(!user){
             throw new Error('User not found');
         }

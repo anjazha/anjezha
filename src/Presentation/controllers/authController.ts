@@ -35,14 +35,14 @@ export class AuthController {
             
             try{
                 const { email, password } = req.body;
-                
+                 console.log(email, password);
 
                 // await to check if user exists
                 const token = await this.authService.login(email, password);
 
                 res.status(200).json({ token });
-            }  catch(err){
-                res.status(500).json({message: 'An error occurred' + err})
+            }  catch(err:any){
+                res.status(500).json({message: 'An error occurred' ,err: err.message, stack:err.stack})
             }
         }
 

@@ -9,6 +9,7 @@ import { ISubCategoryService } from "@/Application/interfaces/ISubCategoryServic
 import { SubCategoryService } from "@/Application/services/subcategoryService";
 import { SubCategoryController } from "../controllers/subcategoryController";
 import { Interface } from "readline";
+import { fileUpload } from "../middlewares/filesUpload";
 
 
 
@@ -38,6 +39,7 @@ subcategoryRoute.route('/subcategory')
 .post( 
     isAuth,
     alllowTo('manger', 'admin'),
+    fileUpload('imageUrl', 'subcategories'),
     subcateroyController.createSubCategory.bind(subcateroyController))
 .get(
     // isAuth,
@@ -54,6 +56,7 @@ subcategoryRoute.route('/subcategory/:id')
 .put( 
       isAuth,
       alllowTo('manger, admin'),
+      fileUpload('imageUrl', 'categories'),
     subcateroyController.updateSubCategory.bind(subcateroyController))
 .delete( 
     isAuth,

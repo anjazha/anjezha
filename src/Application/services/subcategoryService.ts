@@ -2,6 +2,7 @@ import { inject, injectable } from "inversify";
 import { ISubCategoryService } from "../interfaces/ISubCategoryService";
 import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { ISubCategoryRepository } from "../interfaces/ISubCategoryRepository";
+import { SubCategory } from "@/Domain/entities/SubCategory";
 
 @injectable()
 export class SubCategoryService implements ISubCategoryService{
@@ -10,9 +11,9 @@ export class SubCategoryService implements ISubCategoryService{
         @inject(INTERFACE_TYPE.SubCategoryRepository) private subCategoryRepository: ISubCategoryRepository
     ){}
 
-    async createSubCategory(subCategory: string, categoryId: number) {
+    async createSubCategory(subCategory: SubCategory) {
         try {
-            return await this.subCategoryRepository.createSubCategory(subCategory, categoryId);
+            return await this.subCategoryRepository.createSubCategory(subCategory);
         } catch (err:any) {
             throw new Error(`Error creating subcategory: ${err.message} ${err.stack}`);
         }
@@ -42,7 +43,7 @@ export class SubCategoryService implements ISubCategoryService{
         }
     }
 
-    async updateSubCategory(subCategory: string, id: number) {
+    async updateSubCategory(subCategory: SubCategory, id: number) {
         try {
             return await this.subCategoryRepository.updateSubCategory(subCategory, id);
         } catch (err:any) {

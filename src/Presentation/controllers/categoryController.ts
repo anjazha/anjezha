@@ -4,6 +4,7 @@ import { Request, Response, NextFunction} from "express";
 import { ICategoryService } from "@/Application/interfaces/ICategoryService";
 import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { start } from "repl";
+import { Category } from "@/Domain/entities/Category";
 
 @injectable()
 export class CategoryController {
@@ -14,8 +15,17 @@ export class CategoryController {
 
     async createCategory(req: Request, res: Response, next:NextFunction) {
         try {
-            const { category } = req.body;
-            const newCategory = await this.categoryService.createCategory(category);
+            const { category , imageUrl, description} = req.body;
+            
+            console.log(category , imageUrl, description)
+
+            // console.log(attachments);
+            // const { attachments } = req.body;
+            // const imageUrl = attachments[0].file_path;
+
+            const categoryData= new Category(category, imageUrl, description);
+
+            const newCategory = await this.categoryService.createCategory(categoryData);
             return res.status(201).json({
                 status: "success",
                 data: newCategory
@@ -41,7 +51,8 @@ export class CategoryController {
         } catch (err:any) {
             return res.status(500).json({
                 status: "error",
-                message: err.message
+                err: err.message,
+                stack:err.stack
             });
         }
     }
@@ -85,8 +96,13 @@ export class CategoryController {
 
     async updateCategory(req: Request, res: Response, next:NextFunction) {
         try {
-            const { category } = req.body;
             const { id } = req.params;
+            const { category , attachments, description} = req.body;
+            // const { attachments } = req.body;
+            const imageUrl = attachments[0].file_path;
+
+            const categoryData= new Category(category, imageUrl, description);
+            
             const updatedCategory = await this.categoryService.updateCategory(category, Number(id));
             return res.status(200).json({
                 status: "success",
