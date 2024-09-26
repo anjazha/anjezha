@@ -8,7 +8,7 @@ import { createInflateRaw } from "zlib";
 import { CategoryRepository } from "@/Application/repositories/categoryRpository";
 import { ICategoryService } from "@/Application/interfaces/ICategoryService";
 import { CategoryService } from "@/Application/services/categoryService";
-import { alllowTo, isAuth } from "../middlewares/isAuth";
+import { allowTo, isAuth } from "../middlewares/isAuth";
 import { fileUpload } from "../middlewares/filesUpload";
 
 
@@ -38,7 +38,7 @@ const categoryController = container.get<CategoryController>(INTERFACE_TYPE.Cate
 categoryRoute.route('/category')
 .post(
        isAuth, 
-       alllowTo('admin'), 
+       allowTo('admin'), 
         fileUpload('imageUrl', 'categories'),
        categoryController.createCategory.bind(categoryController))
 
@@ -48,12 +48,12 @@ categoryRoute.route('/category/:id')
 .get(categoryController.getCategoryById.bind(categoryController))
 .put( 
     isAuth, 
-    alllowTo('admin'),  
+    allowTo('admin'),  
     fileUpload('imageUrl', 'categories'),
     categoryController.updateCategory.bind(categoryController))
 .delete(
     isAuth, 
-    alllowTo('admin'), 
+    allowTo('admin'), 
     categoryController.deleteCategory.bind(categoryController));
 
 

@@ -123,7 +123,7 @@ export class CategoryRepository implements ICategoryRepository{
             // execute query
             const { rows } = await this.client.query(query, values);
             // map rows to category object
-            return new Category(rows[0].category, rows[0].id);
+            return new Category(rows[0].category, rows[0].image_url, rows[0].description, rows[0].id);
 
         } catch(err:any){
             throw new HTTP500Error(`Error getting category by id: ${err.message} ${err.stack}`);
