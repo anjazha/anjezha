@@ -36,15 +36,20 @@ export class App {
         this.app.use(morgan('dev'));
         console.log('morgan enabled')
     }
+
+    // this.app.use(this.app.rest)
 //    console.log(NODE_ENV)
 // handle cors 
-        const allowedOrigins = ['http://localhost:3000','http://localhost:5000','http://localhost:5173'];
+        const allowedOrigins = [
+            'http://localhost:3000',
+            'http://localhost:5000', 
+            'http://localhost:5173'];
 
         const options:CorsOptions = {
             origin: allowedOrigins,
             methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
             credentials: true,
-            allowedHeaders: 'Content-Type,Authorization'
+            allowedHeaders: 'Content-Type,Authorization, '
           };
 
           // preflight request

@@ -9,7 +9,8 @@ import { CategoryRepository } from "@/Application/repositories/categoryRpository
 import { ICategoryService } from "@/Application/interfaces/ICategoryService";
 import { CategoryService } from "@/Application/services/categoryService";
 import { alllowTo, isAuth } from "../middlewares/isAuth";
-import { fileUpload, upload } from "../middlewares/filesUpload";
+import { fileUpload } from "../middlewares/filesUpload";
+
 
 
 

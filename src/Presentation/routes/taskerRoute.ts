@@ -13,7 +13,7 @@ import { IRoleService } from "@/Application/interfaces/User/IRoleService";
 import { RoleService } from "@/Application/services/roleService";
 
 
-const router = Router();
+const taskerRouter = Router();
 
 const container = new Container();
 
@@ -33,15 +33,15 @@ container.bind<TaskerController>(INTERFACE_TYPE.TaskerController).to(TaskerContr
 const taskerController = container.get<TaskerController>(INTERFACE_TYPE.TaskerController);
 
 
-router.post('/become-tasker', isAuth,  taskerController.addTasker.bind(taskerController));
+taskerRouter.post('/become-tasker',isAuth, alllowTo('user'),  taskerController.addTasker.bind(taskerController));
 
 
 // alllow only user authenticate and become tasker 1-creat middlware
-router.get('/about-tasker', isAuth, alllowTo('tasker'),  taskerController.getTasker.bind(taskerController));
+taskerRouter.get('/about-tasker', isAuth, alllowTo('tasker'),  taskerController.getTasker.bind(taskerController));
 
-router.put('/update-tasker', isAuth, alllowTo('tasker'), taskerController.updateTasker.bind(taskerController));
+taskerRouter.put('/update-tasker', isAuth, alllowTo('tasker'), taskerController.updateTasker.bind(taskerController));
 
-router.delete('/delete-tasker', isAuth, alllowTo('tasker'), taskerController.deleteTasker.bind(taskerController));
+taskerRouter.delete('/delete-tasker', isAuth, alllowTo('tasker'), taskerController.deleteTasker.bind(taskerController));
 
 
-export default router;
+export default taskerRouter;

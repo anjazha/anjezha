@@ -78,7 +78,8 @@ export class CategoryRepository implements ICategoryRepository{
                             row.subcategory_name, 
                             +row.category_id, 
                             row.subcategory_image_url, 
-                            row.subcategory_description));
+                            row.subcategory_description,
+                            +row.subcategory_id));
                     }
 
                  } else {
@@ -95,7 +96,10 @@ export class CategoryRepository implements ICategoryRepository{
                                 row.subcategory_name, 
                                 +row.category_id, 
                                 row.subcategory_image_url, 
-                                row.subcategory_description))
+                                row.subcategory_description,
+                                +row.subcategory_id
+                            ))
+
                     }
     
                  }

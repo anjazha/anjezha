@@ -20,7 +20,7 @@ export class TaskerSkillsRepository implements ITaskerSkillsRepository {
 
     async findSkillsByTaskerId(taskerId: number): Promise<Skills[]> {
         const { rows } = await this.client.query(
-            `SELECT s.skill, s.id FROM skills s
+         `SELECT s.skill, s.id FROM skills s
             JOIN tasker_skills ts ON s.id = ts.skill_id
             WHERE ts.tasker_id = $1`,
             [taskerId]
@@ -47,9 +47,6 @@ export class TaskerSkillsRepository implements ITaskerSkillsRepository {
             );
 
             return rows;
-
-
-
     }
 
     async findSkillByTaskerId(taskerId: number, skillId: number): Promise<Skills> {
