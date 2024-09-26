@@ -36,7 +36,7 @@ const subcateroyController = container.get<SubCategoryController>(INTERFACE_TYPE
 
 subcategoryRoute.route('/subcategory')
 .post( 
-    // isAuth,
+    isAuth,
     allowTo('manger', 'admin'),
     subcateroyController.createSubCategory.bind(subcateroyController))
 
