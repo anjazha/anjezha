@@ -50,7 +50,7 @@ export class App {
             'http://localhost:5173'];
 
         const options:CorsOptions = {
-            origin: allowedOrigins,
+            origin: '*',
             methods: ['GET', 'POST', 'PUT', 'DELETE','HEAD', 'PATCH'],
             credentials: true,
             allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
