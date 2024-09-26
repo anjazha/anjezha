@@ -51,7 +51,7 @@ export class App {
 
         const options:CorsOptions = {
             origin: allowedOrigins,
-            methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+            methods: ['GET', 'POST', 'PUT', 'DELETE','HEAD', 'PATCH'],
             credentials: true,
             allowedHeaders: 'Content-Type,Authorization, '
           };
