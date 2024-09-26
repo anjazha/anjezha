@@ -8,6 +8,7 @@ import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { Container } from "inversify";
 import { ProfileController } from "../controllers/profileController";
 import {isAuth, allowTo} from "../middlewares/isAuth";
+import { fileUpload } from "../middlewares/filesUpload";
 
 
 const router = Router();
@@ -63,6 +64,7 @@ router.patch(
   // allow to access only if user is authenticated
   isAuth,
   allowTo("user", "tasker"),
+  fileUpload('profilePicture', 'profiles'),
   profileController.updateProfilePicture.bind(profileController)
 );
 
