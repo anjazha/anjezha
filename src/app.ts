@@ -53,8 +53,8 @@ export class App {
             origin: allowedOrigins,
             methods: ['GET', 'POST', 'PUT', 'DELETE','HEAD', 'PATCH'],
             credentials: true,
-            allowedHeaders: 'Content-Type,Authorization, '
-          };
+            allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
+        };
 
           // preflight request
         this.app.use(cors(options))
