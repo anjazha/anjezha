@@ -106,10 +106,15 @@ export class UserRepository implements IUserRepository {
         const values = [];
     
        
-        for(const key in user){
+        for(let key in user) {
+
+          key = key == 'profilePicture'? 'profile_picture':key;
+
           if(user.hasOwnProperty(key)){
+
             query += `${key} = $${values.length + 1}, `;
             values.push(user[key]);
+            
           }
         }
 
