@@ -43,7 +43,7 @@ const taskerController = container.get<TaskerController>(
 // allow only user authenticate and become tasker 1-creat middlware
 
 
-taskerRouter.post('/become-tasker',isAuth, allowTo('user'),  taskerController.addTasker.bind(taskerController));
+taskerRouter.post('/become-tasker',isAuth, taskerController.addTasker.bind(taskerController));
 
 
 // alllow only user authenticate and become tasker 1-creat middlware
