@@ -4,6 +4,7 @@ import { SearchRepository } from "@/Application/repositories/searchRepository";
 import { SearchService } from "@/Application/services/searchService";
 import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { Router } from "express";
+
 import { Container } from "inversify";
 import { SearchController } from "@/Presentation/controllers/searchController";
 import { ITaskRepository } from "@/Application/interfaces/Task/ITaskRepository";

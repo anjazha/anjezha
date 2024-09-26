@@ -76,6 +76,11 @@ export const INTERFACE_TYPE = {
     AssignTaskController: Symbol.for("AssignTaskController"),
     AssignTaskRoute: Symbol.for("AssignTaskRoute"),
 
+    NotificationRepository: Symbol.for("NotificationRepository"),
+    NotificationService: Symbol.for("NotificationService"),
+    NotificationController : Symbol.for("NotificationController"),
+
+    OnlineUsersService: Symbol.for("OnlineUsersService"),
     
     App: Symbol.for("App"),
     User: Symbol.for("User"),

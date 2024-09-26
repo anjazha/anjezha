@@ -71,6 +71,7 @@
     "nodemailer": "^6.9.14",
     "postgres-migrations": "^5.3.0",
     "reflect-metadata": "^0.2.2",
+    "socket.io": "^4.8.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "tsconfig-paths": "^4.2.0"

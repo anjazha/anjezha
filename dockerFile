@@ -3,8 +3,15 @@ FROM node:lts-alpine as base
 
 # Development stage
 FROM base as development
+<<<<<<< HEAD
 WORKDIR /Anjezha
 COPY package.json  ./
+=======
+WORKDIR /anjezha
+COPY package.json ./anjezha
+#update npm to latest version
+RUN npm install -g npm@10.8.3
+>>>>>>> cb82fa648ffe30f787d3aaedd68bbf1b3fd10f6e
 RUN npm install
 COPY . .
 EXPOSE 5000
@@ -12,7 +19,7 @@ CMD ["npm", "run", "start:dev"]
 
 # Production stage
 FROM base as production
-WORKDIR /Anjezha
+WORKDIR /anjezha
 COPY package.json ./
 RUN npm install --only=production
 COPY . .

@@ -218,7 +218,7 @@ SELECT
     t.longitude,
     t.latitude,
     t.address,
-    tc.name as category,
+    tc.category as category,
     ARRAY_AGG(distinct ts.name) AS skills,  
 	ARRAY_AGG(distinct ta.file_path) AS attachmets ,
     s.status,
@@ -237,7 +237,7 @@ LEFT JOIN
 LEFT JOIN 
     task_attachments ta ON t.id = ta.task_id
 GROUP BY 
-    t.id, s.status, sch.schedule_type, sch.start_time, sch.end_time, tc.name;`);
+    t.id, s.status, sch.schedule_type, sch.start_time, sch.end_time, tc.category;`);
       return rows;
     } catch (error:any) {
       throw new HTTP500Error("Error while fetching tasks " + error.message);
@@ -257,7 +257,7 @@ GROUP BY
       t.longitude,
       t.latitude,
       t.address,
-      tc.name as category,
+      tc.category as category,
       ARRAY_AGG(distinct ts.name) AS skills,  
       ARRAY_AGG(distinct ta.file_path) AS attachmets ,
       s.status,
@@ -277,7 +277,7 @@ GROUP BY
       task_attachments ta ON t.id = ta.task_id
   WHERE t.id = ${id}
   GROUP BY 
-      t.id, s.status, sch.schedule_type, sch.start_time, sch.end_time, tc.name;`);
+      t.id, s.status, sch.schedule_type, sch.start_time, sch.end_time, tc.category;`);
       return rows[0];
     } catch (error:any) {
       throw new HTTP500Error("Error while fetching task " + error.message);
@@ -297,7 +297,7 @@ GROUP BY
             t.longitude,
             t.latitude,
             t.address,
-            tc.name as category,
+            tc.category as category,
             ARRAY_AGG(distinct ts.name) AS skills,  
             ARRAY_AGG(distinct ta.file_path) AS attachmets ,
             s.status,
@@ -317,7 +317,7 @@ GROUP BY
             task_attachments ta ON t.id = ta.task_id
         WHERE t.user_id = ${userId}
         GROUP BY 
-            t.id, s.status, sch.schedule_type, sch.start_time, sch.end_time, tc.name;`)
+            t.id, s.status, sch.schedule_type, sch.start_time, sch.end_time, tc.category;`)
     );
 
     if (error)
@@ -333,6 +333,7 @@ GROUP BY
       maxBudget?: number;
       government?: string;
       status?: string;
+      category?:number
       skills?: string[];
       page:number,
       limit:number
@@ -340,43 +341,44 @@ GROUP BY
     sortBy: string,
   ): Promise<Task[]> {
     let searchQ = `
-        SELECT 
-            t.id,
-            t.user_id,
-            t.title,
-            t.description,
-            t.date,
-            t.budget,
-            t.longitude,
-            t.latitude,
-            t.address,
-            tc.category as category,
-            ARRAY_AGG(distinct ts.name) AS skills,  
-            s.status,
-            sch.schedule_type,
-            sch.start_time,
-            sch.end_time
-            ${
-              sortBy === "relevance"
-                ? `,ts_rank(to_tsvector('arabic',title || ' ' || description ), plainto_tsquery('arabic', $1)) AS rank `
-                : ""
-            }
-            ,COUNT(t.id) OVER() AS total_count
-        FROM 
-            tasks t
-        LEFT JOIN 
-            categories tc ON t.category_id = tc.id
-        LEFT JOIN 
-            task_skills ts ON t.id = ts.task_id
-        LEFT JOIN 
-            task_statuses s ON t.id = s.task_id
-        LEFT JOIN 
-            task_schedules sch ON t.id = sch.task_id
-        WHERE 
-            title || ' ' || description @@ to_tsquery($1)
-    `;
+    SELECT 
+        t.id,
+        t.user_id,
+        t.title,
+        t.description,
+        t.date,
+        t.budget,
+        t.longitude,
+        t.latitude,
+        t.address,
+        tc.category AS category,
+        ARRAY_AGG(DISTINCT ts.name) AS skills,  
+        s.status,
+        sch.schedule_type,
+        sch.start_time,
+        sch.end_time
+        ${
+          sortBy === "relevance"
+            ? `, ts_rank(to_tsvector('arabic', t.title || ' ' || t.description), plainto_tsquery('arabic', $1 || ':*')) AS rank `
+            : ""
+        }
+        , COUNT(t.id) OVER() AS total_count
+    FROM 
+        tasks t
+    LEFT JOIN 
+        categories tc ON t.category_id = tc.id
+    LEFT JOIN 
+        task_skills ts ON t.id = ts.task_id
+    LEFT JOIN 
+        task_statuses s ON t.id = s.task_id
+    LEFT JOIN 
+        task_schedules sch ON t.id = sch.task_id 
+    WHERE 
+        ($1 = '' OR t.title || ' ' || t.description @@ to_tsquery($1 || ':*'))
+`;
 
-    const queryParams: any[] = [q];
+    const queryParams: any[] = [q || ''];
+    // const queryParams: any[] = q?[q]:[':*'];
 
     // Add dynamic filters
     if (filters?.minBudget !== undefined && filters.minBudget > 0) {
@@ -397,6 +399,10 @@ GROUP BY
     if (filters?.status) {
       searchQ += ` AND s.status = $${queryParams.length + 1}`;
       queryParams.push(filters.status);
+    }
+    if(filters?.category){
+      searchQ += ` AND tc.id = $${queryParams.length + 1}`;
+      queryParams.push(filters.category);
     }
 
     searchQ += ` GROUP BY t.id, tc.category, s.status, sch.schedule_type, sch.start_time, sch.end_time`;

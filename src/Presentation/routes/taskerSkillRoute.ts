@@ -18,22 +18,37 @@ const router = Router();
 const container = new Container();
 
 // resolve the dependencies for the skillRepository
-container.bind<ISkillsRepository>(INTERFACE_TYPE.SkillsRepository).to(SkillsRepository);
+container
+  .bind<ISkillsRepository>(INTERFACE_TYPE.SkillsRepository)
+  .to(SkillsRepository);
 
 // resolve the dependencies for the taskerSkillRepository
-container.bind<ITaskerSkillsRepository>(INTERFACE_TYPE.TaskerSkillsRepository).to(TaskerSkillsRepository);
+container
+  .bind<ITaskerSkillsRepository>(INTERFACE_TYPE.TaskerSkillsRepository)
+  .to(TaskerSkillsRepository);
 
 // resolvse the dependencies for the Skills Service
 
-container.bind<ITaskerSkillsService>(INTERFACE_TYPE.TaskerSkillsService).to(TaskerSkillService);
-
+container
+  .bind<ITaskerSkillsService>(INTERFACE_TYPE.TaskerSkillsService)
+  .to(TaskerSkillService);
 
 // resolve the dependencies for the taskerSkillsRepository
 
-container.bind<TaskerSkillController>(INTERFACE_TYPE.TaskerSkillsController).to(TaskerSkillController);
+container
+  .bind<TaskerSkillController>(INTERFACE_TYPE.TaskerSkillsController)
+  .to(TaskerSkillController);
 
+const taskerSkillController = container.get<TaskerSkillController>(
+  INTERFACE_TYPE.TaskerSkillsController
+);
 
-const taskerSkillController = container.get<TaskerSkillController>(INTERFACE_TYPE.TaskerSkillsController);
+router.post(
+  "/create-skill",
+  isAuth,
+  allowTo("tasker"),
+  taskerSkillController.createSkill.bind(taskerSkillController)
+);
 
 router.post('/create-skill',isAuth, allowTo('tasker'), taskerSkillController.createSkill.bind(taskerSkillController));
 
