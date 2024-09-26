@@ -44,8 +44,6 @@ subcategoryRoute.route('/subcategory')
 
     
 subcategoryRoute.route('/subcategory/:id')
-// .all(isAuth,allowTo('manger', 'admin'))
-
 .get(subcateroyController.getSubCategoryById.bind(subcateroyController))
 .put( 
     isAuth,
