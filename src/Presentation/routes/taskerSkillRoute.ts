@@ -9,7 +9,7 @@ import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { Router } from "express";
 import { Container } from "inversify";
 import { TaskerSkillController } from "../controllers/taskerSkillController";
-import { alllowTo, isAuth } from "../middlewares/isAuth";
+import { allowTo, isAuth } from "../middlewares/isAuth";
 
 
 
@@ -35,12 +35,12 @@ container.bind<TaskerSkillController>(INTERFACE_TYPE.TaskerSkillsController).to(
 
 const taskerSkillController = container.get<TaskerSkillController>(INTERFACE_TYPE.TaskerSkillsController);
 
-router.post('/create-skill',isAuth, alllowTo('tasker'), taskerSkillController.createSkill.bind(taskerSkillController));
+router.post('/create-skill',isAuth, allowTo('tasker'), taskerSkillController.createSkill.bind(taskerSkillController));
 
-router.put('/update-skill/:id',isAuth, alllowTo('tasker'), taskerSkillController.updateSkill.bind(taskerSkillController));
+router.put('/update-skill/:id',isAuth, allowTo('tasker'), taskerSkillController.updateSkill.bind(taskerSkillController));
 
-router.delete('/delete-skill/:id',isAuth, alllowTo('tasker'), taskerSkillController.deleteSkill.bind(taskerSkillController));
+router.delete('/delete-skill/:id',isAuth, allowTo('tasker'), taskerSkillController.deleteSkill.bind(taskerSkillController));
 
-router.get('/get-skills',isAuth, alllowTo('tasker'), taskerSkillController.getSkills.bind(taskerSkillController));
+router.get('/get-skills',isAuth, allowTo('tasker'), taskerSkillController.getSkills.bind(taskerSkillController));
 
 export default router;

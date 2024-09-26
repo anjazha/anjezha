@@ -7,7 +7,7 @@ import { createInflateRaw } from "zlib";
 import { CategoryRepository } from "@/Application/repositories/categoryRpository";
 import { ICategoryService } from "@/Application/interfaces/ICategoryService";
 import { CategoryService } from "@/Application/services/categoryService";
-import { alllowTo, isAuth } from "../middlewares/isAuth";
+import { allowTo, isAuth } from "../middlewares/isAuth";
 
 
 
@@ -29,16 +29,16 @@ const categoryController = container.get<CategoryController>(INTERFACE_TYPE.Cate
 
 
 
-// categoryRoute.use(isAuth,alllowTo('manager', 'admin'));
+// categoryRoute.use(isAuth,allowTo('manager', 'admin'));
 
 categoryRoute.route('/category')
-.post(isAuth, alllowTo('admin'), categoryController.createCategory.bind(categoryController))
-.get(isAuth, alllowTo('admin'), categoryController.getCategories.bind(categoryController));
+.post(isAuth, allowTo('admin'), categoryController.createCategory.bind(categoryController))
+.get(isAuth, allowTo('admin'), categoryController.getCategories.bind(categoryController));
 
 categoryRoute.route('/category/:id')
-.get( isAuth, alllowTo('admin'),  categoryController.getCategoryById.bind(categoryController))
-.put( isAuth, alllowTo('admin'),  categoryController.updateCategory.bind(categoryController))
-.delete(isAuth, alllowTo('admin'), categoryController.deleteCategory.bind(categoryController));
+.get( isAuth, allowTo('admin'),  categoryController.getCategoryById.bind(categoryController))
+.put( isAuth, allowTo('admin'),  categoryController.updateCategory.bind(categoryController))
+.delete(isAuth, allowTo('admin'), categoryController.deleteCategory.bind(categoryController));
 
 
 

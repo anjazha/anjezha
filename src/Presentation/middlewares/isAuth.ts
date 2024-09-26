@@ -54,7 +54,7 @@ export const isAuth = (req: RequestWithUserId, res: Response, next: NextFunction
 }
 
 
-export const alllowTo = (...roles: string[]) => {
+export const allowTo = (...roles: string[]) => {
      return (req: RequestWithUserId, res: Response, next: NextFunction) => {
         console.log("roles", roles);
         console.log("req.role", req.role);
