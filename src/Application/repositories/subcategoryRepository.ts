@@ -48,7 +48,7 @@ export class SubCategoryRepository implements ISubCategoryRepository {
               // execute query
            const { rows } = await this.client.query(query);
               // map rows to subcategory object
-           return rows.map((subcategory: SubCategory) => new SubCategory(subcategory.subcategory, subcategory.categoryId,subcategory.imageUrl, subcategory.description, subcategory.id));
+           return rows.map((subcategory: any) => new SubCategory(subcategory.subcategory, subcategory.categoryId,subcategory.image_url, subcategory.description, subcategory.id));
         } catch(err:any){
               throw new Error(`Error getting subcategories: ${err.message} ${err.stack}`);
         }
