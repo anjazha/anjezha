@@ -1,5 +1,10 @@
 import { Request } from "express";
 
-export default interface RequestWithUserId extends Request {
-    userId?: string;
+interface RequestWithUserId extends Request  {
+
+    userId?: Number  | null | undefined;
+    role?: string | undefined;
 }
+
+
+export default RequestWithUserId
