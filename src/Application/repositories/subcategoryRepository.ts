@@ -63,8 +63,10 @@ export class SubCategoryRepository implements ISubCategoryRepository {
            const values = [id];
            // execute query
            const { rows } = await this.client.query(query, values);
+
+           console.log(rows);
               //  rows[0] to subcategory object
-           return new SubCategory(rows[0].subcategory, rows[0].category_id, rows[0].id);
+           return new SubCategory(rows[0].subcategory,rows[0].image_url, rows[0].description, rows[0].category_id, rows[0].id);
 
         } catch(err:any){
            throw new Error(`Error getting subcategory by id: ${err.message} ${err.stack}`);

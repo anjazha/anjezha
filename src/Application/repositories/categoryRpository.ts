@@ -78,7 +78,8 @@ export class CategoryRepository implements ICategoryRepository{
                             row.subcategory_name, 
                             +row.category_id, 
                             row.subcategory_image_url, 
-                            row.subcategory_description));
+                            row.subcategory_description,
+                            +row.subcategory_id));
                     }
 
                  } else {
@@ -95,7 +96,10 @@ export class CategoryRepository implements ICategoryRepository{
                                 row.subcategory_name, 
                                 +row.category_id, 
                                 row.subcategory_image_url, 
-                                row.subcategory_description))
+                                row.subcategory_description,
+                                +row.subcategory_id
+                            ))
+
                     }
     
                  }
@@ -119,7 +123,7 @@ export class CategoryRepository implements ICategoryRepository{
             // execute query
             const { rows } = await this.client.query(query, values);
             // map rows to category object
-            return new Category(rows[0].category, rows[0].id);
+            return new Category(rows[0].category, rows[0].image_url, rows[0].description, rows[0].id);
 
         } catch(err:any){
             throw new HTTP500Error(`Error getting category by id: ${err.message} ${err.stack}`);

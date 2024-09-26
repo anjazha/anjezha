@@ -123,9 +123,9 @@ export class UserRepository implements IUserRepository {
       // console.log(query);
 
 
-    const { rows } = await this.client.query(query, values);
+      const { rows } = await this.client.query(query, values);
     // await disconnectDB();
-    return rows[0];
+      return rows[0];
     
     
     } catch(err:any){
