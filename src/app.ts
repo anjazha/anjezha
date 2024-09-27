@@ -49,12 +49,13 @@ export class App {
             'http://localhost:5000', 
             'http://localhost:5173'];
 
-        const options:CorsOptions = {
-            origin: '*',
-            methods: ['GET', 'POST', 'PUT', 'DELETE','HEAD', 'PATCH'],
-            credentials: true,
-            allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
-        };
+            const options: CorsOptions = {
+                origin: '*',
+                methods: ['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'PATCH'],
+                credentials: true,
+                allowedHeaders: ['Content-Type', 'Authorization', 'multipart/form-data'], // Allowed headers
+            };
+            
 
           // preflight request
         this.app.use(cors(options))
