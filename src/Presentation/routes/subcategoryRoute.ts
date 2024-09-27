@@ -31,7 +31,7 @@ const subcateroyController = container.get<SubCategoryController>(INTERFACE_TYPE
 
 
 
-// subcategoryRoute.use(isAuth,allowTo('manger, admin'),);
+// subcategoryRoute.use(qisAuth,allowTo('manger, admin'),);
 // subcategoryRoute.use(isAuth,allowTo('manger', 'admin'));
 
 subcategoryRoute.route('/subcategory')
