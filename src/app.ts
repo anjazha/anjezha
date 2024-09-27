@@ -10,14 +10,17 @@ import {connectDB, disconnectDB} from '@/Infrastructure/database/index'
 import { PORT, NODE_ENV } from "./Config/index";
 import swaggerSpec from "./swager";
 import { compare } from 'bcryptjs';
+import { createServer, Server } from "http";
 
 
 
 export class App {
     private port : number ;
-    private app : Application
+    private app : Application;
+    private server: Server;
     constructor(public readonly routes: any[]){
         this.app = express();
+        this.server= createServer(this.app);
        // console.log(this.app);
         this.port = Number(PORT) || 5000;
         this.initializeDbConnection()
@@ -91,8 +94,12 @@ export class App {
     return this.app;
   }
 
+  public getServer(){
+    return this.server;
+  }
+
  public listen() : void {
-     this.app.listen(this.port, () => {
+     this.server.listen(this.port, () => {
         console.log("app is running on port " + this.port);
      })
 

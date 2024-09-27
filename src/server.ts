@@ -24,9 +24,10 @@ const appInstance = new App(
 
 appInstance.listen();
 const app = appInstance.getExpressApp();
+const server = appInstance.getServer();
 // const app = getExpressApp();
 
-export {app}
+export {app, server}
 
 // import { UserRoute } from "./Presentation/routes/userRoute";
 

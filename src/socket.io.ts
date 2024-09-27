@@ -1,51 +1,80 @@
 import http from 'http';
 import {Server as ServerSocketIO} from 'socket.io';
-import {app} from './server';
+import {app, server} from './server';
 
 class SocketIo{
     private io: any;
-    private server: any;
+    // private server: any;
 
     constructor(appi: any = ' '){
-        this.server = http.createServer(app);
+        // this.server = http.createServer(app);
 
-        this.io = new ServerSocketIO(this.server,{
-            // cors: {
-            //     origin: ["http://localhost:3000", "http://localhost:5000", "http://localhost:5173"],
-            //     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-            //   }
+        this.io = new ServerSocketIO(server,{
+            cors: {
+                origin:'*',
+                methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+                // Credential:true
+              }
         } )
-    
-        // this.io = require('socket.io')(this.server, {
-        //     cors: {
-        //         origin:[ "http://localhost:3000", "http://localhost:5000", "http://localhost:5173"],
-        //         methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-        //       }
-        // });
 
     }
 
-    async initializeSocket(){
-        this.io.on('connection', (socket: any) => {
-            console.log('a user connected');
+    // async initializeSocket(){
+    //     this.io.on('connection', (socket: any) => {
+    //         console.log('a user connected');
 
-            socket.on('chat message', (mesg:string)=>{
-                this.io.emit('message', mesg)
-            })
-            socket.on('disconnect', () => {
-                console.log('user disconnected');
-            });
-        });
+    //         socket.on('chat message', (mesg:string)=>{
+    //             this.io.emit('message', mesg)
+    //         })
+    //         socket.on('disconnect', () => {
+    //             console.log('user disconnected');
+    //         });
+    //     });
+    // }
+
+
+    async initializeSocket(){
+
+        this.io.on('connection', (socket:any)=>{
+            try{
+
+                if (!socket.request.user) socket.disconnect();
+
+    
+                socket.on('disconnect', ()=>{
+                    console.log('user is  disconnect')
+                })
+              } catch(err){
+
+              }
+
+        })
+
     }
      
 
-    public listen(port: number){
-        this.server.listen(port, ()=>{
-            console.log(`Socket is running on port ${port}`)
-        })
-    }
+
+    // public static getInstance(httpServer: http.Server): ServerSocketIO {
+    //     if (!ServerSocketIO.instance) {
+    //         ServerSocketIO.instance = new ServerSocketIO(httpServer);
+    //     }
+    //     return ServerSocketIO.instance;
+    //   }
+   
 
     public getIO(){
         return this.io;
     }
+
+    public closeSocket(): void {
+        this.io.close();
+      }
+
+      public getConnectedUsers(): number {
+        return Object.keys(this.io.sockets.sockets).length;
+      }
+    
+    
+
+
 }
