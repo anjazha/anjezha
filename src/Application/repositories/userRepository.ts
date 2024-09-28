@@ -69,7 +69,7 @@ export class UserRepository implements IUserRepository {
       }
   }
 
-  async update(id: number, user: any): Promise<User> {
+  async update(id: number, user: any): Promise<any> {
     // await connectDB();
     // Object.keys(user).forEach((key, i) => {
     //     query.concat(`${key} = $${i + 1}, `);
@@ -156,9 +156,10 @@ export class UserRepository implements IUserRepository {
 
       
       const { rows } = await this.client.query(query, values);
-      // await disconnectDB();
-      console.log(rows[0]);
-      return rows[0];
+    // await disconnectDB();
+     const {name, email, password, phone_number, profile_picture } = rows[0]
+
+    return  new User(name, email, password, phone_number, profile_picture);
     
     
     } catch(err:any){
@@ -198,7 +199,16 @@ async delete(id: number): Promise<string> {
     try { // await connectDB();
         const { rows } = await this.client.query("SELECT * FROM users");
         // await disconnectDB();
-        return rows;
+        
+      
+        
+        return rows.map((user:any) =>{
+           const {name, email, password, phone_number, profile_picture } = user;
+  
+            return  new User(name, email, password, phone_number, profile_picture);
+         
+        }
+        )
     } catch(err:any){
       throw new Error('An error occurred' + err.message + err.stack);
     }

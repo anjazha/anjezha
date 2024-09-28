@@ -4,11 +4,7 @@ services:
       - NODE_ENV=development
       - PORT=5000
     volumes:
-<<<<<<< HEAD
-      - ./src:/Anjezha/src
-=======
       - ./src:/anjezha/src
->>>>>>> cb82fa648ffe30f787d3aaedd68bbf1b3fd10f6e
     build:
       context: .
       dockerfile: dockerFile  # Ensure this path is correct
@@ -20,14 +16,14 @@ services:
       - .env.development.local
     command: npm run start:dev
   
-  anjezha-db:
-    image: mongo:latest
-    restart: always
-    container_name: anjezha-db
-    ports:
-      - "27017:27017"
-    volumes:
-      - ./data:/data/db
-    env_file:
-      - .env.development.local
+  # anjezha-db:
+  #   image: mongo:latest
+  #   restart: always
+  #   container_name: anjezha-db
+  #   ports:
+  #     - "27017:27017"
+  #   volumes:
+  #     - ./data:/data/db
+  #   env_file:
+  #     - .env.development.local
     
