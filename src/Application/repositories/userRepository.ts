@@ -68,7 +68,7 @@ export class UserRepository implements IUserRepository {
       }
   }
 
-  async update(id: number, user: any): Promise<User> {
+  async update(id: number, user: any): Promise<any> {
     // await connectDB();
     // Object.keys(user).forEach((key, i) => {
     //     query.concat(`${key} = $${i + 1}, `);
@@ -103,18 +103,20 @@ export class UserRepository implements IUserRepository {
       try{ 
 
        let query = `UPDATE users SET `;
-        const values = [];
+      const values = [];
+      let index=1;
     
+        // {profilePicture:profilePicture}
        
         for(let key in user) {
-
-          key = key == 'profilePicture'? 'profile_picture':key;
-
+  
           if(user.hasOwnProperty(key)){
 
-            query += `${key} = $${values.length + 1}, `;
-            values.push(user[key]);
+            key = key == "profilePicture"? "profile_picture": key;
             
+            query += `${key} = $${index}, `;
+            values.push(user[key]);
+            index++;
           }
         }
 
@@ -122,15 +124,19 @@ export class UserRepository implements IUserRepository {
         query = query.slice(0, -2);
         
 
-        query += (` WHERE id = $${values.length + 1} RETURNING *`);
+        query += ` WHERE id = $${index} RETURNING *`;
         values.push(id);
+
+        console.log(query);
 
       // console.log(query);
 
 
       const { rows } = await this.client.query(query, values);
     // await disconnectDB();
-      return rows[0];
+     const {name, email, password, phone_number, profile_picture } = rows[0]
+
+    return  new User(name, email, password, phone_number, profile_picture);
     
     
     } catch(err:any){
@@ -153,7 +159,16 @@ async delete(id: number): Promise<string> {
     try { // await connectDB();
         const { rows } = await this.client.query("SELECT * FROM users");
         // await disconnectDB();
-        return rows;
+        
+      
+        
+        return rows.map((user:any) =>{
+           const {name, email, password, phone_number, profile_picture } = user;
+  
+            return  new User(name, email, password, phone_number, profile_picture);
+         
+        }
+        )
     } catch(err:any){
       throw new Error('An error occurred' + err.message + err.stack);
     }

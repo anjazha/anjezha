@@ -47,7 +47,8 @@ export class App {
         const allowedOrigins = [
             'http://localhost:3000',
             'http://localhost:5000', 
-            'http://localhost:5173'];
+            'http://localhost:5173',
+            'http://127.0.0.1:5173/'];
 
             const options: CorsOptions = {
                 origin: allowedOrigins,
@@ -57,7 +58,7 @@ export class App {
             };
             
 
-          // preflight request
+          // preflight request // crendtails 
         this.app.use(cors(options))
         this.app.options('*', cors(options));
         this.app.use(compression())

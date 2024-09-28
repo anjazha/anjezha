@@ -76,9 +76,10 @@ const uploadToCloudinary =
     //   console.log();
   };
 
-const uploadToCloudinarySingle =(collectionName:string) =>
+const uploadToCloudinarySingle =(fielName:string, collectionName:string) =>
  async (req: Request, res: Response, next: NextFunction) => {
    const file = req.file;
+   console.log(file);
    if(file) {
 
     const [error, fileUrl] = await safePromise(() =>
@@ -90,8 +91,9 @@ const uploadToCloudinarySingle =(collectionName:string) =>
        if(error) 
          return next( new HTTP400Error("Error uploading file to cloudinary " + error.message));
 
-       req.body.imageUrl= fileUrl;
-      //  console.log(fileUrl);
+       req.body.imageUrl= fileUrl;  // 
+      //  console.log(req.body.fielName);
+      //  console.log(fielName);
    }
      next();
  }
@@ -102,5 +104,5 @@ export const filesUpload = (fieldName: string, collectionName: string) => {
 };
 
 export const fileUpload = (fielName:string, collectionName:string) => {
-     return [upload.single(fielName), uploadToCloudinarySingle(collectionName)]
+     return [upload.single(fielName), uploadToCloudinarySingle(fielName,collectionName)]
 }

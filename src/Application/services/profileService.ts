@@ -42,7 +42,9 @@ export class ProfileService implements IProfileService {
         }
     }
 
-    async updateProfilePicture(userID:number, profilePicture: User ) {
+    async updateProfilePicture(userID:number, profilePicture: any ) {
+
+        console.log(profilePicture)
          
         // const profile = await this.userRepository.findById(userID);
         // if(!profile){
