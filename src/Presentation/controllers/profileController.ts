@@ -57,11 +57,11 @@ export class ProfileController {
 
     async updateProfilePicture(req: RequestWithUserId, res: Response, next: NextFunction) {
         const userId = Number(req.userId);
-        const {profilePicture} = req.body;
+        const {imageUrl : profilePicture} = req.body;
 
         
         try{
-            const profile = await this.profileService.updateProfilePicture(userId, profilePicture);
+            const profile = await this.profileService.updateProfilePicture(userId, {profilePicture});
             res.status(200).json(profile);
         } catch(err:any){
             next(new HTTP500Error(`An error occurred message:${err.message}\n stack:${err.stack}`));
