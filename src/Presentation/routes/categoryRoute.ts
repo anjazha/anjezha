@@ -1,3 +1,4 @@
+import multer from "multer";
 import { Router } from "express";
 import { Container } from "inversify";
 import { CategoryController } from "../controllers/categoryController";
@@ -7,7 +8,9 @@ import { createInflateRaw } from "zlib";
 import { CategoryRepository } from "@/Application/repositories/categoryRpository";
 import { ICategoryService } from "@/Application/interfaces/ICategoryService";
 import { CategoryService } from "@/Application/services/categoryService";
-import { alllowTo, isAuth } from "../middlewares/isAuth";
+import { allowTo, isAuth } from "../middlewares/isAuth";
+import { fileUpload } from "../middlewares/filesUpload";
+
 
 
 
@@ -30,17 +33,28 @@ const categoryController = container.get<CategoryController>(INTERFACE_TYPE.Cate
 
 
 // categoryRoute.use(isAuth,alllowTo('manager', 'admin'));
+// const upload = multer({ storage: multer.memoryStorage() }, fi);
 
 categoryRoute.route('/category')
-.post(isAuth, alllowTo('admin'), categoryController.createCategory.bind(categoryController))
-.get(isAuth, alllowTo('admin'), categoryController.getCategories.bind(categoryController));
+.post(
+       isAuth, 
+       allowTo('admin'), 
+        fileUpload('imageUrl', 'categories'),
+       categoryController.createCategory.bind(categoryController))
+
+.get( categoryController.getCategories.bind(categoryController));
 
 categoryRoute.route('/category/:id')
-.get( isAuth, alllowTo('admin'),  categoryController.getCategoryById.bind(categoryController))
-.put( isAuth, alllowTo('admin'),  categoryController.updateCategory.bind(categoryController))
-.delete(isAuth, alllowTo('admin'), categoryController.deleteCategory.bind(categoryController));
-
-
+.get(categoryController.getCategoryById.bind(categoryController))
+.put( 
+    isAuth, 
+    allowTo('admin'),  
+    fileUpload('imageUrl', 'categories'),
+    categoryController.updateCategory.bind(categoryController))
+.delete(
+    isAuth, 
+    allowTo('admin'), 
+    categoryController.deleteCategory.bind(categoryController));
 
 
 

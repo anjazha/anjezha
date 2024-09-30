@@ -23,7 +23,7 @@ export class TaskerController {
             const userId = Number(req.userId);
             const taskerBody = req.body;
             taskerBody.userId = userId;
-            const tasker = new Tasker(taskerBody.userId, taskerBody.bio, taskerBody.pricing, taskerBody.longitude, taskerBody.latitude, taskerBody.categoryId, taskerBody.biding);
+            const tasker = new Tasker(taskerBody.userId, taskerBody.bio, taskerBody.pricing, Number(taskerBody.longitude), Number(taskerBody.latitude), taskerBody.categoryId, taskerBody.biding);
 
             const data = await this.taskerService.createTasker(tasker);
 

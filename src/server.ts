@@ -1,33 +1,50 @@
 import "reflect-metadata";
+import { Request } from "express";
+import { App } from "./app";
+import {
+  userRouter,
+  authRouter,
+  profileRouter,
+  taskerRouter,
+  taskRouter,
+  taskerSkillRouter,
+  categoryRoute,
+  subcategoryRoute,
+  searchRouter,
+  taskAssignmentRouter,
+  taskApplicationRouter,
+  notificationRouter,
+  conversationRouter
+} from "./Presentation/routes";
 
-import { App } from "./app"
-;
-import {userRouter, authRouter, profileRouter, taskerRouter, taskRouter, taskerSkillRouter, categoryRoute, subcategoryRoute,   searchRouter, taskAssignmentRouter, taskApplicationRouter, chatRouter} from "./Presentation/routes";
+const app = new App([
+  userRouter,
+  authRouter,
+  profileRouter,
+  taskerRouter,
+  taskRouter,
+  taskerSkillRouter,
+  categoryRoute,
+  subcategoryRoute,
+  searchRouter,
+  notificationRouter,
+  taskAssignmentRouter,
+  taskApplicationRouter,
+  notificationRouter,
+  conversationRouter
+]);
+
+declare global {
+    namespace Express {
+        interface Request {
+            userId?: Number | null;
+            role?: string;
+        }
+    }
+}
 
 
-// build 
-const appInstance = new App(
-    [
-        userRouter,
-        authRouter,
-        profileRouter,
-        taskerRouter,
-        taskRouter,
-        taskerSkillRouter,
-        categoryRoute,
-        subcategoryRoute,
-        searchRouter,
-        taskAssignmentRouter,
-        taskApplicationRouter,
-        chatRouter
-    ]);
-
-appInstance.listen();
-const app = appInstance.getExpressApp();
-const server = appInstance.getServer();
-// const app = getExpressApp();
-
-export {app, server}
+app.listen();
 
 // import { UserRoute } from "./Presentation/routes/userRoute";
 

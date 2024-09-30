@@ -2,7 +2,7 @@ import { Router } from "express";
 import { Container } from "inversify";
 
 import { INTERFACE_TYPE } from "@/helpers/containerConst";
-import { alllowTo, isAuth } from "../middlewares/isAuth";
+import { allowTo, isAuth } from "../middlewares/isAuth";
 import { SubCategoryRepository } from "@/Application/repositories/subcategoryRepository";
 import { ISubCategoryRepository } from "@/Application/interfaces/ISubCategoryRepository";
 import { ISubCategoryService } from "@/Application/interfaces/ISubCategoryService";
@@ -31,31 +31,27 @@ const subcateroyController = container.get<SubCategoryController>(INTERFACE_TYPE
 
 
 
-// subcategoryRoute.use(isAuth,alllowTo('manger, admin'),);
-subcategoryRoute.use(isAuth,alllowTo('manger', 'admin'));
+// subcategoryRoute.use(qisAuth,allowTo('manger, admin'),);
+// subcategoryRoute.use(isAuth,allowTo('manger', 'admin'));
 
 subcategoryRoute.route('/subcategory')
 .post( 
-    // isAuth,
-    // alllowTo('manger', 'admin'),
+    isAuth,
+    allowTo('manger', 'admin'),
     subcateroyController.createSubCategory.bind(subcateroyController))
-.get(
-    // isAuth,
-    // alllowTo('manger', 'admin'),
-    subcateroyController.getSubCategories.bind(subcateroyController));
+
+.get(subcateroyController.getSubCategories.bind(subcateroyController));
 
     
 subcategoryRoute.route('/subcategory/:id')
-// .all(isAuth,alllowTo('manger', 'admin'))
-.get( 
-    //   isAuth,
-    //   alllowTo('manger, admin'),
-      subcateroyController.getSubCategoryById.bind(subcateroyController))
+.get(subcateroyController.getSubCategoryById.bind(subcateroyController))
 .put( 
+    isAuth,
+    allowTo('manger, admin'),
     subcateroyController.updateSubCategory.bind(subcateroyController))
 .delete( 
-    // isAuth,
-    // alllowTo('manger, admin'), 
+    isAuth,
+    allowTo('manger, admin'), 
     subcateroyController.deleteSubCategory.bind(subcateroyController));
 
 

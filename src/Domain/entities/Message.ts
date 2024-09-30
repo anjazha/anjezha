@@ -1,20 +1,20 @@
-
 enum MessageStatus{
-    sent,
-    recived,
-    seen
+    SENT = "SENT",
+    DELIVERED = "DELIVERED",
+    READ = "READ",
+    FAILED = "FAILED"
 }
 
-export class Messages{
+export class Message{
     constructor(
         public senderId:number,
-        public caht_id:number,
+        public chatId:number,
         public message: string, 
         public messageStatus:MessageStatus,
-        public change_status_at:Date,
+        public changeStatusAt:Date,
         public reciverId?:number,
-        public created_at?: Date,
+        public createdAt?: Date,
         public id?: number,
-        public attechments?:{file_type:string,file_path:string,file_size:number}[]
+        public attechments?:{file_type:string,file_path:string,file_size:number}[],
     ) {}
 }
