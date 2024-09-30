@@ -51,10 +51,11 @@ export class UserRepository implements IUserRepository {
       [email]
     );
     // await disconnectDB();
-     const {name ,password, phone_number, profile_picture } = rows[0]
+    // console.log(rows[0]);
+     const {name ,email: Email, password, phone_number, profile_picture, id } = rows[0]
 
-      return  new User(name, email, password, phone_number, profile_picture);
-      
+      return  new User(name, email, password, phone_number, profile_picture, id);
+    // return rows[0];
       } catch(err:any){
         throw new Error('An error occurred ' + err.message + err.stack);
     }
