@@ -51,7 +51,10 @@ export class UserRepository implements IUserRepository {
       [email]
     );
     // await disconnectDB();
-       return rows[0] || null;
+     const {name ,password, phone_number, profile_picture } = rows[0]
+
+      return  new User(name, email, password, phone_number, profile_picture);
+      
       } catch(err:any){
         throw new Error('An error occurred ' + err.message + err.stack);
     }
@@ -63,7 +66,9 @@ export class UserRepository implements IUserRepository {
           id,
         ]);
     // await disconnectDB();
-        return rows[0] || null;
+         const {name, email, password, phone_number, profile_picture } = rows[0]
+
+        return  new User(name, email, password, phone_number, profile_picture);
       }  catch(err:any){
       throw new Error('An error occurred' + err);
       }
@@ -200,15 +205,13 @@ async delete(id: number): Promise<string> {
         const { rows } = await this.client.query("SELECT * FROM users");
         // await disconnectDB();
         
-      
-        
-        return rows.map((user:any) =>{
+         const users = rows.map((user:any) =>{
            const {name, email, password, phone_number, profile_picture } = user;
-  
             return  new User(name, email, password, phone_number, profile_picture);
-         
-        }
-        )
+        })
+
+        return users;
+
     } catch(err:any){
       throw new Error('An error occurred' + err.message + err.stack);
     }

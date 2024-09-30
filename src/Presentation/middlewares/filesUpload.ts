@@ -21,6 +21,8 @@ cloudinary.config({
 
 
 const uploadBuffer = (file:any) => {
+   console.log(file.mimetype.split("/")[0]);
+   console.log(file.collectionName);
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
@@ -81,18 +83,24 @@ const uploadToCloudinarySingle =(fielName:string, collectionName:string) =>
    const file = req.file;
    console.log(file);
    if(file) {
-
+    // const [error, fileUrl] = await safePromise(() =>
+    //   uploadBuffer({ ...file, collectionName })
+    // );
     const [error, fileUrl] = await safePromise(() =>
       uploadBuffer({ ...file, collectionName })
     );
 
-    // console.log(error, fileUrl);
+    console.log(error, fileUrl);
 
-       if(error) 
-         return next( new HTTP400Error("Error uploading file to cloudinary " + error.message));
+          if (error)
+            return next(
+              new HTTP500Error(
+                "Error uploading file to cloudinary " + error.message
+              ) 
+            );
 
-       req.body.imageUrl= fileUrl;  // 
-      //  console.log(req.body.fielName);
+       req.body.imageUrl= fileUrl;  
+      //  console.log(req.body.imageUrl);
       //  console.log(fielName);
    }
      next();

@@ -59,6 +59,8 @@ export class ProfileController {
         const userId = Number(req.userId);
         const {imageUrl : profilePicture} = req.body;
 
+        console.log(profilePicture);
+
         
         try{
             const profile = await this.profileService.updateProfilePicture(userId, {profilePicture});
