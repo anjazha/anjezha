@@ -8,6 +8,7 @@ import { Request, Response, NextFunction } from "express";
 import RequestWithUserId from "@/Application/interfaces/Request";
 import { IRoleService } from "@/Application/interfaces/User/IRoleService";
 import { Role } from "@/Domain/entities/role";
+import { HTTP500Error } from "@/helpers/ApiError";
 
 
 @injectable()
@@ -42,11 +43,12 @@ export class TaskerController {
     public async getTasker(req: RequestWithUserId, res: Response, next:NextFunction) {
         try {
             // const id = Number(req.userId);
-            const taskerId = +req.params.taskerId;
+            const taskerId = Number(req.userId);
+            console.log(taskerId);
             const tasker = await this.taskerService.getTaskerById(taskerId);
             res.status(200).json(tasker);
-        } catch (error) {
-            next(error);
+        } catch (error:any) {
+            next(new HTTP500Error(error.message));
         }
     }
 
@@ -54,7 +56,7 @@ export class TaskerController {
         try {
             // const taskers = await this.taskerService.getAllTaskers();
             // res.status(200).json(taskers);
-        } catch (error) {
+        } catch (error:any) {
             next(error);
         }
     }

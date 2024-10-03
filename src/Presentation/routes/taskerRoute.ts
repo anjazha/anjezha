@@ -47,8 +47,9 @@ taskerRouter.post('/become-tasker', isAuth, taskerController.addTasker.bind(task
 
 
 // alllow only user authenticate and become tasker 1-creat middlware
-taskerRouter.get('/about-tasker/:taskerId', taskerController.getTasker.bind(taskerController));
-
+taskerRouter.get('/about-tasker', isAuth, taskerController.getTasker.bind(taskerController));
+// taskerRouter.get('/about-tasker/:taskerId', taskerController.getTasker.bind(taskerController));
+// 
 taskerRouter.put('/update-tasker', isAuth, allowTo('tasker'), taskerController.updateTasker.bind(taskerController));
 
 taskerRouter.delete('/delete-tasker', isAuth, allowTo('tasker'), taskerController.deleteTasker.bind(taskerController));
