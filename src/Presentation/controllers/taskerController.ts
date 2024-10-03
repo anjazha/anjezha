@@ -41,8 +41,9 @@ export class TaskerController {
 
     public async getTasker(req: RequestWithUserId, res: Response, next:NextFunction) {
         try {
-            const id = Number(req.userId);
-            const tasker = await this.taskerService.getTaskerById(id);
+            // const id = Number(req.userId);
+            const taskerId = +req.params.taskerId;
+            const tasker = await this.taskerService.getTaskerById(taskerId);
             res.status(200).json(tasker);
         } catch (error) {
             next(error);
