@@ -1,42 +1,33 @@
 import { inject, injectable } from "inversify";
-import { Message } from "../../Domain/entities/Message";
+
+import { IConversationService } from "../interfaces/conversation/IConversationService";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
+import { IConversationRepository } from "../interfaces/conversation/IConversationRepository";
+import { Conversation } from "@/Domain/entities/Conversation";
+import { safePromise } from "@/helpers/safePromise";
 
 
 @injectable()
-export class ConversationService{
-    constructor(){
-        // @inject()
+export class ConversationService implements IConversationService{
+    constructor(        
+        @inject(INTERFACE_TYPE.ConversationRepository) private conversationRepository:IConversationRepository    
+    ){ }
 
+
+    async createConversation(conversation: Conversation): Promise<string|undefined> {
+       return await this.conversationRepository.createConversation(conversation);
     }
 
-    create(message : Message): Promise<boolean>{
-        throw new Error("Method not implemented.");
+     async getConversationsByUserId(userId: number): Promise<Conversation[]|undefined> {
+        return await this.conversationRepository.getConversationsByUserId(userId);
     }
 
-    getMessages(chatId : number): Promise<Message[]>{
-        throw new Error("Method not implemented.");
+    async getConversationById(conversationId: number): Promise<Conversation|undefined> {
+        return await this.conversationRepository.getConversationById(conversationId)
     }
 
-    getUnreadMessages(chatId : number): Promise<Message[]>{
-        throw new Error("Method not implemented.");
+    async deleteConversaitonByUserId(userId: number): Promise<any|undefined> {
+        return  await this.conversationRepository.deleteConversationByUserId(userId);
     }
-
-    markAsRead(messageIds : number[]): Promise<boolean>{
-        throw new Error("Method not implemented.");
-    }
-
-    getMessageById(messageId : number): Promise<Message>{
-        throw new Error("Method not implemented.");
-    }
-
-    updateMessage(message : Message): Promise<boolean>{
-        throw new Error("Method not implemented.");
-    }
-
-    deleteMessage(messageId : number): Promise<boolean>{
-        throw new Error("Method not implemented.");
-    }
-
-
 
 }

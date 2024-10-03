@@ -11,6 +11,7 @@ import categoryRoute from './categoryRoute';
 import notificationRouter from "./notificationRoute";
 import conversationRouter from "./conversationRoute";
 import subcategoryRoute from './subcategoryRoute';
+import messageRouter from './messageRoute';
 
 import { Container } from 'inversify';
 import { NotificationRepository } from '@/Application/repositories/notificationRepository';
@@ -25,4 +26,17 @@ import { INotificationService } from '@/Application/interfaces/Notification/INot
 // container.bind<INotificationRepository>(INTERFACE_TYPE.NotificationRepository).to(NotificationRepository);
 // container.bind<INotificationService>(INTERFACE_TYPE.NotificationService).to(NotificationService);
 
-export { userRouter, authRouter, profileRouter, taskerRouter, taskRouter, taskerSkillRouter, categoryRoute, subcategoryRoute, taskAssignmentRouter, searchRouter, taskApplicationRouter, notificationRouter, conversationRouter};
+export { userRouter, 
+         authRouter, 
+         profileRouter, 
+         taskerRouter, 
+         taskRouter,
+         taskerSkillRouter, 
+         categoryRoute, 
+         subcategoryRoute, 
+         taskAssignmentRouter, 
+         searchRouter, 
+         taskApplicationRouter,
+         notificationRouter, 
+         conversationRouter, 
+         messageRouter};

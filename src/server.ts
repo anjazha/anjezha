@@ -14,7 +14,8 @@ import {
   taskAssignmentRouter,
   taskApplicationRouter,
   notificationRouter,
-  conversationRouter
+  conversationRouter,
+  messageRouter
 } from "./Presentation/routes";
 
 const app = new App([
@@ -31,7 +32,8 @@ const app = new App([
   taskAssignmentRouter,
   taskApplicationRouter,
   notificationRouter,
-  conversationRouter
+  conversationRouter,
+  messageRouter
 ]);
 
 declare global {

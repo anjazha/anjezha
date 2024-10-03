@@ -81,6 +81,16 @@ export const INTERFACE_TYPE = {
     NotificationController : Symbol.for("NotificationController"),
 
     OnlineUsersService: Symbol.for("OnlineUsersService"),
+
+    //conversation
+    ConversationRepository: Symbol.for("ConversationRepository"),
+    ConversationService: Symbol.for("ConversationService"),
+    ConversationController: Symbol.for("ConversationController"),
+
+    // message 
+    MessageRepository:Symbol.for("MessageRepository"),
+    MessageService: Symbol.for("MessageService"),
+    MessageController:Symbol.for("MessageController"),
     
     App: Symbol.for("App"),
     User: Symbol.for("User"),

@@ -17,29 +17,49 @@ export class MessageRepository implements IMessageRepository{
         this.client= pgClient;
     }
 
-     async create(message : Message): Promise<boolean>{
-        const query = `INSERT INTO messages (chat_id, sender_id, receiver_id, message, message_status, created_at) VALUES ($1, $2, $3, $4, $5, $6)`;
+     async createMessage(message : Message): Promise<string>{
 
-        const values = [message.chatId, message.senderId, message.reciverId, message.message, message.messageStatus, message.createdAt];
+        const query = `INSERT INTO messages (conversation_id, sender_id, message) VALUES ($1, $2, $3)`;
 
-        const [error, result ] = await safePromise(()=>this.client.query(query, values));
-        if(error) throw new HTTP500Error("Error while creating message" + error.message);
-        return true;
+        const values = [message.conversationId, message.senderId,message.message];
+
+        const [error, result ] = await safePromise(()=> this.client.query(query, values));
+
+        if(error)  
+             throw new HTTP500Error("Error while creating message" + error.message);
+
+        return "message is created";
      }
     
 
-      async getMessages(chatId : number): Promise<Message[]>{
+      async getMessages(conversationId : number): Promise<Message[]>{
 
-        const query = `SELECT * FROM messages WHERE chat_id = $1 ORDER BY created_at DESC`;
-        const values = [chatId];
-        const [error, result ] = await safePromise(()=>this.client.query(query, values));
-        if(error) throw new HTTP500Error("Error while fetching messages" + error.message);
-        return result.rows;
+        const query = `SELECT * FROM messages WHERE conversation_id = $1 ORDER BY sent_at DESC`;
+        const values = [conversationId];
+
+        const [error, result ] = await safePromise( () => this.client.query(query, values));
+
+        if(error) throw new HTTP500Error("Error while fetching messages" + error.message + error.stack);
+        const messages = result.rows.map((message:any) => 
+
+            new Message(
+                message.sender_id, 
+                message.conversation_id, 
+                message.message, 
+                message.message_status, 
+                message.change_status_at,
+                message.receiver_id, 
+                message.sent_at, 
+                message.id, 
+                message.attachments)
+        )
+
+        return messages;
        }
 
-        async getUnreadMessages(chatId : number): Promise<Message[]>{
-            const query = `SELECT * FROM messages WHERE chat_id = $1 AND message_status = $2 ORDER BY created_at DESC`;
-            const values = [chatId, "SENT"];
+        async getUnreadMessages(conversationId : number): Promise<Message[]>{
+            const query = `SELECT * FROM messages WHERE conversation_id = $1 AND message_status = $2 ORDER BY created_at DESC`;
+            const values = [conversationId, "SENT"];
             const [error, result ] = await safePromise(()=>this.client.query(query, values));
             if(error) throw new HTTP500Error("Error while fetching messages" + error.message);
             return result.rows;
@@ -54,27 +74,62 @@ export class MessageRepository implements IMessageRepository{
         }
 
         async getMessageById(messageId : number): Promise<Message>{
+
             const query = `SELECT * FROM messages WHERE id = $1`;
+
             const values = [messageId];
+
+            // use safePromise to handle the promise rejection
             const [error, result ] = await safePromise(()=>this.client.query(query, values));
-            if(error) throw new HTTP500Error("Error while fetching message" + error.message);
-            return result.rows[0];
+
+            // throw an error if there is an error
+            if(error) throw new HTTP500Error("Error while fetching message" + error.message + error.stack);
+
+            // return the message object
+            const message = result.rows[0];
+
+            // return the message object
+            return new Message(
+                message.sender_id, 
+                message.conversation_id, 
+                message.message, 
+                message.message_status, 
+                message.change_status_at,
+                message.receiver_id, 
+                message.sent_at, 
+                message.id, 
+                message.attachments)
         }
 
-        async updateMessage(message : Message): Promise<boolean>{
-            const query = `UPDATE messages SET message = $1, message_status = $2, change_status_at = $3 WHERE id = $4`;
-            const values = [message.message, message.messageStatus, message.changeStatusAt, message.id];
-            const [error, result ] = await safePromise(()=>this.client.query(query, values));
+        async updateMessage(message : Message, messageId:number): Promise<string>{
+            // update the message with the given id
+            const query = `UPDATE messages SET message = $1 WHERE id = $2`;
+
+            // values to be updated
+            const values = [message.message, messageId];
+
+            // use safePromise to handle the promise rejection
+            const [error, result ] = await safePromise( ()=>this.client.query(query, values));
+            // throw an error if there is an error
             if(error) throw new HTTP500Error("Error while updating message" + error.message);
-            return true;
+            // return a success message
+            return 'message updated';
         }
 
-        async deleteMessage(messageId : number): Promise<boolean>{
+        async deleteMessage(messageId : number): Promise<string>{
+
+            // delete the message with the given id
             const query = `DELETE FROM messages WHERE id = $1`;
+            // messageId to be delete message
             const values = [messageId];
+
+            // use safePromise to handle the promise rejection
             const [error, result ] = await safePromise(()=>this.client.query(query, values));
+
+            // throw an error if there is an error
             if(error) throw new HTTP500Error("Error while deleting message" + error.message);
-            return true;
+            // return a success message
+            return "message deleted";
         }
 
         async getMessagesBySenderId(senderId : number): Promise<Message[]>{
@@ -93,9 +148,9 @@ export class MessageRepository implements IMessageRepository{
             return result.rows;
         }
 
-        async getMessagesByChatId(chatId : number): Promise<Message[]>{
-            const query = `SELECT * FROM messages WHERE chat_id = $1 ORDER BY created_at DESC`;
-            const values = [chatId];
+        async getMessagesByconversationId(conversationId : number): Promise<Message[]>{
+            const query = `SELECT * FROM messages WHERE conversation_id = $1 ORDER BY created_at DESC`;
+            const values = [conversationId];
             const [error, result ] = await safePromise(()=>this.client.query(query, values));
             if(error) throw new HTTP500Error("Error while fetching messages" + error.message);
             return result.rows;

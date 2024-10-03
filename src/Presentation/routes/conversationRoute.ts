@@ -1,23 +1,32 @@
 import {Router} from 'express'
-import { safePromise } from '@/helpers/safePromise'
+import { Container } from 'inversify';
+import { IConversationRepository } from '@/Application/interfaces/conversation/IConversationRepository';
+import { INTERFACE_TYPE } from '@/helpers/containerConst';
+import { ConversationRepository } from '@/Application/repositories/conversationRepository';
+import { IConversationService } from '@/Application/interfaces/conversation/IConversationService';
+import { ConversationService } from '@/Application/services/conversationService';
+import { ConversationController } from '../controllers/conversationController';
 
 
 const conversationRouter = Router();
 
+const container = new Container();
 
-conversationRouter.get('/conversations', async (req, res, next) => {
-     // use safePromise
-     const [error, result] = await safePromise(()=>{
-            return 'Hello from real time chat'
-     })
+container.bind<IConversationRepository>(INTERFACE_TYPE.ConversationRepository).to(ConversationRepository);
 
-     if(error) return res.status(400).json({error: error.message})
-      res.status(200).json({message: result})
-})
+container.bind<IConversationService>(INTERFACE_TYPE.ConversationService).to(ConversationService);
 
+container.bind<ConversationController>(INTERFACE_TYPE.ConversationController).to( ConversationController)
 
-conversationRouter.get('/chat/:id', (req, res) => {
-    res.send('Hello from real time chat with id')
-})
+const conversationController = container.get<ConversationController>(INTERFACE_TYPE.ConversationController);
+
+// route to create conversation
+conversationRouter.post('/create-conversation',conversationController.createConversation.bind(conversationController))
+// render user conversation 
+conversationRouter.route('/conversations/:userId') 
+.get(conversationController.getConversationByUser.bind(conversationController))
+.delete(conversationController.deleteConversaitonByUserId.bind(conversationController))
+
+// conversationRouter.route('conversations/:conversationId', )
 
 export default conversationRouter

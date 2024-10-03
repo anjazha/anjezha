@@ -3,22 +3,22 @@ import {Message} from "../../../Domain/entities/Message"
 
 
 export interface IMessageRepository{
-    create(message : Message): Promise<boolean>;
-    getMessages(chatId : number): Promise<Message[]>
-    getUnreadMessages(chatId : number): Promise<Message[]>
+    createMessage(message : Message): Promise<string>;
+    getMessages(conversationId : number): Promise<Message[]>
+    getUnreadMessages(conversationId : number): Promise<Message[]>
     markAsRead(messageIds : number[]): Promise<boolean>;
     getMessageById(messageId : number): Promise<Message>
-    updateMessage(message : Message): Promise<boolean>;
-    deleteMessage(messageId : number): Promise<boolean>;
+    updateMessage(message : Message, messageId:number): Promise<string>;
+    deleteMessage(messageId : number): Promise<string>;
     getMessagesBySenderId(senderId : number): Promise<Message[]>
     getMessagesByReceiverId(receiverId : number): Promise<Message[]>
-    getMessagesByChatId(chatId : number): Promise<Message[]>
+    getMessagesByconversationId(conversationId : number): Promise<Message[]>
     getMessagesByStatus(messageStatus : string): Promise<Message[]>
     getMessagesByDate(date : Date): Promise<Message[]>
     // getMessagesByDateRange(startDate : Date,endDate : Date): Promise<Message[]>
     // getMessagesBySenderIdAndReceiverId(senderId : number,receiverId : number): Promise<Message[]>
-    // getMessagesBySenderIdAndChatId(senderId : number,chatId : number): Promise<Message[]>
-    // getMessagesByReceiverIdAndChatId(receiverId : number,chatId : number): Promise<Message[]>
-    // getMessagesBySenderIdAndReceiverIdAndChatId(senderId : number,receiverId : number,chatId : number): Promise<Message[]>
+    // getMessagesBySenderIdAndconversationId(senderId : number,conversationId : number): Promise<Message[]>
+    // getMessagesByReceiverIdAndconversationId(receiverId : number,conversationId : number): Promise<Message[]>
+    // getMessagesBySenderIdAndReceiverIdAndconversationId(senderId : number,receiverId : number,conversationId : number): Promise<Message[]>
     // getMessagesBySenderIdAndStatus(senderId : number,messageStatus : string): Promise<Message[]>
 }
