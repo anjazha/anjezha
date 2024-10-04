@@ -18,7 +18,7 @@ export class Tasker {
         public profile?:User,
         public role?: string,
         // public  createdAt?: Date,
-        public category?: Category,
+        public category?: any,
         public skills?: Skills[],
         public reviews: any[]= [],
         // public totalRating?: number,
