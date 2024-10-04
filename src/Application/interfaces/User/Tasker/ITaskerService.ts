@@ -2,10 +2,11 @@ import { Tasker } from "@/Domain/entities/Tasker";
 
 
 export interface ITaskerService {
-    createTasker(tasker: Tasker): Promise<any>;
+    createTasker(tasker: Tasker): Promise<Tasker>;
     getTaskerById(id: number): Promise<Tasker>;
     updateTasker(tasker: Tasker): Promise<string>;
     deleteTasker(id: number): Promise<string>;
+    getTaskerByUserId(userId: number): Promise<Tasker>;
     
     // getTaskerByEmail(email: string): Promise<Tasker>;
     // getTaskerByCategory(category: string): Promise<Tasker[]>;

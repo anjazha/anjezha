@@ -22,13 +22,14 @@ export class TaskerService implements ITaskerService {
         const userId= taskerData.userId;
 
        try{
+        
          const taskerExist = await this.taskerRepository.getTaskerByUserId(userId);
 
         if(taskerExist){
             throw new Error("tasker exist");
         }
         // craete tasker on db 
-         const tasker= this.taskerRepository.createTasker(taskerData);
+         const tasker= await this.taskerRepository.createTasker(taskerData);
 
          
          // update roles about user to become tasker 
@@ -52,16 +53,20 @@ export class TaskerService implements ITaskerService {
         }
     }
 
+    async getTaskerByUserId(userId: number): Promise<Tasker> {
+        return await this.taskerRepository.getTaskerByUserId(userId)
+    }
+
     async getTaskerById(id: number): Promise<Tasker> {
         return await this.taskerRepository.getTaskerById(id)
     }
 
     async updateTasker(tasker: Tasker): Promise<string> {
-         return await await this.taskerRepository.updateTasker(tasker);
+         return  await this.taskerRepository.updateTasker(tasker);
     }
 
     async deleteTasker(id: number): Promise<string> {
-         return  await await this.taskerRepository.deleteTasker(id);
+         return  await this.taskerRepository.deleteTasker(id);
     }
 
     // async getTaskerByUserId(userId: number): Promise<Tasker> {
