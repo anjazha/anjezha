@@ -94,6 +94,7 @@ export class TaskerRepository implements ITaskerRepository {
             if(rows.length == 0) return undefined;
             
             const data:Tasker = {
+                id: rows[0].id,
                 userId: rows[0].userid,
                 bio: rows[0].bio,
                 pricing: rows[0].pricing,
