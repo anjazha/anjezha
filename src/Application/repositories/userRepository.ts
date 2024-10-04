@@ -9,7 +9,7 @@ import { IUserRepository } from "../interfaces/User/IUserRepository";
 
 @injectable()
 export class UserRepository implements IUserRepository {
-  private client: Client;
+  private client: Pool;
   constructor() {
     //    this.pool = pgClient;
     this.client = pgClient;
@@ -38,7 +38,7 @@ export class UserRepository implements IUserRepository {
       // console.log(rows[0]);
       // await disconnectDB();
       return rows[0];
-    } catch(err){
+    } catch(err:any){
       throw new Error('An error occurred' + err.message + err.stack);
     }
   }
@@ -51,7 +51,7 @@ export class UserRepository implements IUserRepository {
     );
     // await disconnectDB();
        return rows[0] || null;
-      } catch(err){
+      } catch(err:any){
         throw new Error('An error occurred ' + err.message + err.stack);
     }
   }
@@ -63,7 +63,7 @@ export class UserRepository implements IUserRepository {
         ]);
     // await disconnectDB();
         return rows[0] || null;
-      }  catch(err){
+      }  catch(err:any){
       throw new Error('An error occurred' + err);
       }
   }
@@ -128,7 +128,7 @@ export class UserRepository implements IUserRepository {
     return rows[0];
     
     
-    } catch(err){
+    } catch(err:any){
         throw new Error('Could not update user' + err.message + err.stack);
 
    }
@@ -139,7 +139,7 @@ async delete(id: number): Promise<string> {
     await this.client.query("DELETE FROM users WHERE id = $1", [id]);
     // await disconnectDB();
     return "user deleted";
-      } catch(err){
+      } catch(err:any){
          throw new Error('An error occurred' + err);
       }
   }
@@ -149,7 +149,7 @@ async delete(id: number): Promise<string> {
         const { rows } = await this.client.query("SELECT * FROM users");
         // await disconnectDB();
         return rows;
-    } catch(err){
+    } catch(err:any){
       throw new Error('An error occurred' + err.message + err.stack);
     }
 }

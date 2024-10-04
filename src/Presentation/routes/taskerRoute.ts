@@ -2,7 +2,7 @@ import { Container } from "inversify";
 import { TaskerController } from "../controllers/taskerController";
 import { TaskerService } from "@/Application/services/taskerService";
 import { TaskerRepository } from "@/Application/repositories/taskerRepository";
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { ITaskerRepository } from "@/Application/interfaces/User/ITaskerRepository";
 import { ITaskerService } from "@/Application/interfaces/User/ITaskerService";
 import { Router } from "express";
@@ -25,7 +25,9 @@ const taskerController = container.get<TaskerController>(INTERFACE_TYPE.TaskerCo
 router.post('/become-tasker', isAuth,  taskerController.addTasker.bind(taskerController));
 
 
-router.get('/about-tasker', isAuth,  taskerController.getTasker.bind(taskerController));
+router.get('/tasker/:taskerId',   taskerController.getTaskerById.bind(taskerController));
+
+router.get('/about-tasker', isAuth,  taskerController.getTaskerByUserId.bind(taskerController));
 
 router.put('/update-tasker', isAuth, taskerController.updateTasker.bind(taskerController));
 

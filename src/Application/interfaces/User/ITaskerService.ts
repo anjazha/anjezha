@@ -6,6 +6,7 @@ export interface ITaskerService {
     getTaskerById(id: number): Promise<Tasker>;
     updateTasker(tasker: Tasker): Promise<string>;
     deleteTasker(id: number): Promise<string>;
+    getTaskerByUserId(userId: number): Promise<Tasker>;
     
     // getTaskerByEmail(email: string): Promise<Tasker>;
     // getTaskerByCategory(category: string): Promise<Tasker[]>;

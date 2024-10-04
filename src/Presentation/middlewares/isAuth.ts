@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { JwtPayload } from 'jsonwebtoken';
 
 interface RequestWithUserId extends Request {
-    userId?: string | Number;
+    userId?: undefined | Number;
 }
 
 const isAuth = (req: RequestWithUserId, res: Response, next: NextFunction) => {
@@ -21,15 +21,16 @@ const isAuth = (req: RequestWithUserId, res: Response, next: NextFunction) => {
     
             // console.log(token)
 
+            let decoded: string | JwtPayload;
             if(!token){
                 return res.status(401).json({message: 'Unauthorized'});
             }
 
             // verify token
-            const decoded = verifyToken(token) as string | JwtPayload;
+             decoded = verifyToken(token) as string | JwtPayload;
 
             // attach user to request object  // i am not can understand why show it error but it work
-            const userId = decoded.userId;""
+             const userId = Number(decoded.userId);
 
             req.userId =  Number(userId);
 

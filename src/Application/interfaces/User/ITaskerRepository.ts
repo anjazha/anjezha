@@ -2,15 +2,17 @@ import { Tasker } from "@/Domain/entities/Tasker";
 
 
 export interface ITaskerRepository {
-    createTasker(tasker: Tasker): Promise<Tasker>;
-    getTaskerById(id: number): Promise<Tasker>;
-    getTaskerByEmail?(email: string): Promise<Tasker>;
-    getTaskerByPhoneNumber?(phoneNumber: string): Promise<Tasker>;
-    getTaskerByLocation?(location: string): Promise<Tasker[]>;
-    getTaskerByRating?(rating: number): Promise<Tasker[]>;
-    getTaskerByTask?(task: any): Promise<Tasker[]>;
-    updateTasker(tasker: Tasker): Promise<string>;
-    deleteTasker(tasker: number): Promise<string>;
+    createTasker(tasker: Tasker): Promise<Tasker | null>;
+    getTaskerById(id: number): Promise<Tasker | null>;
+    getTaskerByUserId(userId: number): Promise<Tasker | null>;
+    getTaskerByEmail?(email: string): Promise<Tasker | null>;
+    getTaskerByPhoneNumber?(phoneNumber: string): Promise<Tasker | null>;
+    getTaskerByLocation?(location: string): Promise<Tasker[] | null>;
+    getTaskerByRating?(rating: number): Promise<Tasker[] | null>;
+    getTaskerByTask?(task: any): Promise<Tasker[] | null>;
+    updateTasker(tasker: Tasker): Promise<string | null>;
+    deleteTasker(tasker: number): Promise<string | null>;
+
     // getTaskerByCategory(category: string): Promise<Tasker[]>;
     // getTaskerBySkill(skill: string): Promise<Tasker[]>;
     // getTaskerByPrice(price: number): Promise<Tasker[]>;

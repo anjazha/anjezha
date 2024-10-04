@@ -29,6 +29,10 @@ export class TaskerService implements ITaskerService {
          return  await await this.taskerRepository.deleteTasker(id);
     }
 
+    async getTaskerByUserId(userId: number): Promise<Tasker> {
+        return await this.taskerRepository.getTaskerByUserId(userId)
+    }
+
     // async getTaskerByUserId(userId: number): Promise<Tasker> {
     //     return await this.taskerRepository.getTaskerByUserId(userId)
     // }
