@@ -31,6 +31,9 @@ router.route('/tasks/:taskId')
         .delete(isAuth, taskController.deleteTask.bind(taskController))
 
 
+router.get('/user-tasks', isAuth, taskController.getTasksByUserId.bind(taskController))
+
+
 // router.route
 
 
