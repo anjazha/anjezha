@@ -13,11 +13,11 @@ export  class User {
     // previous code  is same as below code
     constructor(
          public  name:string,
-         public  email,
-         public  password,
+         public  email:string,
+         public  password:string,
          public  phoneNumber:string,
-         public  id?:number,
          public  profilePicture?:string,
+         public  id?:number,
         ){
         // this.name = name;
         // this.email = email;

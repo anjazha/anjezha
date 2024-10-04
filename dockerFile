@@ -1,20 +1,23 @@
-# Step 1: Specify the base image
-FROM node:18-alpine
+# Base image, stage
+FROM node:lts-alpine as base
 
-# Step 2: Set the working directory
-WORKDIR /app
-
-# Step 3: Copy package files
-COPY package*.json ./
-
-# Step 4: Install dependencies
+# Development stage
+FROM base as development
+WORKDIR /anjezha
+COPY package.json ./anjezha
+#update npm to latest version
+RUN npm install -g npm@10.8.3
 RUN npm install
-
-# Step 5: Copy application code
 COPY . .
+EXPOSE 5000
+CMD ["npm", "run", "start:dev"]
 
-# Step 6: Expose the port
-EXPOSE 3000
-
-# Step 7: Specify the command to run the application
-CMD ["npm", "dev:start"]
+# Production stage
+FROM base as production
+WORKDIR /anjezha
+COPY package.json ./
+RUN npm install --only=production
+COPY . .
+RUN npm run build
+EXPOSE 5000
+CMD ["npm", "run", "start"]

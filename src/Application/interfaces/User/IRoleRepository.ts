@@ -9,7 +9,7 @@ export interface IRoleRepository {
 
     createRole(role: Role): Promise<Role>;
 
-    updateRole(role: Role): Promise<string>;
+    updateRole(role: Role): Promise<Role>;
 
     deleteRole(id: number): Promise<string>;
     getRoleByUserId(userId: number): Promise<Role>;

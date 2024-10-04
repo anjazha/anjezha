@@ -1,10 +1,11 @@
-import { Tasker } from "@/Domain/entities/Tasker";
-import { ITaskerRepository } from "../interfaces/User/ITaskerRepository";
-import { pgClient } from "@/Infrastructure/database";
 import { Client, Pool } from "pg";
 import { injectable } from "inversify";
+
+import { Tasker } from "@/Domain/entities/Tasker";
+import { ITaskerRepository } from "../interfaces/User/Tasker/ITaskerRepository";
+import { pgClient } from "@/Infrastructure/database";
+
 import { HTTP500Error } from "@/helpers/ApiError";
-import { an } from "@faker-js/faker/dist/airline-BBTAAfHZ";
 
 
 @injectable()
@@ -138,6 +139,7 @@ export class TaskerRepository implements ITaskerRepository {
     }
 
     async getTaskerByUserId(userId: number): Promise<Tasker| null> {
+         console.log(userId)
         
           try {
                 const query = 'SELECT * FROM taskers WHERE user_id = $1';
@@ -145,8 +147,11 @@ export class TaskerRepository implements ITaskerRepository {
                 const values = [userId];
     
                 const { rows } = await this.client.query(query, values);
-    
+                
+                console.log(rows)
+
                 if(rows.length == 0) return null;
+
                 return new Tasker(
                   rows[0].user_id,
                   rows[0].bio,
@@ -207,6 +212,99 @@ export class TaskerRepository implements ITaskerRepository {
             throw error;
         }
 
+    }
+
+
+    async getAllTaskers(): Promise<Tasker[]> {
+        try {
+            const query = `
+            SELECT 
+                ts.id,
+                ts.user_id as userId,
+                ts.bio,
+                ts.pricing,
+                ts.longitude,
+                ts.latitude,
+                ts.category_id as categoryId,
+                ts.bidding,
+                us.name,
+                us.email,
+                us.profile_picture as profilePicture,
+                us.created_at as createdAt,
+                us.phone_number as phoneNumber,
+                rs.name as role,
+                sks.id as skillId,
+                sks.name as skillName
+            FROM 
+                taskers ts 
+            INNER JOIN 
+                users us ON us.id = ts.user_id
+            INNER JOIN 
+                roles rs ON ts.user_id = rs.user_id
+            LEFT JOIN 
+                tasker_skills tsk ON ts.user_id = tsk.user_id
+            LEFT JOIN 
+                skills sks ON sks.id = tsk.skill_id
+            /* LEFT JOIN 
+                reviews rvs ON ts.id = rvs.tasker_id */
+            `;
+
+            const { rows } = await this.client.query(query);
+
+            return rows.map((row: any) => {
+                return {
+                    userId: row.userid,
+                    bio: row.bio,
+                    pricing: row.pricing,
+                    longitude: row.longitude,
+                    latitude: row.latitude,
+                    bidding: row.bidding,
+                    role: row.role,
+                    categoryId: row.categoryId,
+                    category: {
+                        id: row.categoryId,
+                        category: row.category
+                    },
+                    profile: {
+                        name: row.name,
+                        email: row.email,
+                        // phoneNumber: row.phone,
+                        password: null,
+                        profilePicture: row.profilePicture,
+                        id: row.userId,
+                        phoneNumber: row.phoneumber,
+                    },
+                    skills: row.map((row: any) => {
+                        return {
+                            id: row.skillId,
+                            skill: row.skillName
+                        };
+                    }),
+                    reviews: []
+                };
+            });
+
+        } catch (error:any) {
+            throw new HTTP500Error('An error occurred ' + error.message + error.stack);
+        } 
+        // finally {
+        //     this.client.release();
+        // }
+    }
+
+    async getTaskerByEmail(email: string): Promise<Tasker> {
+        throw new Error("Method not implemented.");
+    }
+
+
+    async getTaskerByPhoneNumber(phoneNumber: string): Promise<Tasker> {
+        throw new Error("Method not implemented.");
+    }
+
+    
+
+    async getTaskerBySkillId(skillId: number): Promise<Tasker[]> {
+        throw new Error("Method not implemented.");
     }
 
 

@@ -1,7 +1,7 @@
 // configuration with database connect
 import pg, { ClientConfig } from 'pg';
 
-import { DB_HOST,DB_PASSWORD,DB_USER,DB_NAME, DB_CA, DB_PORT } from '@/Config';
+import { DB_HOST,DB_PASSWORD,DB_USER,DB_NAME, DB_CA, DB_PORT } from '@/config/index';
 
 // console.log(PORT, DB_HOST,DB_PASSWORD,DB_USER,DB_NAME, DB_CA, DB_PORT)
 // const config:ClientConfig = {
@@ -33,7 +33,11 @@ const config = {
     },
 };
 
-const client = new pg.Client(config);
+// const client = new pg.Client(config);
+
+// create pool not client in order to create multiple connections
+
+const client = new pg.Pool(config);
 
 
 const connectDB = async () => {

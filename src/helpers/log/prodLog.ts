@@ -1,7 +1,12 @@
 import { createLogger, format, transports } from 'winston';
-import PostgresTransport from 'winston-postgres';
 
-import { DB_URL, LOG_LEVEL } from '@/Config';
+// Import the PostgreSQL transport
+// import PostgresTransport from 'winston-pg';
+
+
+
+
+import { DB_URL, LOG_LEVEL } from '@/config/index';
 
 // PostgreSQL connection options
 const pgOptions = {
@@ -26,10 +31,11 @@ const logger = createLogger({
   format: customFormat,
   transports: [
     new transports.Console(),
-    new PostgresTransport({
-      ...pgOptions,
-      level: logLevel // Set log level for PostgreSQL transport
-    })
+    // new PostgresTransport(pgOptions)
+
+    new transports.File({ filename: 'error.log', level: 'error' }),
+    new transports.File({ filename: 'combined.log' })
+    
   ]
 });
 

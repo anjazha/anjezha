@@ -1,4 +1,4 @@
-import { IApiError } from "../../../Application/interfaces/IApiError";
+import { IApiError } from "@/Application/interfaces/IApiError";
 import { Request, Response, NextFunction } from "express";
 
 export const errorHandler = async (
@@ -13,7 +13,7 @@ export const errorHandler = async (
   if (process.env.MODE === "development") resObj = {...resObj , stack, isOperational};
   if (!err?.isOperational) {
     res.status(err.httpCode || 500).json(resObj);
-    process.exit(1);
+    // process.exit(1);
   }else{
     res.status(err.httpCode || 500).json(resObj);
   }

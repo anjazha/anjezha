@@ -1,6 +1,11 @@
 import { Request } from "express";
 
-export default interface RequestWithUserId extends Request {
+interface RequestWithUserId extends Request  {
 
-    userId?: Number | null | undefined;
+    userId?: Number  | null | undefined;
+    role?: string | undefined;
+    fielName?:string|undefined;
 }
+
+
+export default RequestWithUserId
