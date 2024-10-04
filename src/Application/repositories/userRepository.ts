@@ -38,10 +38,19 @@ export class UserRepository implements IUserRepository {
       const { rows } = await this.client.query(query, values);
       // console.log(rows[0]);
       // await disconnectDB();
-      return new User(rows[0].name, rows[0].email, rows[0].password, rows[0].phone_number, rows[0].id, rows[0].profile_picture);
-    } catch(err:any){
-      throw new Error('An error occurred' + err.message + err.stack);
+      return new User(
+         rows[0].name,
+         rows[0].email,
+         rows[0].password,
+         rows[0].phone_number,
+         rows[0].profile_picture,
+         rows[0].id,);
+
+    } catch(err:any) {
+
+         throw new Error('An error occurred' + err.message + err.stack);
     }
+    
   }
 
   async findByEmail(email: string): Promise<User | null> {
@@ -52,10 +61,23 @@ export class UserRepository implements IUserRepository {
     );
     // await disconnectDB();
     // console.log(rows[0]);
-     const {name ,email: Email, password, phone_number, profile_picture, id } = rows[0]
+    //  const {name ,email: Email, password, phone_number, profile_picture, id } = rows[0]
+    //  if (rows.length === 0) {
+    //        throw new Error('User not found');
+    //   } 
 
-      return  new User(name, email, password, phone_number, profile_picture, id);
-    // return rows[0];
+    if(rows.length === 0) return null;
+
+      return new User(
+        rows[0].name,
+        rows[0].email,
+        rows[0].password,
+        rows[0].phone_number,
+        rows[0].profile_picture,
+        rows[0].id
+    );
+    
+      //  return rows[0];
       } catch(err:any){
         throw new Error('An error occurred ' + err.message + err.stack);
     }

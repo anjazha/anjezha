@@ -37,11 +37,13 @@ export class AuthService implements IAuthService {
         try{
         const {email, password} = user; 
 
+        console.log("user", user);
+
        
         //  1- Check if user exists 
         const userExist = await this.userRepository.findByEmail(email);
 
-        console.log("userexist" , userExist);
+        // console.log("userexist" , userExist);
 
        // return error if exists  1- handle unit test 1
         if(userExist){
@@ -52,7 +54,7 @@ export class AuthService implements IAuthService {
          user.password = await hasPass(password, 10);
 
          // create user  // handle unit test 3
-           const data = await this.userRepository.create(user);
+        const data = await this.userRepository.create(user);
 
         //    console.log("data", data);
 
