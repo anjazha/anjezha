@@ -105,7 +105,7 @@ export class TaskerRepository implements ITaskerRepository {
 
                 category: {
                     id: rows[0].categoryId,
-                    category: rows[0].category
+                    category: rows[0].category,
                 },
                 profile: {
                     name: rows[0].name,
