@@ -35,7 +35,7 @@ export class TaskerController {
     public async getTaskerById(req: RequestWithUserId, res: Response, next:NextFunction) {
         try {
             // const userId = Number(req.userId);
-            const id = Number(req.params.userId);
+            const id = Number(req.params.taskerId);
 
             console.log(id);
             

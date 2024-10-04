@@ -83,7 +83,7 @@ export class TaskerRepository implements ITaskerRepository {
             /* LEFT JOIN 
                 reviews rvs ON ts.id = rvs.tasker_id */
             WHERE 
-               ts.user_id = $1`;
+               ts.id = $1`;
 
             const values = [id];
 
