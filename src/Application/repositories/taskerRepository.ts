@@ -15,7 +15,7 @@ export class TaskerRepository implements ITaskerRepository {
         this.client = pgClient;
     }
 
-    async createTasker(tasker: Tasker): Promise<Tasker> {      
+    async createTasker(tasker: Tasker): Promise<Tasker | undefined> {      
         try {
 
             const { userId, bio, pricing, longitude, latitude, categoryId, bidding } = tasker;
@@ -49,7 +49,7 @@ export class TaskerRepository implements ITaskerRepository {
    
     }
 
-    async getTaskerById(id: number): Promise<Tasker|null> { 
+    async getTaskerById(id: number): Promise<Tasker | undefined> { 
         console.log(id)
         try {
             const query = `
@@ -91,7 +91,7 @@ export class TaskerRepository implements ITaskerRepository {
 
             console.log(rows[0]);
             
-            if(rows.length == 0) return null;
+            if(rows.length == 0) return undefined;
             
             const data:Tasker = {
                 userId: rows[0].userid,
@@ -111,7 +111,7 @@ export class TaskerRepository implements ITaskerRepository {
                     name: rows[0].name,
                     email: rows[0].email,
                     // phoneNumber: rows[0].phone,
-                    password: null,
+                    password: '',
                     profilePicture: rows[0].profilepicture,
                     id: rows[0].userId,
                     phoneNumber: rows[0].phoneumber,
@@ -126,7 +126,7 @@ export class TaskerRepository implements ITaskerRepository {
                 reviews: []
             }
 
-         if(rows.length == 0) return null;
+         if(rows.length == 0) return undefined;
 
              return data;
 
@@ -138,7 +138,7 @@ export class TaskerRepository implements ITaskerRepository {
         // }
     }
 
-    async getTaskerByUserId(userId: number): Promise<Tasker| null> {
+    async getTaskerByUserId(userId: number): Promise<Tasker| undefined> {
          console.log(userId)
         
           try {
@@ -150,7 +150,7 @@ export class TaskerRepository implements ITaskerRepository {
                 
                 console.log(rows)
 
-                if(rows.length == 0) return null;
+                if(rows.length == 0) return undefined;
 
                 return new Tasker(
                   rows[0].user_id,
@@ -167,7 +167,7 @@ export class TaskerRepository implements ITaskerRepository {
           } 
         }
 
-    async updateTasker(tasker: Tasker): Promise<string> {
+    async updateTasker(tasker: Tasker): Promise<string | undefined> {
       
         try {
 
@@ -201,7 +201,7 @@ export class TaskerRepository implements ITaskerRepository {
     }
 
 
-    async deleteTasker(id: number): Promise<string> {
+    async deleteTasker(id: number): Promise<string | undefined> {
       
         try {
             const query = 'DELETE FROM taskers WHERE user_id = $1';
@@ -215,7 +215,7 @@ export class TaskerRepository implements ITaskerRepository {
     }
 
 
-    async getAllTaskers(): Promise<Tasker[]> {
+    async getAllTaskers(): Promise<Tasker[] | undefined> {
         try {
             const query = `
             SELECT 
@@ -253,31 +253,31 @@ export class TaskerRepository implements ITaskerRepository {
 
             return rows.map((row: any) => {
                 return {
-                    userId: row.userid,
-                    bio: row.bio,
-                    pricing: row.pricing,
-                    longitude: row.longitude,
-                    latitude: row.latitude,
-                    bidding: row.bidding,
-                    role: row.role,
-                    categoryId: row.categoryId,
+                    userId: row?.userid,
+                    bio: row?.bio,
+                    pricing: row?.pricing,
+                    longitude: row?.longitude,
+                    latitude: row?.latitude,
+                    bidding: row?.bidding,
+                    role: row?.role,
+                    categoryId: row?.categoryId,
                     category: {
-                        id: row.categoryId,
-                        category: row.category
+                        id: row?.categoryId,
+                        category: row?.category
                     },
                     profile: {
-                        name: row.name,
-                        email: row.email,
+                        name: row?.name,
+                        email: row?.email,
                         // phoneNumber: row.phone,
-                        password: null,
+                        password: '',
                         profilePicture: row.profilePicture,
-                        id: row.userId,
-                        phoneNumber: row.phoneumber,
+                        id: row?.userId,
+                        phoneNumber: row?.phoneumber,
                     },
                     skills: row.map((row: any) => {
                         return {
-                            id: row.skillId,
-                            skill: row.skillName
+                            id: row?.skillId,
+                            skill: row?.skillName
                         };
                     }),
                     reviews: []
@@ -292,18 +292,18 @@ export class TaskerRepository implements ITaskerRepository {
         // }
     }
 
-    async getTaskerByEmail(email: string): Promise<Tasker> {
+    async getTaskerByEmail(email: string): Promise<Tasker | undefined> {
         throw new Error("Method not implemented.");
     }
 
 
-    async getTaskerByPhoneNumber(phoneNumber: string): Promise<Tasker> {
+    async getTaskerByPhoneNumber(phoneNumber: string): Promise<Tasker | undefined> {
         throw new Error("Method not implemented.");
     }
 
     
 
-    async getTaskerBySkillId(skillId: number): Promise<Tasker[]> {
+    async getTaskerBySkillId(skillId: number): Promise<Tasker[] | undefined> {
         throw new Error("Method not implemented.");
     }
 

@@ -7,6 +7,6 @@ export class Category{
         public imageUrl?:string, 
         public description?:string, 
         public id?: number, 
-        public subcategories: SubCategory[] = []
+        public subcategories?: SubCategory[]
     ) {}
 };

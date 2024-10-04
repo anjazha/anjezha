@@ -27,7 +27,7 @@ export class TaskerController {
             const newTasker = await this.taskerService.createTasker(tasker);
 
             res.status(201).json(newTasker);
-        } catch (error) {
+        } catch (error : any) {
              next(error);
         }
     }
@@ -42,7 +42,7 @@ export class TaskerController {
             const tasker = await this.taskerService.getTaskerById(id);
 
             res.status(200).json(tasker);
-        } catch (error) {
+        } catch (error : any) {
             next(new HTTP500Error('An error occurred ' + error.message + error.stack));
         }
     }
@@ -53,7 +53,7 @@ export class TaskerController {
             console.log(id);
             const tasker = await this.taskerService.getTaskerByUserId(id);
             res.status(200).json(tasker);
-        } catch (error) {
+        } catch (error : any) {
             next(error);
         }
     }
@@ -62,7 +62,7 @@ export class TaskerController {
         try {
             // const taskers = await this.taskerService.getAllTaskers();
             // res.status(200).json(taskers);
-        } catch (error) {
+        } catch (error : any) {
             next(error);
         }
     }
@@ -74,7 +74,7 @@ export class TaskerController {
             tasker.id = id;
             const updateTasker = await this.taskerService.updateTasker(tasker);
             res.status(200).json(updateTasker);
-        } catch (error) {
+        } catch (error : any) {
             next(error);
         }
     }
@@ -84,7 +84,7 @@ export class TaskerController {
             const id = Number(req.userId);
             await this.taskerService.deleteTasker(id);
             res.status(200).json({ message: "Tasker deleted successfully" });
-        } catch (error) {
+        } catch (error : any) {
             next(error);
         }
     }
