@@ -32,8 +32,24 @@ export class TaskApplicationRepository implements ITaskApplicationRepository {
     taskId: number | null,
     taskerId: number | null
   ): Promise<TaskApplication[]> {
-    let query = `SELECT * FROM applies WHERE 1=1`; //WHERE 1=1 is a trick to make the query more dynamic
-    const values:any = [];
+    let query = `SELECT 
+  ap.id, 
+  ap.task_id, 
+  ap.status, 
+  ap.content, 
+  json_build_object(
+    'id', ap.tasker_id,
+    'name', users.name,
+    'profile_picture', users.profile_picture
+  ) AS tasker
+FROM 
+  applies AS ap
+LEFT JOIN 
+  taskers ON ap.tasker_id = taskers.id
+LEFT JOIN 
+  users ON taskers.user_id = users.id 
+WHERE 1=1`; //WHERE 1=1 is a trick to make the query more dynamic
+    const values: any = [];
     if (taskId) {
       query += ` AND task_id = $1`;
       values.push(taskId);

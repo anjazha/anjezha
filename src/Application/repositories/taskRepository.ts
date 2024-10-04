@@ -220,7 +220,7 @@ SELECT
     t.address,
     tc.category as category,
     ARRAY_AGG(distinct ts.name) AS skills,  
-	ARRAY_AGG(distinct ta.file_path) AS attachmets ,
+	  ARRAY_AGG(distinct ta.file_path) AS attachmets ,
     s.status,
     sch.schedule_type,
     sch.start_time,
@@ -429,6 +429,8 @@ GROUP BY
     if (error) throw new HTTP500Error(error.message);
     return data.rows;
   }
+ 
+  
 }
 
 // const repo = new TaskRepository();

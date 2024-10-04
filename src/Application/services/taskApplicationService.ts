@@ -17,6 +17,7 @@ export class TaskApplicationService implements ITaskApplicationService {
     getApplications(taskId: number): Promise<TaskApplication[]> {
         return this.taskApplicationRepository.getApplications(taskId, null);
     }
+    
     getApplicationsByTaskerId(taskerId: number): Promise<TaskApplication[]> {
         return this.taskApplicationRepository.getApplications(null, taskerId);
     }
