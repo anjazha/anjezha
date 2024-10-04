@@ -2,17 +2,17 @@ import { Tasker } from "@/Domain/entities/Tasker";
 
 
 export interface ITaskerRepository {
-    createTasker(tasker: Tasker): Promise<Tasker>;
-    getTaskerById(id: number): Promise<Tasker>;
-    getTaskerByUserId(userId: number): Promise<Tasker>;
-    getAllTaskers(): Promise<Tasker[]>;
-    getTaskerByEmail?(email: string): Promise<Tasker>;
-    getTaskerByPhoneNumber?(phoneNumber: string): Promise<Tasker>;
-    getTaskerByLocation?(location: string): Promise<Tasker[]>;
-    getTaskerByRating?(rating: number): Promise<Tasker[]>;
-    getTaskerByTask?(task: any): Promise<Tasker[]>;
-    updateTasker(tasker: Tasker): Promise<string>;
-    deleteTasker(tasker: number): Promise<string>;
+    createTasker(tasker: Tasker): Promise<Tasker | undefined>;
+    getTaskerById(id: number): Promise<Tasker | undefined>;
+    getTaskerByUserId(userId: number): Promise<Tasker | undefined>;
+    getAllTaskers(): Promise<Tasker[] | undefined>;
+    getTaskerByEmail?(email: string): Promise<Tasker | undefined>;
+    getTaskerByPhoneNumber?(phoneNumber: string): Promise<Tasker | undefined>;
+    getTaskerByLocation?(location: string): Promise<Tasker[] | undefined>;
+    getTaskerByRating?(rating: number): Promise<Tasker[] | undefined>;
+    getTaskerByTask?(task: any): Promise<Tasker[] | undefined>;
+    updateTasker(tasker: Tasker): Promise<string | undefined>;
+    deleteTasker(tasker: number): Promise<string | undefined>;
     // getTaskerByCategory(category: string): Promise<Tasker[]>;
     // getTaskerBySkill(skill: string): Promise<Tasker[]>;
     // getTaskerByPrice(price: number): Promise<Tasker[]>;

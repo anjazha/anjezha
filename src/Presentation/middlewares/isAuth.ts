@@ -67,7 +67,7 @@ export const allowTo = (...roles: string[]) => {
       console.log(true, "allow to access this route");
 
       return next();
-    } catch (error) {
+    } catch (error : any) {
       next(new HTTP500Error(error.message));
     }
   };

@@ -17,7 +17,7 @@ export class TaskerService implements ITaskerService {
         @inject(INTERFACE_TYPE.RoleRepository) private roleRepository:IRoleRepository
     ) {}
 
-    async createTasker(taskerData: Tasker): Promise<any> {
+    async createTasker(taskerData: Tasker): Promise<any | undefined> {
        
         const userId= taskerData.userId;
 
@@ -53,35 +53,35 @@ export class TaskerService implements ITaskerService {
         }
     }
 
-    async getTaskerByUserId(userId: number): Promise<Tasker> {
+    async getTaskerByUserId(userId: number): Promise<Tasker | undefined> {
         return await this.taskerRepository.getTaskerByUserId(userId)
     }
 
-    async getTaskerById(id: number): Promise<Tasker> {
+    async getTaskerById(id: number): Promise<Tasker | undefined> {
         return await this.taskerRepository.getTaskerById(id)
     }
 
-    async updateTasker(tasker: Tasker): Promise<string> {
+    async updateTasker(tasker: Tasker): Promise<string | undefined> {
          return  await this.taskerRepository.updateTasker(tasker);
     }
 
-    async deleteTasker(id: number): Promise<string> {
+    async deleteTasker(id: number): Promise<string | undefined> {
          return  await this.taskerRepository.deleteTasker(id);
     }
 
-    // async getTaskerByUserId(userId: number): Promise<Tasker> {
+    // async getTaskerByUserId(userId: number): Promise<Tasker | undefined> {
     //     return await this.taskerRepository.getTaskerByUserId(userId)
     // }
 
-    // async getTaskerByCategoryId(categoryId: number): Promise<Tasker[]> {
+    // async getTaskerByCategoryId(categoryId: number): Promise<Tasker[] | undefined> {
     //     return this.taskerRepository.getTaskerByCategoryId(categoryId)
     // }
 
-    // async getTaskerByLocation(location: string): Promise<Tasker[]> {
+    // async getTaskerByLocation(location: string): Promise<Tasker[] | undefined> {
     //     return this.taskerRepository.getTaskerByLocation(location)
     // }
 
-    // async getTaskerByRating(rating: number): Promise<Tasker[]> {
+    // async getTaskerByRating(rating: number): Promise<Tasker[] | undefined> {
     //     return this.taskerRepository.getTaskerByRating(rating)
     // }
 
