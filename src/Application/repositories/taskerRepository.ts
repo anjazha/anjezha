@@ -9,7 +9,7 @@ import { an } from "@faker-js/faker/dist/airline-BBTAAfHZ";
 
 @injectable()
 export class TaskerRepository implements ITaskerRepository {
-    private client: Pool;
+    private client: Pool | Client;
     constructor() {
         this.client = pgClient;
     }
@@ -17,11 +17,11 @@ export class TaskerRepository implements ITaskerRepository {
     async createTasker(tasker: Tasker): Promise<Tasker> {      
         try {
 
-            const { userId, bio, pricing, longitude, latitude, category_id, bidding } = tasker;
+            const { userId, bio, pricing, longitude, latitude, categoryId, bidding } = tasker;
 
             const query = 'INSERT INTO taskers (user_id, bio, pricing, longitude, latitude, category_id, bidding) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
 
-            const values = [userId, bio, pricing, longitude, latitude, category_id, bidding];
+            const values = [userId, bio, pricing, longitude, latitude, categoryId, bidding];
 
             const { rows } = await this.client.query(query, values);
 
@@ -48,26 +48,86 @@ export class TaskerRepository implements ITaskerRepository {
    
     }
 
-    async getTaskerById(id: number): Promise<Tasker|null> {
-      
+    async getTaskerById(id: number): Promise<Tasker|null> { 
+        console.log(id)
         try {
-            const query = 'SELECT * FROM taskers ts inner join users us on ts.user_id = us.id WHERE id = $1';
+            const query = `
+            SELECT 
+                ts.id,
+                ts.user_id as userId,
+                ts.bio,
+                ts.pricing,
+                ts.longitude,
+                ts.latitude,
+                ts.category_id as categoryId,
+                ts.bidding,
+                us.name,
+                us.email,
+                us.profile_picture as profilePicture,
+                us.created_at as createdAt,
+                us.phone_number as phoneNumber,
+                rs.name as role,
+                sks.id as skillId,
+                sks.name as skillName
+            FROM 
+                taskers ts 
+            INNER JOIN 
+                users us ON us.id = ts.user_id
+            INNER JOIN 
+                roles rs ON ts.user_id = rs.user_id
+            LEFT JOIN 
+                tasker_skills tsk ON ts.user_id = tsk.user_id
+            LEFT JOIN 
+                skills sks ON sks.id = tsk.skill_id
+            /* LEFT JOIN 
+                reviews rvs ON ts.id = rvs.tasker_id */
+            WHERE 
+               ts.user_id = $1`;
 
             const values = [id];
 
             const { rows } = await this.client.query(query, values);
 
+            console.log(rows[0]);
+            
+            if(rows.length == 0) return null;
+            
+            const data:Tasker = {
+                userId: rows[0].userid,
+                bio: rows[0].bio,
+                pricing: rows[0].pricing,
+                longitude: rows[0].longitude,
+                latitude: rows[0].latitude,
+                bidding: rows[0].bidding,
+                role: rows[0].role,
+                categoryId: rows[0].categoryId,
+
+                category: {
+                    id: rows[0].categoryId,
+                    category: rows[0].category
+                },
+                profile: {
+                    name: rows[0].name,
+                    email: rows[0].email,
+                    // phoneNumber: rows[0].phone,
+                    password: null,
+                    profilePicture: rows[0].profilepicture,
+                    id: rows[0].userId,
+                    phoneNumber: rows[0].phoneumber,
+                },
+
+                skills: rows.map((row: any) => {
+                    return {
+                        id: row.skillId,
+                        skill: row.skillName
+                    };
+                }),
+                reviews: []
+            }
+
          if(rows.length == 0) return null;
 
-             return new Tasker(
-                 rows[0].user_id,
-                 rows[0].bio,
-                 rows[0].pricing,
-                 rows[0].longitude,
-                 rows[0].latitude,
-                 rows[0].category_id,
-                 rows[0].bidding,
-                 rows[0].id);
+             return data;
 
         } catch (error:any) {
             throw new HTTP500Error('An error occurred ' + error.message + error.stack);

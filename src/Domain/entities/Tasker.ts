@@ -1,3 +1,4 @@
+import { Category } from "./Category";
 import { Skills } from "./Skills";
 import { User } from "./User";
 
@@ -10,13 +11,16 @@ export class Tasker {
         public pricing: number,
         public longitude: number,
         public latitude: number,
-        public category_id: number,
+        public categoryId: number,
         public bidding?: boolean,
         public id?: number,
         public avgRating?: number,
-        public user?:User,
+        public profile?:User,
+        public role?: string,
+        // public  createdAt?: Date,
+        public category?: Category,
         public skills?: Skills[],
-        // public reviews?: Review[],
+        public reviews: any[]= [],
         // public totalRating?: number,
         // public totalReviews?: number,
         // // public totalCompletedTasks?: number,

@@ -25,7 +25,7 @@ const taskerController = container.get<TaskerController>(INTERFACE_TYPE.TaskerCo
 router.post('/become-tasker', isAuth,  taskerController.addTasker.bind(taskerController));
 
 
-router.get('/tasker/:taskerId',   taskerController.getTaskerById.bind(taskerController));
+router.get('/tasker/:userId',   taskerController.getTaskerById.bind(taskerController));
 
 router.get('/about-tasker', isAuth,  taskerController.getTaskerByUserId.bind(taskerController));
 

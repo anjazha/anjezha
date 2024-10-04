@@ -6,6 +6,7 @@ import { inject, injectable } from "inversify";
 
 import { Request, Response, NextFunction } from "express";
 import RequestWithUserId from "@/Application/interfaces/Request";
+import { HTTP500Error } from "@/helpers/ApiError";
 
 
 @injectable()
@@ -34,13 +35,15 @@ export class TaskerController {
     public async getTaskerById(req: RequestWithUserId, res: Response, next:NextFunction) {
         try {
             // const userId = Number(req.userId);
-            const id = Number(req.params.taskerId);
+            const id = Number(req.params.userId);
+
+            console.log(id);
             
             const tasker = await this.taskerService.getTaskerById(id);
 
             res.status(200).json(tasker);
         } catch (error) {
-            next(error);
+            next(new HTTP500Error('An error occurred ' + error.message + error.stack));
         }
     }
 
