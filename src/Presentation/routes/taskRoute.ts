@@ -7,7 +7,7 @@ import { Router } from "express";
 import { Container } from "inversify";
 import { TaskController } from "../controllers/taskController";
 import { createTaskValidations, updateTaskValidations } from "@/helpers/validate/taskValidate";
-import {isAuth} from "../middlewares/isAuth";
+import {allowTo, isAuth} from "../middlewares/isAuth";
 import { filesUpload } from "../middlewares/filesUpload";
 
 
@@ -33,6 +33,7 @@ router.route('/tasks/:taskId')
 
 router.get('/user-tasks', isAuth, taskController.getTasksByUserId.bind(taskController))
 
+router.get('/feed', isAuth, allowTo("tasker"), taskController.taskerFeed.bind(taskController));
 
 // router.route
 

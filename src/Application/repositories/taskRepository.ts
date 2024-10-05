@@ -94,7 +94,7 @@ export class TaskRepository implements ITaskRepository {
       await client.query("COMMIT");
       //   console.log(rows[0].id);
       return rows[0];
-    } catch (e:any) {
+    } catch (e: any) {
       await client.query("ROLLBACK");
       //   console.error(e);
       throw new HTTP500Error("create task transaction failed " + e.message);
@@ -184,7 +184,7 @@ export class TaskRepository implements ITaskRepository {
 
       await client.query("COMMIT");
       return rows[0];
-    } catch (error:any) {
+    } catch (error: any) {
       await client.query("ROLLBACK");
       throw new HTTP500Error("Error while updating task " + error.message);
     } finally {
@@ -239,7 +239,7 @@ LEFT JOIN
 GROUP BY 
     t.id, s.status, sch.schedule_type, sch.start_time, sch.end_time, tc.category;`);
       return rows;
-    } catch (error:any) {
+    } catch (error: any) {
       throw new HTTP500Error("Error while fetching tasks " + error.message);
     }
   }
@@ -279,7 +279,7 @@ GROUP BY
   GROUP BY 
       t.id, s.status, sch.schedule_type, sch.start_time, sch.end_time, tc.category;`);
       return rows[0];
-    } catch (error:any) {
+    } catch (error: any) {
       throw new HTTP500Error("Error while fetching task " + error.message);
     }
   }
@@ -333,12 +333,12 @@ GROUP BY
       maxBudget?: number;
       government?: string;
       status?: string;
-      category?:number
+      category?: number;
       skills?: string[];
-      page:number,
-      limit:number
+      page: number;
+      limit: number;
     },
-    sortBy: string,
+    sortBy: string
   ): Promise<Task[]> {
     let searchQ = `
     SELECT 
@@ -377,7 +377,7 @@ GROUP BY
         ($1 = '' OR t.title || ' ' || t.description @@ to_tsquery($1 || ':*'))
 `;
 
-    const queryParams: any[] = [q || ''];
+    const queryParams: any[] = [q || ""];
     // const queryParams: any[] = q?[q]:[':*'];
 
     // Add dynamic filters
@@ -400,7 +400,7 @@ GROUP BY
       searchQ += ` AND s.status = $${queryParams.length + 1}`;
       queryParams.push(filters.status);
     }
-    if(filters?.category){
+    if (filters?.category) {
       searchQ += ` AND tc.id = $${queryParams.length + 1}`;
       queryParams.push(filters.category);
     }
@@ -429,8 +429,62 @@ GROUP BY
     if (error) throw new HTTP500Error(error.message);
     return data.rows;
   }
- 
-  
+
+  async taskerFeed(taskerId: number): Promise<Task[]> {
+    const query = `WITH get_tasker_skills AS (
+    SELECT DISTINCT sk.name
+    FROM taskers t
+    LEFT JOIN tasker_skills ts USING(user_id)
+    LEFT JOIN skills sk ON ts.skill_id = sk.id
+    WHERE user_id = $1
+), get_skills_match_count AS (
+    SELECT 
+        t.id AS task_id,
+        t.*, -- Assuming tasks have a title, replace it with the actual column
+        array_length(
+            ARRAY(
+                SELECT unnest(ARRAY(
+                    SELECT name FROM get_tasker_skills
+                ))
+                INTERSECT
+                SELECT unnest(t.skills) -- Assuming tasks have a skills array
+            ), 1
+        ) AS skills_count
+    FROM v_tasks t
+), get_distance_between_tasker_and_tasks AS (
+    SELECT 
+        ts.id AS task_id, -- Ensure task_id is included for joining
+        (
+            6371 * acos(
+                cos(radians(ts.latitude)) * 
+                cos(radians(t.latitude)) * 
+                cos(radians(t.longitude) - radians(ts.longitude)) + 
+                sin(radians(ts.latitude)) * 
+                sin(radians(t.latitude))
+            )
+        ) AS distance
+    FROM v_tasks ts,
+         (SELECT latitude, longitude FROM taskers WHERE id = 15) t
+)
+SELECT 
+	sk.*
+FROM get_skills_match_count sk
+JOIN get_distance_between_tasker_and_tasks d ON sk.task_id = d.task_id -- Join on task_id to filter tasks
+WHERE sk.skills_count > 0 -- Ensure only tasks with matching skills are returned
+ORDER BY sk.skills_count DESC, d.distance ASC NULLS LAST;`;
+
+    const [error, data] = await safePromise(() =>
+      pgClient.query(query, [taskerId])
+    );
+
+    if (error)
+      throw new HTTP500Error(
+        "an error occured while fetching tasker feed " + error.message
+      );
+
+      console.log(data.rows)
+    return data.rows;
+  }
 }
 
 // const repo = new TaskRepository();
