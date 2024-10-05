@@ -81,6 +81,13 @@ export const INTERFACE_TYPE = {
     NotificationController : Symbol.for("NotificationController"),
 
     OnlineUsersService: Symbol.for("OnlineUsersService"),
+
+    // review symbol
+    ReviewRepository: Symbol.for("ReviewRepository"),
+    ReviewService: Symbol.for("ReviewService"),
+    ReviewController: Symbol.for("ReviewController"),
+    ReviewRoute: Symbol.for("ReviewRoute"),
+    
     
     App: Symbol.for("App"),
     User: Symbol.for("User"),

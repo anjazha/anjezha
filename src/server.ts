@@ -13,7 +13,8 @@ import {
   searchRouter,
   taskAssignmentRouter,
   taskApplicationRouter,
-  notificationRouter
+  notificationRouter,
+  reviewRouter,
 } from "./Presentation/routes";
 
 const app = new App([
@@ -29,7 +30,8 @@ const app = new App([
   notificationRouter,
   taskAssignmentRouter,
   taskApplicationRouter,
-  notificationRouter
+  notificationRouter,
+  reviewRouter
 ]);
 
 declare global {
