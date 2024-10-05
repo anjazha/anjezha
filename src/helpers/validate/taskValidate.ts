@@ -38,7 +38,7 @@ export const createTaskValidations = [
     .isArray()
     .withMessage("Skills must be an array")
     .custom((skills) => {
-      if (skills.some((skill) => typeof skill !== "string")) {
+      if (skills.some((skill: any) => typeof skill !== "string")) {
         throw new Error("Each skill must be a string");
       }
       return true;
@@ -133,7 +133,7 @@ export const updateTaskValidations = [
     .optional()
     .isArray()
     .withMessage('Skills must be an array of strings')
-    .custom((skills) => skills.every(skill => typeof skill === 'string'))
+    .custom((skills:any) => skills.every((skill: any) => typeof skill === 'string'))
     .withMessage('Each skill must be a string'),
 
   check('status')

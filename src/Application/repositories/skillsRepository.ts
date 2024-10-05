@@ -47,6 +47,7 @@ export class SkillsRepository implements ISkillsRepository {
     }
 
     async getSkillByName(skillName: string): Promise<Skills | null> {
+        
         const {rows} = await this.client.query(
             `SELECT * FROM skills WHERE name = $1 returning *`,
             [skillName]
@@ -69,7 +70,7 @@ export class SkillsRepository implements ISkillsRepository {
           );
   
           return rows;
-      } catch(err){
+      } catch(err:any){
         throw new Error(`Error updating skill ${err.message} ${err.stack}`);
       }
     }

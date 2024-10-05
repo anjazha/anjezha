@@ -1,5 +1,5 @@
 import { Role } from "@/Domain/entities/role";
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { inject, injectable } from "inversify";
 import { IRoleRepository } from "../interfaces/User/IRoleRepository";
 import { error } from "console";

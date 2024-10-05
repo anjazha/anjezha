@@ -3,8 +3,9 @@ import { inject, injectable } from "inversify";
 
 import { IReviewService } from "@/Application/interfaces/IReviewService";
 import RequestWithUserId from "@/Application/interfaces/Request";
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { Review } from "@/Domain/entities/Review";
+import { HTTP500Error } from "@/helpers/ApiError";
 
 @injectable()
 export class ReviewController {
@@ -31,9 +32,9 @@ export class ReviewController {
                 message: "Review created successfully",
                 data: newReview
             });
-        } catch (err) {
+        } catch (err: any) {
             next(
-                new Error(`Error creating review: ${err.message} ${err.stack}`)
+                new HTTP500Error(`Error creating review: ${err.message} ${err.stack}`)
             );
         }
        
@@ -52,9 +53,9 @@ export class ReviewController {
                 message: "Review fetched successfully",
                 data: review
             });
-        } catch (err) {
+        } catch (err: any) {
             next(
-                new Error(`Error fetching review: ${err.message} ${err.stack}`)
+                new HTTP500Error(`Error fetching review: ${err.message} ${err.stack}`)
             );
         }
     }
@@ -68,9 +69,9 @@ export class ReviewController {
                 message: "Reviews fetched successfully",
                 data: reviews
             });
-        } catch (err) {
+        } catch (err: any) {
             next(
-                new Error(`Error fetching reviews: ${err.message} ${err.stack}`)
+                new HTTP500Error(`Error fetching reviews: ${err.message} ${err.stack}`)
             );
         }
     }
@@ -86,27 +87,31 @@ export class ReviewController {
                 message: "Reviews fetched successfully",
                 data: reviews
             });
-        } catch (err) {
+        } catch (err: any) {
             next(
-                new Error(`Error fetching reviews: ${err.message} ${err.stack}`)
+                new HTTP500Error(`Error fetching reviews: ${err.message} ${err.stack}`)
             );
         }
     }
 
     async getReviewByTaskerId(req: Request, res: Response, next: NextFunction) {
+        const taskerId = Number(req.params.taskerId);
+        console.log('taskerId', taskerId);
         try {
             // get taskerId from request params
-            const taskerId = Number(req.params.taskerId);
+
             // call getReviewByTaskerId method from reviewService  and pass taskerId
             const reviews = await this.reviewService.getReviewByTaskerId(taskerId);
+
+            console.log(reviews);
             // return reviews
             res.status(200).json({
                 message: "Reviews fetched successfully",
                 data: reviews
             });
-        } catch (err) {
+        } catch (err: any) {
             next(
-                new Error(`Error fetching reviews: ${err.message} ${err.stack}`)
+                new HTTP500Error(`Error fetching reviews: ${err.message} ${err.stack}`)
             );
         }
     }
@@ -116,17 +121,17 @@ export class ReviewController {
             // get id from request params
             const id = Number(req.params.id);
             // get review and rating from request body
-            // const {review, rating} = req.body;
+            const {review, rating} = req.body;
             // call updateReview method from reviewService  and pass id and review object
-            const updatedReview = await this.reviewService.updateReview(id, req.body);
+            const updatedReview = await this.reviewService.updateReview(id, new Review(review, +rating,));
             // return updated review
             res.status(200).json({
                 message: "Review updated successfully",
                 data: updatedReview
             });
-        } catch (err) {
+        } catch (err: any) {
             next(
-                new Error(`Error updating review: ${err.message} ${err.stack}`)
+                new HTTP500Error(`Error updating review: ${err.message} ${err.stack}`)
             );
         }
     }
@@ -142,9 +147,9 @@ export class ReviewController {
                 message: "Review deleted successfully",
                 data: deleted
             });
-        } catch (err) {
+        } catch (err: any) {
             next(
-                new Error(`Error deleting review: ${err.message} ${err.stack}`)
+                new HTTP500Error(`Error deleting review: ${err.message} ${err.stack}`)
             );
         }
     }

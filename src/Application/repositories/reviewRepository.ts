@@ -12,7 +12,7 @@ export class ReviewRepository implements IReviewRepository {
         this.client= pgClient;
     }
 
-    async createReview(review:Review):Promise<Review>{
+    async createReview(review:Review):Promise<Review | null>{
         try {
 
             // write query to insert review
@@ -22,14 +22,17 @@ export class ReviewRepository implements IReviewRepository {
             const values = [review.review, review.rating, review.taskerId, review.userId];
             // execute query
             const { rows } = await this.client.query(query, values);
+
+            // rows is an array of reviews is empty return null
+            if (!rows.length) return null;
             // map rows to review object
             return new Review(rows[0].review, rows[0].rating, rows[0].tasker_id, rows[0].user_id, rows[0].id, rows[0].created_at);
-        } catch (err) {
+        } catch (err:any) {
             throw new Error(`Error creating review: ${err.message} ${err.stack}`);
         }
     }
 
-    async getReviewById(id: number): Promise<Review> {
+    async getReviewById(id: number): Promise<Review | null> {
         try {
 
             // write query to get review by id
@@ -41,15 +44,24 @@ export class ReviewRepository implements IReviewRepository {
             // execute query
             const { rows } = await this.client.query(query, values);
 
-            // map rows[0] to review object
-            return new Review(rows[0].review, rows[0].rating, rows[0].tasker_id, rows[0].user_id, rows[0].id, rows[0].created_at);
+            // rows is an array of reviews is empty return null
+            if (!rows.length) return null;
 
-        } catch (err) {
-            throw new Error(`Error getting review: ${err.message} ${err.stack}`);
+            // map rows[0] to review object
+            return new Review(
+                rows[0].review, 
+                rows[0].rating, 
+                rows[0].tasker_id, 
+                rows[0].user_id, 
+                rows[0].id, 
+                rows[0].created_at);
+
+        } catch (err:any) {
+            throw new Error(`Error getting review : ${err.message} ${err.stack}`);
         }
     }
 
-    async getReviews(): Promise<Review[]> {
+    async getReviews(): Promise<Review[] | null> {
         try {
 
             // write query to get all reviews
@@ -58,17 +70,27 @@ export class ReviewRepository implements IReviewRepository {
             // execute query
             const { rows } = await this.client.query(query);
 
-            // map rows to review object
-            return rows.map((review: Review) => new Review(review.review, review.rating, review.taskerId, review.userId, review.id, review.timestamp));
+            // rows is an array of reviews is empty return undefined
+            if (!rows.length) return null;
 
-        } catch (err) {
+
+            // map rows to review object
+            return rows.map(
+                (review: Review) => new Review(
+                review.review, 
+                review.rating, 
+                review.taskerId, 
+                review.userId, 
+                review.id, 
+                review.timestamp));
+
+        } catch (err:any) {
             throw new Error(`Error getting reviews: ${err.message} ${err.stack}`);
         }
     }
 
-    async getReviewByUserId(userId: number): Promise<Review[]> {
+    async getReviewByUserId(userId: number): Promise<Review[] | null> {
         try {
-
             // write query to get review by user id
             const query = 'SELECT * FROM reviews WHERE user_id = $1';
 
@@ -78,36 +100,59 @@ export class ReviewRepository implements IReviewRepository {
             // execute query
             const { rows } = await this.client.query(query, values);
 
-            // map rows to review object
-            return rows.map((review: Review) => new Review(review.review, review.rating, review.taskerId, review.userId, review.id, review.timestamp));
+            // rows is an array of reviews is empty return null
+            if (!rows.length) return null;
 
-        } catch (err) {
+            // map rows to review object
+            const reviews = rows.map( (review: Review) => new Review(
+                review.review, 
+                review.rating, 
+                review.taskerId, 
+                review.userId, 
+                review.id, 
+                review.timestamp));
+
+            return reviews;
+
+        } catch (err:any) {
             throw new Error(`Error getting review by user id: ${err.message} ${err.stack}`);
         }
     }
 
 
-    async getReviewByTaskerId(taskerId: number): Promise<Review[]> {
+    async getReviewByTaskerId(taskerId: number): Promise<Review[] | null> {
         try {
 
             // write query to get review by tasker id
             const query = 'SELECT * FROM reviews WHERE tasker_id = $1';
 
             // pass tasker id as value
-            const values = [taskerId];
+            const values = [Number(taskerId)];
 
             // execute query
             const { rows } = await this.client.query(query, values);
+            console.log(rows);
+            // rows is an array of reviews is empty return null
+            if (rows.length == 0) return null;
 
             // map rows to review object
-            return rows.map((review: Review) => new Review(review.review, review.rating, review.taskerId, review.userId, review.id, review.timestamp));
+            const reviews = 
+            rows.map( (review: any) => new Review(
+                review.review, 
+                review.rating, 
+                review.taskerId, 
+                review.userId, 
+                review.id, 
+                review.timestamp));
 
-        } catch (err) {
+           return reviews;
+
+        } catch (err:any) {
             throw new Error(`Error getting review by tasker id: ${err.message} ${err.stack}`);
         }
     }
 
-    // async updateReview(id: number, review: Review): Promise<Review> {
+    // async updateReview(id: number, review: Review): Promise<Review | null> {
     //     try {
 
     //         // write query to update review by id
@@ -122,55 +167,69 @@ export class ReviewRepository implements IReviewRepository {
     //         // map rows to review object
     //         return new Review(rows[0].review, rows[0].rating, rows[0].tasker_id, rows[0].user_id, rows[0].id, rows[0].created_at);
 
-    //     } catch (err) {
+    //     } catch (err:any) {
     //         throw new Error(`Error updating review: ${err.message} ${err.stack}`);
     //     }
     // }
 
-    async updateReview(id: number, review: Review): Promise<Review> {
+    async updateReview(id: number, review: Review): Promise<Review | null> {
  
         try {
             // write query to update review by id
             let query = 'UPDATE reviews SET ';
             // pass review values
-            const values = [];
+            const values:any = [];
+
+            let index=1;
 
             // check if review is passed
              for(let key in review){
-                if(review[key]){
-                    query += `${key} = $${values.length + 1},`;
-                    values.push(review[key]);
+                if((review as any)[key]) {
+
+                    query += `${key} = $${index++}, `;
+
+                    values.push((review as any)[key]);
+
                 }
             }
             // remove last comma
-            query = query.slice(0, -1);
+            query = query.slice(0, -2);
 
             // add where clause
-            query += ` WHERE id = $${values.length + 1} RETURNING *`;
+            query += ` WHERE id = $${index} RETURNING *`;
+            values.push(+id);
+          
             // execute query
             const { rows } = await this.client.query(query, values);
+
+            console.log(query);
+            console.log(values);
+            
+            // rows is an array of reviews is empty return null
+            if (!rows.length) return null;
+
             // map rows to review object
             return new Review(rows[0].review, rows[0].rating, rows[0].tasker_id, rows[0].user_id, rows[0].id, rows[0].created_at);
-        } catch (err) {
+        } catch (err:any) {
             throw new Error(`Error updating review: ${err.message} ${err.stack}`);
         }
     }
 
     async deleteReview(id: number): Promise<boolean> {
         try {
-
+            
             // write query to delete review by id
             const query = 'DELETE FROM reviews WHERE id = $1';
 
             // pass id as value
-            const values = [id];
+            const values = [+id];
 
             // execute query
             await this.client.query(query, values);
 
             return true;
 
-        } catch (err) {
+        } catch (err:any) {
             throw new Error(`Error deleting review: ${err.message} ${err.stack}`);
         }
     }

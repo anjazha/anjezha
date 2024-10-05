@@ -2,7 +2,7 @@ import { inject, injectable } from "inversify";
 import { Response, NextFunction } from "express";
 import RequestWithUserId from "@/Application/interfaces/Request";
 import { ITaskerSkillsService } from "@/Application/interfaces/Skills/ITaskerSkillsService";
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { HTTP500Error } from "@/helpers/ApiError";
 
 
@@ -14,7 +14,7 @@ export class TaskerSkillController   {
         @inject(INTERFACE_TYPE.TaskerSkillsService) private taskerSkillsService: ITaskerSkillsService
     ) {}
 
-    async createSkill(req: RequestWithUserId, res: Response, next: NewableFunction): Promise<any> {
+    async createSkill(req: RequestWithUserId, res: Response, next: NextFunction): Promise<any> {
         try {
             const taskerId = Number(req.userId)
             
@@ -31,7 +31,7 @@ export class TaskerSkillController   {
         }
     }
 
-    async updateSkill(req: RequestWithUserId, res: Response, next: NewableFunction): Promise<any> {
+    async updateSkill(req: RequestWithUserId, res: Response, next: NextFunction): Promise<any> {
         try {
             const taskerId = Number(req.userId)
         
@@ -50,7 +50,7 @@ export class TaskerSkillController   {
         }
     }
 
-    async deleteSkill(req: RequestWithUserId, res: Response, next: NewableFunction): Promise<any> {
+    async deleteSkill(req: RequestWithUserId, res: Response, next: NextFunction): Promise<any> {
         try {
             const taskerId = Number(req.userId)
             const { id } = req.params;
@@ -66,7 +66,7 @@ export class TaskerSkillController   {
         }
     }
 
-    async getSkillById(req: RequestWithUserId, res: Response, next: NewableFunction): Promise<any> {
+    async getSkillById(req: RequestWithUserId, res: Response, next: NextFunction): Promise<any> {
         try {
             const taskerId = Number(req.userId)
             const { id } = req.params;
@@ -82,7 +82,7 @@ export class TaskerSkillController   {
         }
     }
 
-    async getTaskerSkills(req: RequestWithUserId, res: Response, next: NewableFunction): Promise<any> {
+    async getTaskerSkills(req: RequestWithUserId, res: Response, next: NextFunction): Promise<any> {
         try {
             const taskerId = Number(req.userId)
             if (!taskerId) {
@@ -97,7 +97,7 @@ export class TaskerSkillController   {
         }
     }
 
-    async deleteTaskerSkill(req: RequestWithUserId, res: Response, next: NewableFunction): Promise<any> {
+    async deleteTaskerSkill(req: RequestWithUserId, res: Response, next: NextFunction): Promise<any> {
         try {
             const taskerId = Number(req.userId)
             const { id } = req.params;
@@ -114,16 +114,17 @@ export class TaskerSkillController   {
     }
 
 
-    async getSkills(req: RequestWithUserId, res: Response, next: NewableFunction): Promise<any> {
+    async getSkills(req: RequestWithUserId, res: Response, next: NextFunction): Promise<any> {
         try {
-            const skills = await this.taskerSkillsService.getSkills();
-
+            if (!this.taskerSkillsService) {
+                throw new Error("TaskerSkillsService is not initialized");
+            }
+                const skills = await this.taskerSkillsService.getSkills();
             return res.status(200).json(skills);
         } catch (error) {
             return next(error);
         }
     }
-
 
 
 }

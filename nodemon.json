@@ -3,5 +3,6 @@
   "watch": ["src", ".env", "swagger.json", "swagger.yaml", "z_test"],
   "ext": "js,json,yaml,ts",
   "ignore": ["src/logs/*", "src/**/*.{spec,test}.ts"],
-  "exec": "tsx -r tsconfig-paths/register  ./src/server.ts" 
+  "exec": "tsx -r tsconfig-paths/register  ./src/server.ts",
+  "events":{"restart":"kill-port 5000" }
 }

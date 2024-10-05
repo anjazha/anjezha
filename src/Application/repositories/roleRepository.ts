@@ -16,7 +16,7 @@ export class RoleRepository implements IRoleRepository {
         try {
             const { rows } = await this.client.query("SELECT * FROM roles");
             return rows;
-        } catch (error) {
+        } catch (error:any) {
             throw new Error(error.message);
         }
     }
@@ -25,7 +25,7 @@ export class RoleRepository implements IRoleRepository {
         try {
             const { rows } = await this.client.query("SELECT * FROM roles WHERE id=$1", [id]);
             return rows[0];
-        } catch (error) {
+        } catch (error:any) {
             throw new Error(error.message);
         }
     }
@@ -34,7 +34,7 @@ export class RoleRepository implements IRoleRepository {
         try {
             const { rows } = await this.client.query("SELECT * FROM roles WHERE user_id=$1", [userId]);
             return rows[0];
-        } catch (error) {
+        } catch (error:any) {
             throw new Error(error.message);
         }
     }
@@ -43,7 +43,7 @@ export class RoleRepository implements IRoleRepository {
         try {
             const { rows } = await this.client.query("INSERT INTO roles(user_id, name) VALUES($1, $2) RETURNING *", [role.userId, role.name]);
             return rows[0];
-        } catch (error) {
+        } catch (error:any) {
             throw new Error(error.message);
         }
     }
@@ -56,7 +56,7 @@ export class RoleRepository implements IRoleRepository {
                 [role.name, role.userId]);
 
             return res.rows[0];
-        } catch (error) {
+        } catch (error:any) {
             throw new Error(error.message);
         }
     }
@@ -65,7 +65,7 @@ export class RoleRepository implements IRoleRepository {
         try {
             await this.client.query("DELETE FROM roles WHERE id=$1", [id]);
             return "Role deleted successfully";
-        } catch (error) {
+        } catch (error:any) {
             throw new Error(error.message);
         }
     }

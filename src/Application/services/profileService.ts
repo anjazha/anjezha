@@ -1,4 +1,4 @@
-import { INTERFACE_TYPE } from "@/helpers";
+import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { inject, injectable } from "inversify";
 import { IProfileService } from "../interfaces/User/IProfileService";
 import { IUserRepository } from "../interfaces/User/IUserRepository";
@@ -8,13 +8,15 @@ import { User } from "@/Domain/entities/User";
 
 @injectable()
 export class ProfileService implements IProfileService {
+
     constructor(@inject(INTERFACE_TYPE.UserRepository) private userRepository:IUserRepository){}
+
 
     async getProfile(userID:number) {
         try{
               const profile = await this.userRepository.findById(userID);
-                return profile;
-        } catch (error) {
+              return profile;
+        } catch (error:any) {
             throw new Error(error)
         }
     }
@@ -35,12 +37,12 @@ export class ProfileService implements IProfileService {
         try{
             console.log(userID);
             return await this.userRepository.delete(userID);
-        }catch (error) {
+        }catch (error:any) {
             return new Error(error)
         }
     }
 
-    async updateProfilePicture(userID:number, profilePicture: User ) {
+    async updateProfilePicture(userID:number, profilePicture: any ) {
          
         // const profile = await this.userRepository.findById(userID);
         // if(!profile){
@@ -51,7 +53,7 @@ export class ProfileService implements IProfileService {
          
            const profile = await this.userRepository.update(userID, profilePicture);
            return profile;
-        }catch (error) {
+        }catch (error:any) {
             throw new Error(error)
         }
     }
@@ -79,10 +81,10 @@ export class ProfileService implements IProfileService {
         user.password = hashedPassword;
 
         // update user
-        await this.userRepository.update(user.id, user);
+        await this.userRepository.update(Number(user.id), user);
 
         return 'Password changed successfully';
-       } catch(err){
+       } catch(err:any){
             throw new Error(err)
         }
     }

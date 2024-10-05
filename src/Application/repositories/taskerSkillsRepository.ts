@@ -20,7 +20,7 @@ export class TaskerSkillsRepository implements ITaskerSkillsRepository {
 
     async findSkillsByTaskerId(taskerId: number): Promise<Skills[]> {
         const { rows } = await this.client.query(
-            `SELECT s.skill, s.id FROM skills s
+         `SELECT s.skill, s.id FROM skills s
             JOIN tasker_skills ts ON s.id = ts.skill_id
             WHERE ts.tasker_id = $1`,
             [taskerId]
@@ -47,8 +47,41 @@ export class TaskerSkillsRepository implements ITaskerSkillsRepository {
             );
 
             return rows;
-
-
-
     }
+
+    async findSkillByTaskerId(taskerId: number, skillId: number): Promise<Skills> {
+        const { rows } = await this.client.query(
+            `SELECT s.skill, s.id FROM skills s
+            JOIN tasker_skills ts ON s.id = ts.skill_id
+            WHERE ts.tasker_id = $1 AND ts.skill_id = $2`,
+            [taskerId, skillId]
+        );
+
+        return new Skills(rows[0].skill, rows[0].id);
+    }
+
+    async findSkillById(skillId: number): Promise<Skills> {
+        const { rows } = await this.client.query(
+            `SELECT * FROM skills WHERE id = $1`,
+            [skillId]
+        );
+
+        return new Skills(rows[0].skill, rows[0].id);
+    }
+
+    async deleteSkill(skillId: number): Promise<any> {
+        const { rows } = await this.client.query(
+            `DELETE FROM skills WHERE id = $1 returning *`,
+            [skillId]
+        );
+
+        return "skill deleted";
+    }
+
+    async getSkills(): Promise<Skills[]> {
+        const { rows } = await this.client.query(`SELECT * FROM skills`);
+
+        return rows.map((row) => new Skills(row.skill, row.id));
+    }
+    
 }

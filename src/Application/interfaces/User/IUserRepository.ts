@@ -9,7 +9,7 @@ import { User } from "@/Domain/entities/User";
 export interface IUserRepository {
     create(user: User): Promise<User>;
     findByEmail(email: string): Promise<User | null>;
-    findById(id: number): Promise<User | null>;
+    findById(id: number): Promise<User>;
     update(id:number, user: User): Promise<User>;
     delete(id: number): Promise<string>;
     findAll(): Promise<User[]>;
