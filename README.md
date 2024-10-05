@@ -46,13 +46,13 @@ Anjezha is an IT service management platform designed to streamline IT operation
 3. Start the development server:
 
     ```bash
-    npm start
+    npm run prod: start
     ```
 
 4. Use Docker to build and run the container:
 
     ```bash
-    docker-compose up --build
+    docker-compose -f docker-compose -f docker-compose.prod  up --build
     ```
 
 ## Contributing
