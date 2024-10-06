@@ -105,7 +105,7 @@ WHERE 1=1`; //WHERE 1=1 is a trick to make the query more dynamic
                       LEFT JOIN taskers ta ON ta.user_id = u.id 
                       WHERE t.id = $1
                         AND ta.id = $2 
-                        AND t.user_id == ta.user_id;
+                        AND t.user_id = ta.user_id;
 `;
 
     const [error, data] = await safePromise(() =>
