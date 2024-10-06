@@ -6,7 +6,7 @@ export class Conversation{
         // public message: string, 
         // public is_read:boolean,
         public createdAt?: Date,
-        public conversationId?: string,
+        public conversationId?: number,
         // public attechments?:{file_type:string,file_path:string,file_size:number}[]
     ) {}
 }

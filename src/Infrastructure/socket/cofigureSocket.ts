@@ -5,8 +5,16 @@ import { HTTP500Error } from "@/helpers/ApiError";
 import { verifyToken } from "@/helpers/tokenHelpers";
 // import { Socket as DefaultSocket } from "socket.io";
 import { JwtPayload } from "jsonwebtoken";
-import { Socket } from "dgram";
+
+
 import { Message, MessageStatus } from "@/Domain/entities/Message";
+import { safePromise } from "@/helpers/safePromise";
+import { ConversationService } from "@/Application/services/conversationService";
+import { ConversationRepository } from "@/Application/repositories/conversationRepository";
+import { MessageRepository } from "@/Application/repositories/messageRepository";
+import { Conversation } from "@/Domain/entities/Conversation";
+import { MessageService } from "@/Application/services/messageService";
+import { sendMail } from "../mail/transportionMail";
 
 
 interface CustomSocket extends DefaultSocket {
@@ -63,7 +71,6 @@ export const  setupSocket = (server : Server) : void =>{
     socket.data.user = decoded as string | JwtPayload;    
     console.log('user', socket.data.user);
 
-
     
     next(); 
 
@@ -81,13 +88,15 @@ export const  setupSocket = (server : Server) : void =>{
   io.on('connection', (socket : CustomSocket) => {
     
     const userId = socket.data.userId || null;
+
+    console.log('A user connected', userId);
     // session id or chat room id 
     console.log(socket.id);
     // console.log(socket.handshake);
     console.log(socket.rooms);
 
     // message socket 
-    if(io) messageSocket(io, socket);
+   
 
     // lsiten from client event called `add_user`
     socket?.on('add_user', (userId : string) => {
@@ -102,9 +111,12 @@ export const  setupSocket = (server : Server) : void =>{
     // get online uses 
     socket.emit('online_users', [...onlineUsers.getAllUsers()])
 
-    socket.on('join_room', (room : string) => {
-      
-    })
+    // console.log(`online users ${[...onlineUsers.getAllUsers()]}`)
+
+    // handle message socket
+    if(io) messageSocket(io, socket);
+
+    // handle notification socket when send message
 
     // onlineUsers.addUser(userId, socket);
     // console.log(`online users ${[...onlineUsers.getAllUsers()]}`)
@@ -124,35 +136,68 @@ const messageSocket = (io:SocketServer, socket:DefaultSocket)=>{
      try{
       // extract user data from socket 
         const {user} = socket.data;
-
+        const userId = Number(user.userId);
+        
         // listen to client event called privateRoom
-        socket.on('joinRoom', () =>{
+        socket.on('private_room', async (takerId:number) =>{
+
+          const roomId = generateRoomId(userId, takerId);
           // create room by user id 
-          socket.join(user.userId);
+
+          socket.join(roomId);
+
+          // store conversation in db
+          const conversationService = new ConversationService(new ConversationRepository());
+
+          // used instead try... catch
+          const [error, result] = await safePromise(()=> {
+            return conversationService.createConversation(new Conversation(userId, takerId, new Date(), Math.abs(+roomId)));
+          })
+
+          if(error){
+            console.log(error);
+          }
+
+          // console.log(`User joined conversation: ${user.userId}`);
+        // }
+
           // create room by user id in db
-          console.log(`User joined conversation: ${user.userId}`);
+          console.log(`User joined conversation: ${userId}`);
         })
 
-        // handle sendMessage from client to server 
-        socket.on('sendMessage', (message:any)=>{
-          try{
 
-            // await fetch from db to 
-            // await to save message in message table
+        // handle sendMessage from client to server 
+        socket.on('private_message', async (data:any) =>{
+      
+            // extract message from data => {roomId, message, takerId}
+            const {roomId, message} = data;
+
+            // get receiver from conversation by roomId
+            // await to save date in db
+      
             enum messageType {
               SENT="SENT",
             } 
-              const newMessage = new Message(Number(user.userId), Number(socket.id), message, MessageStatus.SENT , new Date());
+              const newMessage = new Message(userId, +roomId, message, MessageStatus.SENT , new Date());
 
               // awai to save it message in db
             // specifiy to one room called userId and sned it messsege 
-            io.to(user.userId).emit('newMessage', newMessage);
-            
-          }catch(err:any){
-            console.log(err.message);
-          }
+            io.to(roomId).emit('receive_message', {userId, message, timestamp: new Date()});
 
-          
+            const messageService= new MessageService(new MessageRepository());
+
+            // save message in db
+            const [error, result] = await safePromise(() => {
+              return messageService.createMessage(newMessage);
+            })
+
+            if(error){
+              console.log(error);
+            }
+            
+        
+
+
         })
 
 
@@ -163,3 +208,28 @@ const messageSocket = (io:SocketServer, socket:DefaultSocket)=>{
 }
 
 
+const notifNewMessage= (io:SocketServer, socket:DefaultSocket) => {
+
+  const userId = socket.data.userId || null;
+
+  const message = socket.data.message || null;
+  const recipientId =  socket.data.recipientId || null;
+  // check if user is online or not 
+  const receiverSocket = onlineUsers.getUserSocket(recipientId);
+  if(receiverSocket){
+    // send notification to user
+    io.to(String(receiverSocket.id)).emit('notify_new_message',(socket.data.messaage))
+  }  else {
+    const recipientEmail = getUserEmail(recipientId);  // Function to get user email
+    sendMail(recipientEmail, message, '');
+
+  }
+
+  // if user is online send notification to user
+  // if user is offline save notification in db', push in web or send to email
+  
+  }
+export const getSocket = () => {
+  if(!io) throw new Error('Socket.io not initialized');
+  return io;
+}

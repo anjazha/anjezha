@@ -18,9 +18,9 @@ export class ConversationRepository implements IConversationRepository{
     async createConversation(conversation:Conversation): Promise<string | undefined>{
 
         const {userId, taskerId, conversationId} = conversation;
-        const query = `INSERT INTO conversations (user_id, tasker_id) VALUES ($1, $2)`;
+        const query = `INSERT INTO conversations (user_id, tasker_id, conversation_id) VALUES ($1, $2, $3)`;
 
-        const values = [userId, taskerId];
+        const values = [userId, taskerId, conversationId];
 
         // handle try catch 
         const [error, result ] = await safePromise( 
@@ -29,6 +29,7 @@ export class ConversationRepository implements IConversationRepository{
 
         if(error) 
             throw new HTTP500Error("Error while creating conversation" + error.message);
+
          return "conversation created sucessfuly" ;
     }
  
@@ -55,7 +56,8 @@ export class ConversationRepository implements IConversationRepository{
         return conversations;
     }
 
-    async getUnreadConversations(userId : number): Promise<Conversation[]>{
+    async getUnreadConversations(userId : number): Promise<Conversation[]> {
+
         const query = `SELECT * FROM conversations WHERE user_id = $1 AND conversation_status = $2 ORDER BY created_at DESC`;
         const values = [userId, "SENT"];
         const [error, result ] = await safePromise(()=>this.client.query(query, values));

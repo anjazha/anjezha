@@ -3,7 +3,7 @@ import RequestWithUserId from "@/Application/interfaces/Request";
 import { Conversation } from "@/Domain/entities/Conversation";
 import { HTTP400Error, HTTP500Error } from "@/helpers/ApiError";
 import { INTERFACE_TYPE } from "@/helpers/containerConst";
-import { getRoomId } from "@/helpers/getRoom";
+// import { getRoomId } from "@/helpers/getRoom";
 import { safePromise } from "@/helpers/safePromise";
 import { NextFunction, Request, Response } from "express";
 import { inject, injectable } from "inversify";

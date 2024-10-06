@@ -1,4 +1,3 @@
-export function getRoomId(userId1: string, userId2: string): string {
-    return [userId1, userId2].join("_");
-  }
-
+function generateRoomId(userId1:number, userId2:number):string {
+  return `${Math.min(userId1, userId2)}-${Math.max(userId1, userId2)}`;
+}
