@@ -14,7 +14,7 @@ export class TaskerService implements ITaskerService {
 
     constructor(
         @inject(INTERFACE_TYPE.TaskerRepository) private taskerRepository: ITaskerRepository,
-        @inject(INTERFACE_TYPE.RoleRepository) private roleRepository:IRoleRepository
+        @inject(INTERFACE_TYPE.RoleRepository) private roleRepository?:IRoleRepository
     ) {}
 
     async createTasker(taskerData: Tasker): Promise<any> {
@@ -34,10 +34,10 @@ export class TaskerService implements ITaskerService {
          // update roles about user to become tasker 
          
 
-         let role = await this.roleRepository.getRoleByUserId(userId);
+         let role = await this.roleRepository!.getRoleByUserId(userId);
 
          if(role){
-           role = await this.roleRepository.updateRole(new Role(userId, 'tasker'))
+           role = await this.roleRepository!.updateRole(new Role(userId, 'tasker'))
          }
 
         //  console.log(role.name);

@@ -15,6 +15,11 @@ import { MessageRepository } from "@/Application/repositories/messageRepository"
 import { Conversation } from "@/Domain/entities/Conversation";
 import { MessageService } from "@/Application/services/messageService";
 import { sendMail } from "../mail/transportionMail";
+import { TaskerService } from "@/Application/services/taskerService";
+import { TaskerRepository } from "@/Application/repositories/taskerRepository";
+import { UserService } from "@/Application/services/userService";
+import { UserRepository } from "@/Application/repositories/userRepository";
+import { error } from "console";
 
 
 interface CustomSocket extends DefaultSocket {
@@ -137,6 +142,7 @@ const messageSocket = (io:SocketServer, socket:DefaultSocket)=>{
       // extract user data from socket 
         const {user} = socket.data;
         const userId = Number(user.userId);
+
         
         // listen to client event called privateRoom
         socket.on('private_room', async (takerId:number) =>{
@@ -144,6 +150,11 @@ const messageSocket = (io:SocketServer, socket:DefaultSocket)=>{
           const roomId = generateRoomId(userId, takerId);
           // create room by user id 
 
+          socket.data.recipientId= Number(takerId);
+          socket.data.roomId = roomId;
+          // check if user is in room or not
+          // if user is in room join user to room
+          // if user is not in room join user to room
           socket.join(roomId);
 
           // store conversation in db
@@ -183,6 +194,8 @@ const messageSocket = (io:SocketServer, socket:DefaultSocket)=>{
               // awai to save it message in db
             // specifiy to one room called userId and sned it messsege 
             io.to(roomId).emit('receive_message', {userId, message, timestamp: new Date()});
+            // send notification to user
+             notifNewMessage(io, socket);
 
             const messageService= new MessageService(new MessageRepository());
 
@@ -208,27 +221,52 @@ const messageSocket = (io:SocketServer, socket:DefaultSocket)=>{
 }
 
 
-const notifNewMessage= (io:SocketServer, socket:DefaultSocket) => {
+const notifNewMessage= async (io:SocketServer, socket:DefaultSocket) => {
 
   const userId = socket.data.userId || null;
 
   const message = socket.data.message || null;
   const recipientId =  socket.data.recipientId || null;
+  const roomId = socket.data.roomId || null;
+  const role = socket.data.user.role || null;
   // check if user is online or not 
   const receiverSocket = onlineUsers.getUserSocket(recipientId);
   if(receiverSocket){
     // send notification to user
     io.to(String(receiverSocket.id)).emit('notify_new_message',(socket.data.messaage))
   }  else {
-    const recipientEmail = getUserEmail(recipientId);  // Function to get user email
-    sendMail(recipientEmail, message, '');
+    // send notification to user
+    // const conversationService = new ConversationService(new ConversationRepository());
+    // const conversation = conversationService.getConversationById(+roomId);
+    let recipientEmail = '';
+    const taskerService = new TaskerService(new TaskerRepository());
+    const userService = new UserService(new UserRepository());
 
+
+    if(role === 'tasker'){ // role user 
+      const [error, result] = await safePromise(() => userService.findById(userId));
+      // send email to user if offline
+      recipientEmail = result.email;
+    } else {
+
+      const [error, result] = await safePromise(() => taskerService.getTaskerById(+recipientId));
+      // send email to user if offline
+      const [errorUser, resultUser] = await safePromise(() => userService.findById(Number(result.userId)));
+      recipientEmail = resultUser.email;
+        // Function to get user email
+    }
+
+    
+    // send email to user if offline
+    sendMail(recipientEmail, message, '');
   }
 
   // if user is online send notification to user
   // if user is offline save notification in db', push in web or send to email
   
   }
+
+  
 export const getSocket = () => {
   if(!io) throw new Error('Socket.io not initialized');
   return io;

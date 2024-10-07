@@ -18,7 +18,7 @@ export class ConversationRepository implements IConversationRepository{
     async createConversation(conversation:Conversation): Promise<string | undefined>{
 
         const {userId, taskerId, conversationId} = conversation;
-        const query = `INSERT INTO conversations (user_id, tasker_id, conversation_id) VALUES ($1, $2, $3)`;
+        const query = `INSERT INTO conversations (user_id, tasker_id, id) VALUES ($1, $2, $3)`;
 
         const values = [userId, taskerId, conversationId];
 
@@ -75,12 +75,22 @@ export class ConversationRepository implements IConversationRepository{
     }
 
     async getConversationById(conversationId : number): Promise<Conversation>{
+
         const query = `SELECT * FROM conversations WHERE id = $1`;
         const values = [conversationId];
-        const [error, result ] = await safePromise(()=>this.client.query(query, values));
+
+        // handle try catch
+        const [error, result ] = await safePromise(()=> this.client.query(query, values));
+        // if error throw error
         if(error) throw new HTTP500Error("Error while fetching conversation" + error.message);
+
+        // if result is empty throw
+        if (result.rows.length === 0) throw new HTTP500Error("Conversation not found");
+        
+
         const {user_id, tasker_id, created_at, id} =  result.rows[0];
 
+        // return conversation
         return new Conversation(user_id, tasker_id, created_at, id);
 
     }
