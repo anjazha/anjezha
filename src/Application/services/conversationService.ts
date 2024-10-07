@@ -27,7 +27,13 @@ export class ConversationService implements IConversationService{
     }
 
     async deleteConversaitonByUserId(userId: number): Promise<any|undefined> {
+        
         return  await this.conversationRepository.deleteConversationByUserId(userId);
+
     }
+
+    // async deleteConversationById(conversationId: number): Promise<any|undefined> {
+    //     return await this.conversationRepository.deleteConversationById(conversationId);
+    // }
 
 }
