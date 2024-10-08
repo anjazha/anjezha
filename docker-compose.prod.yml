@@ -10,9 +10,10 @@ services:
         - PORT=5000
       env_file:
         - .env.production.local
-      build:
+      build: 
         context: .
         target: production
+        dockerFile: dockerFile
       ports:
         - "3000:5000"
         - "4000:5000"
