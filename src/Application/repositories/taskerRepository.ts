@@ -129,12 +129,12 @@ export class TaskerRepository implements ITaskerRepository {
                     };
                 }),
                 reviews: [
-                    {
-                        rating:rows[0].rating,
-                        review:rows[0].review,
-                        userId: rows[0].user_id,
-                        taskerId:rows[0].tasker_id
-                    }
+                    // {
+                    //     rating:rows[0].rating,
+                    //     review:rows[0].review,
+                    //     userId: rows[0].user_id,
+                    //     taskerId:rows[0].tasker_id
+                    // }
                 ]
             }
 
