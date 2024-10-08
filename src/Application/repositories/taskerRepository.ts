@@ -69,7 +69,11 @@ export class TaskerRepository implements ITaskerRepository {
                 us.phone_number as phoneNumber,
                 rs.name as role,
                 sks.id as skillId,
-                sks.name as skillName
+                sks.name as skillName,
+                rvs.rating,
+                rvs.review,
+                rvs.user_id,
+                rvs.tasker_id
             FROM 
                 taskers ts 
             INNER JOIN 
@@ -80,8 +84,8 @@ export class TaskerRepository implements ITaskerRepository {
                 tasker_skills tsk ON ts.user_id = tsk.user_id
             LEFT JOIN 
                 skills sks ON sks.id = tsk.skill_id
-            /* LEFT JOIN 
-                reviews rvs ON ts.id = rvs.tasker_id */
+             LEFT JOIN 
+                reviews rvs ON ts.id = rvs.tasker_id 
             WHERE 
                ts.id = $1`;
 
@@ -124,12 +128,19 @@ export class TaskerRepository implements ITaskerRepository {
                         skill: row.skillName
                     };
                 }),
-                reviews: []
+                reviews: [
+                    {
+                        rating:rows[0].rating,
+                        review:rows[0].review,
+                        userId: rows[0].user_id,
+                        taskerId:rows[0].tasker_id
+                    }
+                ]
             }
 
          if(rows.length == 0) return undefined;
 
-             return data;
+          return data;
 
         } catch (error:any) {
             throw new HTTP500Error('An error occurred ' + error.message + error.stack);
