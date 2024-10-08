@@ -1,4 +1,5 @@
 import { Category } from "./Category";
+import { Review } from "./Review";
 import { Skills } from "./Skills";
 import { User } from "./User";
 
@@ -21,7 +22,7 @@ export class Tasker {
         // public  createdAt?: Date,
         public category?: any,
         public skills?: Skills[],
-        public reviews: any[]= [],
+        public reviews: Review[]= [],
         // public totalRating?: number,
         // public totalReviews?: number,
         // // public totalCompletedTasks?: number,

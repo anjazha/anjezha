@@ -3,6 +3,7 @@ import { injectable } from "inversify";
 import { Client, Pool } from "pg";
 import { IReviewRepository } from "../interfaces/IReviewRepository";
 import { Review } from "@/Domain/entities/Review";
+import { User } from "@/Domain/entities/User";
 
 
 @injectable()
@@ -19,7 +20,7 @@ export class ReviewRepository implements IReviewRepository {
             const query = 'INSERT INTO reviews (review, rating, tasker_id, user_id) VALUES ($1, $2, $3, $4) RETURNING *';
 
             // pass review values
-            const values = [review.review, review.rating, review.taskerId, review.userId];
+            const values = [review.review, review.rating, review.taskerId, review.User];
             // execute query
             const { rows } = await this.client.query(query, values);
 
@@ -48,11 +49,22 @@ export class ReviewRepository implements IReviewRepository {
             if (!rows.length) return null;
 
             // map rows[0] to review object
+            const {review,
+                rating,
+                tasker_id,
+                user_id,
+                created_at, 
+                name, 
+                email,
+                profile_picture,
+                phone_number} = rows[0];
+
+            const newUser= new User(name, email,"", phone_number, profile_picture, user_id)
             return new Review(
                 rows[0].review, 
                 rows[0].rating, 
                 rows[0].tasker_id, 
-                rows[0].user_id, 
+                newUser, 
                 rows[0].id, 
                 rows[0].created_at);
 
@@ -65,7 +77,10 @@ export class ReviewRepository implements IReviewRepository {
         try {
 
             // write query to get all reviews
-            const query = 'SELECT * FROM reviews';
+            const query = `
+                  SELECT * FROM reviews rvs
+                  JOIN 
+                  users us on rvs.user_id = us.id`;
 
             // execute query
             const { rows } = await this.client.query(query);
@@ -80,7 +95,7 @@ export class ReviewRepository implements IReviewRepository {
                 review.review, 
                 review.rating, 
                 review.taskerId, 
-                review.userId, 
+                review.User, 
                 review.id, 
                 review.timestamp));
 
@@ -108,7 +123,7 @@ export class ReviewRepository implements IReviewRepository {
                 review.review, 
                 review.rating, 
                 review.taskerId, 
-                review.userId, 
+                review.User, 
                 review.id, 
                 review.timestamp));
 
@@ -123,27 +138,57 @@ export class ReviewRepository implements IReviewRepository {
     async getReviewByTaskerId(taskerId: number): Promise<Review[] | null> {
         try {
 
+             
             // write query to get review by tasker id
-            const query = 'SELECT * FROM reviews WHERE tasker_id = $1';
+            const query = `
+                SELECT 
+                     rvs.id as reviewId,
+                     rvs.review,
+                     rvs.rating,
+                     rvs.tasker_id as taskerId,
+                     us.id as userId,
+                     us.name,
+                     us.email, 
+                     us.profile_picture,
+                     us.phone_number
+                     FROM reviews rvs
+                     JOIN 
+                     users us on rvs.user_id = us.id
+                     WHERE rvs.tasker_id = $1`;
 
             // pass tasker id as value
             const values = [Number(taskerId)];
 
             // execute query
             const { rows } = await this.client.query(query, values);
-            console.log(rows);
             // rows is an array of reviews is empty return null
+            console.log('rows')
+            // console.log(rows);
+
             if (rows.length == 0) return null;
 
-            // map rows to review object
-            const reviews = 
-            rows.map( (review: any) => new Review(
-                review.review, 
-                review.rating, 
-                review.taskerId, 
-                review.userId, 
-                review.id, 
-                review.timestamp));
+            // const {
+            //     review,
+            //     reviewId,
+            //     rating,
+            //     tasker_id,
+            //     userId,
+            //     created_at, 
+            //     name, 
+            //     email,
+            //     profile_picture,
+            //     phone_number} = rows[0];
+            // // map rows to review object
+            // const newUser= new User(name, email,"", phone_number, profile_picture, userId);
+
+            const reviews = rows.map((review:any ) => 
+                new Review(
+                    review.review, review.rating, review.taskerid, 
+                    new User(review.name, review.email, "", review.phone_number, review.profile_picture, review.userid),
+                    review.reviewid
+                )
+
+            );
 
            return reviews;
 
