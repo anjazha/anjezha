@@ -8,5 +8,5 @@ export interface ITaskService {
     findAllTasks() : Promise<Task[]>;
     findTaskById(id: number) : Promise<Task | null>;
     findTasksByUserId(userId: number) : Promise<Task[]>;
-    
+    taskerFeed(taskerId : number) : Promise<Task[]>;
 }

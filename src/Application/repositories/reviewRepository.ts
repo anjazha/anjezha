@@ -29,7 +29,7 @@ export class ReviewRepository implements IReviewRepository {
             // map rows to review object
             return new Review(rows[0].review, rows[0].rating, rows[0].tasker_id, rows[0].user_id, rows[0].id, rows[0].created_at);
         } catch (err:any) {
-            throw new Error(`Error creating review: ${err.message} ${err.stack}`);
+            throw new Error(`Error creating review: ${err.message} `);
         }
     }
 
@@ -69,7 +69,7 @@ export class ReviewRepository implements IReviewRepository {
                 rows[0].created_at);
 
         } catch (err:any) {
-            throw new Error(`Error getting review : ${err.message} ${err.stack}`);
+            throw new Error(`Error getting review : ${err.message} `);
         }
     }
 
@@ -100,7 +100,7 @@ export class ReviewRepository implements IReviewRepository {
                 review.timestamp));
 
         } catch (err:any) {
-            throw new Error(`Error getting reviews: ${err.message} ${err.stack}`);
+            throw new Error(`Error getting reviews: ${err.message} `);
         }
     }
 
@@ -115,22 +115,32 @@ export class ReviewRepository implements IReviewRepository {
             // execute query
             const { rows } = await this.client.query(query, values);
 
+            // console.log(rows)
             // rows is an array of reviews is empty return null
-            if (!rows.length) return null;
+            if (!rows.length) return null; 
 
             // map rows to review object
-            const reviews = rows.map( (review: Review) => new Review(
+
+            // const reviews = rows.map( (review: Review) => new Review(
+            //     review.review, 
+            //     review.rating, 
+            //     review.taskerId, 
+            //     review.User, 
+            //     review.id, 
+            //     review.timestamp));
+
+            const reviews = rows.map( (review) => new Review(
                 review.review, 
                 review.rating, 
-                review.taskerId, 
-                review.User, 
+                review.tasker_id, 
+                review.user_id, 
                 review.id, 
-                review.timestamp));
+                review.created_at));
 
             return reviews;
 
         } catch (err:any) {
-            throw new Error(`Error getting review by user id: ${err.message} ${err.stack}`);
+            throw new Error(`Error getting review by user id: ${err.message} `);
         }
     }
 
@@ -193,7 +203,7 @@ export class ReviewRepository implements IReviewRepository {
            return reviews;
 
         } catch (err:any) {
-            throw new Error(`Error getting review by tasker id: ${err.message} ${err.stack}`);
+            throw new Error(`Error getting review by tasker id: ${err.message} `);
         }
     }
 
@@ -256,7 +266,7 @@ export class ReviewRepository implements IReviewRepository {
             // map rows to review object
             return new Review(rows[0].review, rows[0].rating, rows[0].tasker_id, rows[0].user_id, rows[0].id, rows[0].created_at);
         } catch (err:any) {
-            throw new Error(`Error updating review: ${err.message} ${err.stack}`);
+            throw new Error(`Error updating review: ${err.message} `);
         }
     }
 
@@ -275,7 +285,7 @@ export class ReviewRepository implements IReviewRepository {
             return true;
 
         } catch (err:any) {
-            throw new Error(`Error deleting review: ${err.message} ${err.stack}`);
+            throw new Error(`Error deleting review: ${err.message} `);
         }
     }
 

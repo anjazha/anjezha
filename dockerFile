@@ -16,7 +16,7 @@ CMD ["npm", "run", "start:dev"]
 FROM base as production
 WORKDIR /anjezha
 COPY package.json ./
-RUN npm install --only=production
+RUN npm install 
 COPY . .
 RUN npm run build
 EXPOSE 5000

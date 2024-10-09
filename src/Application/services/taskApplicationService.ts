@@ -3,26 +3,41 @@ import { ITaskApplicationService } from "../interfaces/TaskApplication/ITaskAppl
 import { TaskApplication } from "@/Domain/entities/TaskApplication";
 import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { ITaskApplicationRepository } from "../interfaces/TaskApplication/ITaskApplicationRepository";
-
+import { HTTP400Error } from "@/helpers/ApiError";
 
 @injectable()
 export class TaskApplicationService implements ITaskApplicationService {
+  constructor(
+    @inject(INTERFACE_TYPE.TaskApplicationRepository)
+    private taskApplicationRepository: ITaskApplicationRepository
+  ) {}
 
-    constructor(@inject(INTERFACE_TYPE.TaskApplicationRepository) private taskApplicationRepository : ITaskApplicationRepository){}
+  async apply(application: TaskApplication): Promise<boolean> {
+    const isUserApplied =
+      await this.taskApplicationRepository.checkIfTaskerApplied(
+        application.taskId,
+        application.taskerId
+      );
+    if (isUserApplied)
+      throw new HTTP400Error("You have already applied for this task");
+    const isTaskOwner =
+      await this.taskApplicationRepository.checkifTaskerIsTaskOwner(
+        application.taskId,
+        application.taskerId
+      );
+    if (isTaskOwner) throw new HTTP400Error("You can not apply for your tasks");
+    return this.taskApplicationRepository.apply(application);
+  }
 
-    apply(application: TaskApplication): Promise<boolean> {
-        return this.taskApplicationRepository.apply(application);
-    }
+  getApplications(taskId: number): Promise<TaskApplication[]> {
+    return this.taskApplicationRepository.getApplications(taskId, null);
+  }
 
-    getApplications(taskId: number): Promise<TaskApplication[]> {
-        return this.taskApplicationRepository.getApplications(taskId, null);
-    }
-    
-    getApplicationsByTaskerId(taskerId: number): Promise<TaskApplication[]> {
-        return this.taskApplicationRepository.getApplications(null, taskerId);
-    }
+  getApplicationsByTaskerId(taskerId: number): Promise<TaskApplication[]> {
+    return this.taskApplicationRepository.getApplications(null, taskerId);
+  }
 
-    acceptApplication(appId: number): Promise<boolean> {
-        return this.taskApplicationRepository.acceptApplication(appId);
-    }
+  acceptApplication(appId: number): Promise<boolean> {
+    return this.taskApplicationRepository.acceptApplication(appId);
+  }
 }

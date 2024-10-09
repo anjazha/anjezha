@@ -7,6 +7,7 @@ import {Router} from "express"
 import { Container } from "inversify"
 import { TaskApplicationController } from "../controllers/taskAppliationController"
 import {allowTo, isAuth} from "../middlewares/isAuth"
+import { taskApplicationValidate } from "@/helpers/validate/taskApplications"
 
 const router = Router()
 
@@ -19,8 +20,8 @@ container.bind<TaskApplicationController>(INTERFACE_TYPE.TaskApplicationControll
 const taskAppliationController = container.get<TaskApplicationController>(INTERFACE_TYPE.TaskApplicationController)
 
 router.use(isAuth)
-router.post("/task-application",allowTo("tasker"), taskAppliationController.apply.bind(taskAppliationController))
-router.get('/task-application/:taskId', taskAppliationController.getApplications.bind(taskAppliationController))
+router.post("/task-application",allowTo("tasker"),taskApplicationValidate, taskAppliationController.apply.bind(taskAppliationController))
+router.get('/task-application/:taskId',allowTo('user', "tasker"), taskAppliationController.getApplications.bind(taskAppliationController))
 router.get('/task-application/tasker/:taskerId',allowTo("tasker"), taskAppliationController.getApplicationsByTaskerId.bind(taskAppliationController))
 
 

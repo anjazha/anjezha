@@ -9,4 +9,5 @@ export interface ITaskRepository {
     findTaskById(id: number) : Promise<Task | null>;
     findTasksByUserId(userId: number) : Promise<Task[]>;
     search(q: string, filters : {}, sortBy: string) : Promise<Task[]>;
+    taskerFeed(taskerId : number) : Promise<Task[]>;
 }

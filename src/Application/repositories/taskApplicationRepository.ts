@@ -12,12 +12,13 @@ export class TaskApplicationRepository implements ITaskApplicationRepository {
 
   async apply(application: TaskApplication): Promise<boolean> {
     // console.log(application);
-    const query = `INSERT INTO applies (task_id, tasker_id, status, content) VALUES ($1, $2, $3, $4) RETURNING id`;
+    const query = `INSERT INTO applies (task_id, tasker_id, status, content, price) VALUES ($1, $2, $3, $4, $5) RETURNING id`;
     const values = [
       application.taskId,
       application.taskerId,
       ETaskAppStatus.PENDING,
       application.content,
+      application.price,
     ];
 
     const [error, data] = await safePromise(() =>
@@ -37,6 +38,7 @@ export class TaskApplicationRepository implements ITaskApplicationRepository {
   ap.task_id, 
   ap.status, 
   ap.content, 
+  ap.price,
   json_build_object(
     'id', ap.tasker_id,
     'name', users.name,
@@ -79,5 +81,37 @@ WHERE 1=1`; //WHERE 1=1 is a trick to make the query more dynamic
     if (error) throw new HTTP500Error(error);
 
     return true;
+  }
+
+  async checkIfTaskerApplied(
+    taskId: number,
+    taskerId: number
+  ): Promise<boolean> {
+    const query = `SELECT * FROM applies WHERE task_id = $1 AND tasker_id = $2`;
+    const [error, data] = await safePromise(() =>
+      pgClient.query(query, [taskId, taskerId])
+    );
+    if (error) throw new HTTP500Error(error);
+    return data.rows.length > 0;
+  }
+
+  async checkifTaskerIsTaskOwner(
+    taskId: number,
+    taskerId: number
+  ): Promise<boolean> {
+    const query = `SELECT * 
+                      FROM v_tasks t 
+                      LEFT JOIN users u ON t.user_id = u.id 
+                      LEFT JOIN taskers ta ON ta.user_id = u.id 
+                      WHERE t.id = $1
+                        AND ta.id = $2 
+                        AND t.user_id = ta.user_id;
+`;
+
+    const [error, data] = await safePromise(() =>
+      pgClient.query(query, [taskId, taskerId])
+    );
+    if (error) throw new HTTP500Error(error);
+    return data.rows.length > 0;
   }
 }
