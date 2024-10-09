@@ -24,7 +24,7 @@ export class TaskAssignmentController {
       new Date()
     );
 
-    const [error, result] = await safePromise(()=>this.taskAssignmentService.assign(assignment));
+    const [error, result] = await safePromise(()=>this.taskAssignmentService.assign(assignment, Number(req.userId)));
 
     if(error) return next(error)
     if (!result) return next(new HTTP500Error("Failed to assign task"));

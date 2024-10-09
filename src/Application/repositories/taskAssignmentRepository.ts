@@ -10,8 +10,11 @@ import { ETaskStatus } from "../interfaces/enums/ETaskStatus";
 export class TaskAssignmentRepository implements ITaskAssignmentRepository {
   constructor() {}
 
+
+  private readonly GET_ASSIGNMENTS_QUERY = `SELECT * FROM tasker_assignments WHERE task_id = $1`;
+  private readonly ASSIGN_TASK_QUERY = `INSERT INTO tasker_assignments (task_id, tasker_id, status, assigned_at) VALUES ($1, $2, $3, $4) RETURNING id`;
+
   async assign(assignment: TaskAssignment): Promise<boolean> {
-    const query = `INSERT INTO tasker_assignments (task_id, tasker_id, status, assigned_at) VALUES ($1, $2, $3, $4) RETURNING id`;
     const values = [
       assignment.taskId,
       assignment.taskerId,
@@ -20,7 +23,7 @@ export class TaskAssignmentRepository implements ITaskAssignmentRepository {
     ];
 
     const [error, result] = await safePromise(() =>
-      pgClient.query(query, values)
+      pgClient.query(this.ASSIGN_TASK_QUERY, values)
     );
     if (error) {
       console.log(error);
@@ -29,31 +32,36 @@ export class TaskAssignmentRepository implements ITaskAssignmentRepository {
 
     return result?.rowCount > 0;
   }
+private readonly UPDATE_TASK_ASSIGNMENTS_STATUS_QUERY = `UPDATE tasker_assignments SET status = $1 WHERE task_id = $2 RETURNING id`;
+  async updateStatus (taskId: number, status : ETaskStatus) : Promise<boolean>{
+      
+      const values = [status, taskId];
 
-  async isTaskExist(taskId: number) : Promise<boolean>{
-    const query = `SELECT * FROM tasks WHERE id = $1`;
-    const values = [taskId];
+      const [error, data] = await safePromise(() => pgClient.query(this.UPDATE_TASK_ASSIGNMENTS_STATUS_QUERY, values));
+      if (error) throw new HTTP500Error(error);
 
-    const [error, result] = await safePromise(() =>
-      pgClient.query(query, values)
-    );
-    if (error) {
-      throw new HTTP500Error(error);
-    }
+      if (data?.rowCount === 0) return false;
 
-    return result?.rowCount > 0;
+    return true
   }
 
 
-  async updateStatus (taskId: number, status : ETaskStatus) : Promise<boolean>{
-      const query = `UPDATE tasker_assignments SET status = $1 WHERE task_id = $2 RETURNING id`;
-      const values = [status, taskId];
+  async getAssignments(taskId: number): Promise<TaskAssignment[] | null> {
+  
+    const values = [taskId];
 
-      const [error, data] = await safePromise(() => pgClient.query(query, values));
-      if (error) throw new HTTP500Error(error);
+    const [error, data] = await safePromise(() => pgClient.query(this.GET_ASSIGNMENTS_QUERY, values));
+    if (error) throw new HTTP500Error(error);
 
-      if (data?.rowCount === 0) throw new HTTP404Error(`There is no task assignment for task with id ${taskId}`);
+    if (data?.rowCount === 0) return null;
 
-    return true
+    return data.rows.map((row: any) => {
+      return new TaskAssignment(
+        row.task_id,
+        row.tasker_id,
+        row.status,
+        row.assigned_at
+      );
+    });
   }
 }

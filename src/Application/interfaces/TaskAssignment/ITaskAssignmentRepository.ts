@@ -3,6 +3,6 @@ import { ETaskStatus } from "../enums/ETaskStatus";
 
 export interface ITaskAssignmentRepository {
     assign(assignment : TaskAssignment) : Promise<boolean>;
-    isTaskExist(taskId: number) : Promise<boolean>;
+    getAssignments(taskId: number) : Promise<TaskAssignment[] | null >;
     updateStatus(taskId: number, status: ETaskStatus) : Promise<boolean>;
 }

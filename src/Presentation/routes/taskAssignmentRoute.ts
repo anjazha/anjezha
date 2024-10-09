@@ -8,6 +8,8 @@ import { ITaskAssignmentRepository } from '@/Application/interfaces/TaskAssignme
 import { TaskAssignmentRepository } from '@/Application/repositories/taskAssignmentRepository';
 import { assignTaskValidate } from '@/helpers/validate/taskAssignmentValidate';
 import {isAuth} from '../middlewares/isAuth';
+import { ITaskRepository } from '@/Application/interfaces/Task/ITaskRepository';
+import { TaskRepository } from '@/Application/repositories/taskRepository';
 
 const router = Router();
 
@@ -16,6 +18,7 @@ const container = new Container();
 container.bind<TaskAssignmentController>(INTERFACE_TYPE.TaskAssignmentController).to(TaskAssignmentController);
 container.bind<ITaskAssignmentService>(INTERFACE_TYPE.TaskAssignmentService).to(TaskAssignmentService);
 container.bind<ITaskAssignmentRepository>(INTERFACE_TYPE.TaskAssignmentRepository).to(TaskAssignmentRepository);
+container.bind<ITaskRepository>(INTERFACE_TYPE.TaskRepository).to(TaskRepository);
 
 const taskAssignmentController = container.get<TaskAssignmentController>(INTERFACE_TYPE.TaskAssignmentController);
 
