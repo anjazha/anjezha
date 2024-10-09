@@ -12,9 +12,14 @@ export class TaskApplicationService implements ITaskApplicationService {
     private taskApplicationRepository: ITaskApplicationRepository
   ) {}
 
+  private async checkIfTaskerApplied(taskeId: number, taskerId: number) : Promise<boolean> {
+      const applications : TaskApplication [] = await this.taskApplicationRepository.getTaskerApplication(taskeId, taskerId);
+      return applications.length > 0;
+  }
+  
   async apply(application: TaskApplication): Promise<boolean> {
     const isUserApplied =
-      await this.taskApplicationRepository.checkIfTaskerApplied(
+      await this.checkIfTaskerApplied(
         application.taskId,
         application.taskerId
       );

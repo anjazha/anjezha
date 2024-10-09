@@ -5,6 +5,6 @@ export interface ITaskApplicationRepository {
     getApplications(taskId : number | null , taskerId : number | null) : Promise<TaskApplication[]>;
     // getApplicationsByTaskerId(taskerId : number) : Promise<TaskApplication[]>;
     acceptApplication(appId : number) : Promise<boolean>;
-    checkIfTaskerApplied(taskId : number, taskerId : number) : Promise<boolean>;
+    getTaskerApplication(taskId : number, taskerId : number) : Promise<TaskApplication[]>;
     checkifTaskerIsTaskOwner(taskId : number, taskerId : number) : Promise<boolean>;
 }
