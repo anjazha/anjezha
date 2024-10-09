@@ -2,7 +2,7 @@ import { Review } from "@/Domain/entities/Review";
 
 
 export interface IReviewService {
-    createReview(review: Review): Promise<Review | null>;
+    createReview(review: Review, userId:number): Promise<Review | null>;
     getReviewById(id: number): Promise<Review | null>;
     getReviews(): Promise<Review[] | null>;
     getReviewByUserId(userId: number): Promise<Review[] | null>;
