@@ -25,7 +25,7 @@ export class ReviewController {
             const userId = Number(req.userId);
 
             // call createReview method from reviewService  and pass review object
-            const newReview = await this.reviewService.createReview(new Review(review, rating, taskerId, userId));
+            const newReview = await this.reviewService.createReview(new Review(review, rating, taskerId, userId), userId);
 
             // return review object
             res.status(201).json({
@@ -33,9 +33,10 @@ export class ReviewController {
                 data: newReview
             });
         } catch (err: any) {
-            next(
-                new HTTP500Error(`Error creating review: ${err.message} ${err.stack}`)
-            );
+            // next(
+            //     new HTTP500Error(`Error creating review: ${err.message} ${err.stack}`)
+            // );
+            next(err);
         }
        
            
