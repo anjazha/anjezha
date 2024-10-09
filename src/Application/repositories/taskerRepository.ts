@@ -55,13 +55,13 @@ export class TaskerRepository implements ITaskerRepository {
             const query = `
             SELECT 
                 ts.id,
-                ts.user_id as userId,
                 ts.bio,
                 ts.pricing,
                 ts.longitude,
                 ts.latitude,
                 ts.category_id as categoryId,
                 ts.bidding,
+                us.id as userId,
                 us.name,
                 us.email,
                 us.profile_picture as profilePicture,

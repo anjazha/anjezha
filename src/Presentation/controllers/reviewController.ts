@@ -24,6 +24,8 @@ export class ReviewController {
             
             const userId = Number(req.userId);
 
+            console.log('userc', userId)
+
             // call createReview method from reviewService  and pass review object
             const newReview = await this.reviewService.createReview(new Review(review, rating, taskerId, userId));
 

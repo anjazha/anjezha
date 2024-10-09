@@ -34,6 +34,7 @@ export const isAuth = (req: RequestWithUserId, res: Response, next: NextFunction
 
     req.userId = Number(userId);
 
+    console.log('userAuthenticate', req.userId)
     req.role = role;
     console.log("req.role", req.role);
 

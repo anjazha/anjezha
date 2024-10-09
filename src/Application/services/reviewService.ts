@@ -5,6 +5,7 @@ import { IReviewRepository } from "../interfaces/IReviewRepository";
 import { Review } from "@/Domain/entities/Review";
 import { ITaskerRepository } from "../interfaces/User/Tasker/ITaskerRepository";
 import { HTTP500Error } from "@/helpers/ApiError";
+import { User } from "@/Domain/entities/User";
 
 @injectable()
 export class ReviewService implements IReviewService {
@@ -22,18 +23,22 @@ export class ReviewService implements IReviewService {
              const tasker = await this.taskerRepository.getTaskerById(taskerId!);
             // if tasker is not exist throw error
             if (!tasker) {
-                throw new HTTP500Error("Tasker id is required valid");
+                throw new HTTP500Error("Tasker  is required valid");
             }
 
             // check if taskerId is equal to userId
-            if (+taskerId! === +review.User!) 
+            // console.log(review.User, tasker.userId);
+            // there is a problem in foreign keys between tables 
+            if (+tasker.userId! === +review.User) 
                 throw new HTTP500Error("You can't write review to yourself");
 
+    
+
             // check if review exist befor or not 
-            const reviewExist = await this.reviewRepository.getReviewByTaskerId(taskerId!);
-            // if review exist throw error
+            const reviewExist = await this.reviewRepository.getReviewByUserId(review.User!);
+            // // if review exist throw error
             if (reviewExist) {
-                throw new HTTP500Error("Review already exist");
+                throw new HTTP500Error("you can`t write more once Review");
             }
 
             // call createReview method from reviewRepository  and pass review object
@@ -41,7 +46,7 @@ export class ReviewService implements IReviewService {
 
             // return review object
         } catch (err:any) {
-            throw new HTTP500Error(`Error creating review: ${err.message} ${err.stack}`);
+            throw new HTTP500Error(`Error creating review: ${err.message}`);
         }
     }
 

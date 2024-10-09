@@ -38,7 +38,7 @@ reviewRoute.post("/review/:taskerId", isAuth, allowTo('user', 'tasker'), reviewC
 // get review by id route
 reviewRoute
 .route("/review/:id")
-.all(isAuth, allowTo('user', 'tasker'))
+.all(isAuth, allowTo('user'))
  .get(reviewController.getReviewById.bind(reviewController))
  .put(reviewController.updateReview.bind(reviewController))
  .delete(reviewController.deleteReview.bind(reviewController));
