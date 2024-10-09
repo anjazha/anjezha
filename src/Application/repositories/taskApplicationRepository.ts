@@ -31,12 +31,13 @@ export class TaskApplicationRepository implements ITaskApplicationRepository {
                                               users ON taskers.user_id = users.id 
                                             WHERE 1=1`
 
-  private CHECK_IF_TASKER_IS_TASK_OWNER_QUERY = `SELECT * 
+  private CHECK_IF_TASKER_IS_TASK_OWNER_QUERY = `SELECT
+                                                     u.id as user_id,
+                                                     ta.id as tasker_id  
                                                     FROM v_tasks t 
                                                     LEFT JOIN users u ON t.user_id = u.id 
                                                     LEFT JOIN taskers ta ON ta.user_id = u.id 
                                                     WHERE t.id = $1
-                                                      AND ta.id = $2 
                                                       AND t.user_id = ta.user_id;`;
 
   private GET_TASKER_APPLICATION = `SELECT * FROM applies WHERE task_id = $1 AND tasker_id = $2`;
@@ -109,18 +110,17 @@ export class TaskApplicationRepository implements ITaskApplicationRepository {
     return data.rows;
   }
 
-  async checkifTaskerIsTaskOwner(
+  async getTaskOwner(
     taskId: number,
-    taskerId: number
-  ): Promise<boolean> {
+  ): Promise<{userId:number, taskerId?:number}> {
 
     const [error, data] = await safePromise(() =>
-      pgClient.query(this.CHECK_IF_TASKER_IS_TASK_OWNER_QUERY, [taskId, taskerId])
+      pgClient.query(this.CHECK_IF_TASKER_IS_TASK_OWNER_QUERY, [taskId])
     );
 
-    console.log(data.rows);
+    // console.log(error, data);
     if (error) throw new HTTP500Error(error);
-    return data.rows.length > 0;
+    return {userId:data.rows[0].user_id, taskerId:data.rows[0].tasker_id};
   }
 
 }

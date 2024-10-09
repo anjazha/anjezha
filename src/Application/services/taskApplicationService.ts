@@ -17,6 +17,11 @@ export class TaskApplicationService implements ITaskApplicationService {
       return applications.length > 0;
   }
   
+  private async checkIfTaskerIsOwner(taskeId: number, taskerId: number) : Promise<boolean> {
+      const taskOwner = await this.taskApplicationRepository.getTaskOwner(taskeId);
+      return taskOwner?.taskerId == taskerId;
+  }
+  
   async apply(application: TaskApplication): Promise<boolean> {
     const isUserApplied =
       await this.checkIfTaskerApplied(
@@ -25,12 +30,9 @@ export class TaskApplicationService implements ITaskApplicationService {
       );
     if (isUserApplied)
       throw new HTTP400Error("You have already applied for this task");
-    const isTaskOwner =
-      await this.taskApplicationRepository.checkifTaskerIsTaskOwner(
-        application.taskId,
-        application.taskerId
-      );
-    if (isTaskOwner) throw new HTTP400Error("You can not apply for your tasks");
+    
+    const checkIfTaskerIsOwner = await this.checkIfTaskerIsOwner(application.taskId, application.taskerId);
+    if (checkIfTaskerIsOwner) throw new HTTP400Error("You can not apply for your tasks");
     return this.taskApplicationRepository.apply(application);
   }
 
