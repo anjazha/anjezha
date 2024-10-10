@@ -1,4 +1,4 @@
-version: '4'
+version: '3'
 services:
      anjezha:
       # extends:
@@ -14,11 +14,11 @@ services:
         context: .
         target: production
         dockerfile: dockerFile
-      ports:
-        - "3000:5000"
-        - "4000:5000"
+      # ports:
+      #   - "3000:5000"
+      #   - "4000:5000"
       
-      command: npm run prod:start
+      command: npm run start
       
       
 

@@ -76,8 +76,8 @@ export class App {
 
 
     // homw route 
-    this.app.get('/', (req:Request, res:Response, next:NextFunction) => {
-        res.status(200).json({message: 'Welcome to  Anjezha API:aws'})
+    this.app.route('/').get((req:Request, res:Response, next:NextFunction) => {
+        res.status(200).json({message: 'Welcome to  Anjezha API:aws2.1'})
     })
 
 
