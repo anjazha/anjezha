@@ -5,6 +5,7 @@ import { pgClient, connectDB, disconnectDB } from "@/Infrastructure/database";
 import { User } from "@/Domain/entities/User";
 import { IUserRepository } from "../interfaces/User/IUserRepository";
 import { HTTP500Error } from "@/helpers/ApiError";
+import { safePromise } from "@/helpers/safePromise";
 
 // repository for user
 
@@ -238,6 +239,46 @@ async delete(id: number): Promise<string> {
     } catch(err:any){
       throw new Error('An error occurred' + err.message + err.stack);
     }
+}
+
+async createVerificationCode(email: string, code: string, expirationTime: Date, createAt:Date): Promise<any> {
+  
+    const query = `INSERT INTO email_confirmations (email, code, expiration_time, confirmed_at) VALUES ($1, $2, $3, $4)`;
+    const values = [email, code, expirationTime, createAt];
+    const [error,result] = await safePromise( ()=> this.client.query(query, values));
+ 
+    if(error) throw new Error('An error occurred' + error.message + error.stack);
+
+    return result;
+  
+}
+
+async getVerificationCode(email: string): Promise<any> {
+
+    const query = `SELECT * FROM email_confirmations WHERE email = $1`;
+
+    const values = [email];
+    const [error, result ]= await safePromise(() => this.client.query(query, values));
+
+    if(error) throw new HTTP500Error(error.message);
+
+    return result.rows[0];
+}
+
+async checkEmailConfirmation(email: string): Promise<boolean> {
+    const query = `
+          SELECT * FROM email_confirmations
+           WHERE email = $1 AND confirmed_at IS NOT NULL 
+           order by confirmed_at desc
+           LIMIT 1`;
+
+    const values = [email];
+    const [error, result] = await safePromise(() => this.client.query(query, values));
+
+    if(error) throw new HTTP500Error(error.message);
+
+    return result.rows.length > 0 
+            && new Date() < result.rows[0].expiration_time;
 }
   
 }

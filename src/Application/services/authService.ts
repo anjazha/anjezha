@@ -15,6 +15,7 @@ import { IRoleRepository } from '../interfaces/User/IRoleRepository';
 import { Role } from '@/Domain/entities/role';
 import { JwtPayload } from 'jsonwebtoken';
 import { text } from 'stream/consumers';
+import { HTTP500Error } from '@/helpers/ApiError';
 
 
 
@@ -23,7 +24,18 @@ export class AuthService implements IAuthService {
     constructor(
         @inject(INTERFACE_TYPE.UserRepository) private userRepository: IUserRepository,
         @inject(INTERFACE_TYPE.RoleRepository) private roleRepository: IRoleRepository   
-    ) {}
+    ) {
+        
+    }
+
+
+     async checkCodeValid(email:string) : Promise<Boolean>{
+
+
+       return await this.userRepository.checkEmailConfirmation(email)
+        
+     }
+
 
     async register(user: User): Promise<User> {
 
@@ -36,9 +48,14 @@ export class AuthService implements IAuthService {
                     7- handle confirm password in express validaator 
                     */
         try{
+
         const {email, password} = user; 
 
-        console.log("user", user);
+        // console.log("user", user);
+        // console.log(await this.checkCodeValid(email));
+
+        if(!await this.checkCodeValid(email)) throw new HTTP500Error("Code not valid");
+
 
        
         //  1- Check if user exists 

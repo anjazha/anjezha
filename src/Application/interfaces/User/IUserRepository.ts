@@ -7,6 +7,7 @@ import { User } from "@/Domain/entities/User";
 
 
 export interface IUserRepository {
+    checkEmailConfirmation(email:string): Boolean | PromiseLike<Boolean>;
     create(user: User): Promise<User>;
     findByEmail(email: string): Promise<User | null>;
     findById(id: number): Promise<User>;

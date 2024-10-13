@@ -8,22 +8,53 @@ import { INotificationService } from "@/Application/interfaces/Notification/INot
 import { Notification } from "@/Domain/entities/Notification";
 import { ENOTIFICATION_TYPES } from "@/Application/interfaces/enums/ENotificationTypes";
 import { HTTP500Error } from "@/helpers/ApiError";
+import { verfiyEmail } from "@/helpers/generateCode";
 
 
 @injectable()
 export class AuthController {
     constructor(@inject(INTERFACE_TYPE.AuthService) private authService:AuthService,@inject(INTERFACE_TYPE.NotificationService) private readonly notificationService : INotificationService) {}
       
-       async register(req:Request, res:Response, next:NextFunction) {
+       async sendCode(req:Request, res:Response, next:NextFunction){
+        const { email} = req.body;
+        req.body.email = email;
+    
+         await verfiyEmail.handleEmailVerification(email);
 
+         res.status(200).json({message: 'Code sent to your email'});
+       }
+
+       async verifyCode(req:Request, res:Response, next:NextFunction){
+
+         const {code,email} = req.body;
+    
+         // check code okay or  not if code true return true else throw error
+         await verfiyEmail.verifyCode(email, code);
+
+         res.status(200).json({message: 'Code verified'});
+
+        //   if(!checkCode) throw new HTTP500Error("Code not valid");
+
+        // if not throw error go to next middlware
+        //   return true
+
+        // req.verfiedCode=true;
+       }
+
+       async register(req:Request, res:Response, next:NextFunction) {
         
+        // console.log(req.verfiedCode);
+
         try{
                  const { name, email, password , phoneNumber} = req.body;
 
+                // await verfiyEmail.handleEmailVerification(email);
 
+                // if(!this.authService.checkCodeValid(email)) throw new HTTP500Error("Code not valid");
                  const user = new User(name, email, password, phoneNumber);
 
                   // 1- handle unit test 1
+                  // befor it verfiy if code validation or not 
                   const newUser = await this.authService.register(user);
 
                   // 2- handle unit test 2
@@ -34,6 +65,8 @@ export class AuthController {
         }
         
           }
+
+        
 
         async login(req:Request, res:Response, next:NextFunction) {
             
