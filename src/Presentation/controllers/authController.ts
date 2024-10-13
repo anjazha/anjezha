@@ -72,9 +72,9 @@ export class AuthController {
 
           try{
             // get password from req.body
-            const {password } = req.body;
+            const {password, token } = req.body;
             // get token from headers
-            const token = req.params.token;
+            // const token = req.params.token;
 
             console.log(token);
             

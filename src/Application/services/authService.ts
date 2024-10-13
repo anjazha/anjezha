@@ -7,13 +7,14 @@ import { IAuthService } from "../interfaces/User/IAuthService";
 import { IUserRepository } from "../interfaces/User/IUserRepository";
 import { generateToken, verifyToken } from "@/helpers/tokenHelpers";
 import { sendMail } from '@/Infrastructure/mail/transportionMail';
-import { BASE_URL } from '@/config/index';
+import { BASE_URL_FRONT } from '@/config/index';
 import { inject, injectable } from 'inversify';
 import { INTERFACE_TYPE } from '@/helpers/containerConst';
 import { hashCode } from '@/helpers/hashCode';
 import { IRoleRepository } from '../interfaces/User/IRoleRepository';
 import { Role } from '@/Domain/entities/role';
 import { JwtPayload } from 'jsonwebtoken';
+import { text } from 'stream/consumers';
 
 
 
@@ -113,6 +114,10 @@ export class AuthService implements IAuthService {
         
     }
 
+    async authFactor(code:string){
+
+    }
+
     async forgotPassword(email: string): Promise<void> {
         try{
 
@@ -123,16 +128,23 @@ export class AuthService implements IAuthService {
             // }
 
             // generate token
-            const token = await generateToken({userId:Number(user?.id)});
+            const token =  generateToken({userId:Number(user?.id)});
 
             //   const passwordRecoveryCode = hashCode()
             // send email with password reset link
             // service send email then calll
-            const resetUrl = `${BASE_URL}/auth/reset-password/${token}`;
+            const resetUrl = `${BASE_URL_FRONT}/resetPassword/${token}`;
             // console.log(BASE_URL)
             const html = `<div><h3>You requested a password reset.<h3/> <p> Click <a href="${resetUrl}">here</a> to reset your password.</p><div/>`;
 
-            await sendMail(email, 'Reset Password', html);
+            const mailOptions= {
+                to:email,
+                subject:'Reset Password',
+                html
+            }
+
+            await sendMail(mailOptions);
+
             console.log('Email sent');
         
         } catch(err:any){
@@ -158,6 +170,7 @@ export class AuthService implements IAuthService {
 
             const userId = Number(decoded.userId);
             const user = await this.userRepository.findById(userId);
+            const role = await this.roleRepository.getRoleByUserId(userId);
             
             // check if user exists   // handle unit test 7
             if (!user) {
@@ -170,10 +183,10 @@ export class AuthService implements IAuthService {
             await this.userRepository.update(Number(user.id), user);
 
             // generate new token  to login
-            // const token = await generateToken({userId: user.id});
+            const token = await generateToken({userId: user.id, role:role.name});
             // return token;
 
-            return "Password reset successfully";
+            return token;
     }
     
 

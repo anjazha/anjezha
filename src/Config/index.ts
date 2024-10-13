@@ -41,7 +41,8 @@ import dotenv from 'dotenv';
        EMAIL_PORT,
        EMAIL_USER,
        EMAIL_PASS,
-       CLOUDINARY_URL }  = process.env;
+       CLOUDINARY_URL,
+       BASE_URL_FRONT }  = process.env;
 
 
 //
