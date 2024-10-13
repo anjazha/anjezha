@@ -123,9 +123,9 @@ export class AuthService implements IAuthService {
 
             const user = await this.userRepository.findByEmail(email);
 
-            // if(!user){
-            //     throw new Error('User not found');
-            // }
+            if(!user){
+                throw new Error('User not found');
+            }
 
             // generate token
             const token =  generateToken({userId:Number(user?.id)});
