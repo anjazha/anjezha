@@ -48,10 +48,12 @@ export class App {
             'http://localhost:3000',
             'http://localhost:5000', 
             'http://localhost:5173',
-            'http://127.0.0.1:5173/'];
+            'http://127.0.0.1:5173/',
+            'http://anjezha.s3-website.eu-north-1.amazonaws.com',
+            'https://d3f2i7wv6rstlt.cloudfront.net/'];
 
             const options: CorsOptions = {
-                origin: '*',
+                origin: allowedOrigins,
                 methods: ['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'PATCH'],
                 credentials: true,
                 allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
