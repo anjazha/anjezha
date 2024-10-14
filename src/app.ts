@@ -50,7 +50,10 @@ export class App {
             'http://localhost:5173',
             'http://127.0.0.1:5173/',
             'http://anjezha.s3-website.eu-north-1.amazonaws.com',
-            'https://d3f2i7wv6rstlt.cloudfront.net/'];
+            'https://d3f2i7wv6rstlt.cloudfront.net/',
+            'https://www.anjez.tech',
+            'https://anjez.tech',
+        ];
 
             const options: CorsOptions = {
                 origin: allowedOrigins,
