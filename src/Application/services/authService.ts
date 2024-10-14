@@ -145,7 +145,7 @@ export class AuthService implements IAuthService {
             }
 
             // generate token
-            const token =  generateToken({userId:Number(user?.id)});
+            const token =  generateToken({userId:Number(user?.id)}, '15m');
 
             //   const passwordRecoveryCode = hashCode()
             // send email with password reset link
@@ -175,7 +175,7 @@ export class AuthService implements IAuthService {
 
         try {
             // verify token
-            decoded = await verifyToken(tokenRest);
+            decoded =  verifyToken(tokenRest);
           } catch (err) {
             throw new Error('Invalid or expired token');
           }
@@ -186,7 +186,11 @@ export class AuthService implements IAuthService {
 
 
             const userId = Number(decoded.userId);
+
+            console.log("userId", userId);
+
             const user = await this.userRepository.findById(userId);
+
             const role = await this.roleRepository.getRoleByUserId(userId);
             
             // check if user exists   // handle unit test 7
@@ -196,11 +200,12 @@ export class AuthService implements IAuthService {
             
             const hashedPassword = await hasPass(newPassword, 10);
             user.password = hashedPassword;
+            user.id=+userId;
             
-            await this.userRepository.update(Number(user.id), user);
+            await this.userRepository.update(Number(userId), user);
 
             // generate new token  to login
-            const token = await generateToken({userId: user.id, role:role.name});
+            const token =  generateToken({userId, role:role.name});
             // return token;
 
             return token;

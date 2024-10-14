@@ -109,13 +109,13 @@ export class AuthController {
             // get token from headers
             // const token = req.params.token;
 
-            console.log(token);
+            // console.log(token);
             
             
             // verfiy password
-            const newPassword = await this.authService.resetPassword(token, password);
+            const newToken = await this.authService.resetPassword(token, password);
             
-            res.status(200).json({ newPassword });
+            res.status(200).json({ newToken });
                 } catch(err : any){
                     next(new HTTP500Error("An error ocurred " + err.message))
                 }
