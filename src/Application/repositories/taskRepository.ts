@@ -5,95 +5,90 @@ import { safePromise } from "@/helpers/safePromise";
 import { Task } from "@/Domain/entities/Task";
 import { HTTP400Error, HTTP500Error } from "@/helpers/ApiError";
 import { faker } from "@faker-js/faker";
+import { ETaskStatus } from "../interfaces/enums/ETaskStatus";
 
 @injectable()
 export class TaskRepository implements ITaskRepository {
   constructor() {}
+
+  private async inserTask(db: any, task: Task) {
+    const query = `INSERT INTO tasks (user_id, title, description, date, budget, longitude, latitude, address, category_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`;
+    const values = [
+      task.userId,
+      task.title,
+      task.description,
+      task.date,
+      task.budget,
+      task.location?.longitude,
+      task.location?.latitude,
+      task.address,
+      task.category_id,
+    ];
+
+    const [error, data] = await safePromise(() => db.query(query, values));
+    if (error) throw new HTTP500Error(error.message);
+
+    return data.rows[0];
+  }
+
+  private async insertTaskStatus(db: any, taskId: number, status: string) {
+    const query = `INSERT INTO task_statuses (task_id, status) VALUES ($1, $2)`;
+    const values = [taskId, status];
+
+    const [error, data] = await safePromise(() => db.query(query, values));
+    if (error) throw new HTTP500Error(error.message);
+  }
+
+  private async insertTaskSkills(db: any, taskId: number, skills: string[]) {
+    for (let skill of skills) {
+      let query = `INSERT INTO task_skills (task_id, name) VALUES ($1, $2)`;
+      let values = [taskId, skill];
+      await db.query(query, values);
+    }
+  }
+  private async insertTaskSchedule(db: any, taskId: number, schedule: any) {
+    const query = `INSERT INTO task_schedules (task_id, start_time, schedule_type, end_time) VALUES ($1, $2, $3, $4)`;
+    await db.query(query, [
+      taskId,
+      schedule?.start_time,
+      schedule?.schedule_type,
+      schedule?.end_time,
+    ]);
+  }
+
+  private async insertTaskAttachments(
+    db: any,
+    taskId: number,
+    attachments: any
+  ) {
+    for (let attachment of attachments) {
+      await db.query(
+        `INSERT INTO task_attachments (task_id, file_type, file_path, file_size) VALUES ($1, $2, $3, $4)`,
+        [
+          taskId,
+          attachment.file_type,
+          attachment.file_path,
+          attachment.file_size,
+        ]
+      );
+    }
+  }
+
   async createTask(task: Task): Promise<Task> {
-    // let query = `INSERT INTO tasks (user_id `;
-    // let placeholders = `($1`;
-    // const values = [userId];
-
-    // Object.keys(task).forEach((key, i) => {
-    //   query += `,${key}`;
-    //   placeholders += `,$${i + 2}`;
-    //   values.push(task[key]);
-    // });
-
-    // query += `) VALUES ${placeholders}) RETURNING *`;
-    // console.log(query)
     const client = await pgClient.connect();
     try {
       await client.query("BEGIN");
-      const insertTaskText = `
-      INSERT INTO tasks (user_id, title, description, date, budget, longitude, latitude, address, category_id)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-      RETURNING *`;
-      const { rows } = await client.query(insertTaskText, [
-        task.userId,
-        task.title,
-        task.description,
-        task.date,
-        task.budget,
-        task.location?.longitude,
-        task.location?.latitude,
-        task.address,
-        task.category_id,
-      ]);
-      //   console.log(rows);
-      const taskId = rows[0].id;
 
-      console.log(taskId);
-      // set task status to its default value // pending
-      await client.query(
-        "INSERT INTO task_statuses (task_id, status) VALUES ($1, $2)",
-        [taskId, "pending"]
-      );
+      const insertedTask = await this.inserTask(client, task);
+      const taskId = insertedTask.id;
+      await this.insertTaskStatus(client, taskId, ETaskStatus.PENDING);
+      await this.insertTaskSkills(client, taskId, task.skills!);
+      await this.insertTaskSchedule(client, taskId, task.schedule);
+      if (task.attachments)
+        await this.insertTaskAttachments(client, taskId, task.attachments);
 
-      // insert task skills
-      for (let skill of task.skills!) {
-        let query = `INSERT INTO task_skills (task_id, name) VALUES ($1, $2)`;
-        let values = [taskId, skill];
-        await client.query(query, values);
-      }
-
-      // Insert into task_schedules table
-      await client.query(
-        `
-    INSERT INTO task_schedules (task_id, start_time, schedule_type, end_time)
-    VALUES ($1, $2, $3, $4)`,
-        [
-          taskId,
-          task.schedule?.start_time,
-          task.schedule?.schedule_type,
-          task.schedule?.end_time,
-        ]
-      );
-      task.schedule;
-      if (task.attachments) {
-        task.attachments.forEach(
-          async (attachment: {
-            file_type: string;
-            file_path: string;
-            file_size: number;
-          }) => {
-            await client.query(
-              `
-        INSERT INTO task_attachments (task_id, file_type, file_path, file_size)
-        VALUES ($1, $2, $3, $4)`,
-              [
-                taskId,
-                attachment.file_type,
-                attachment.file_path,
-                attachment.file_size,
-              ]
-            );
-          }
-        );
-      }
       await client.query("COMMIT");
-      //   console.log(rows[0].id);
-      return rows[0];
+      return insertedTask;
     } catch (e: any) {
       await client.query("ROLLBACK");
       //   console.error(e);
@@ -353,6 +348,10 @@ GROUP BY
         t.address,
         tc.category AS category,
         ARRAY_AGG(DISTINCT ts.name) AS skills,  
+        COALESCE(
+            ARRAY_AGG(DISTINCT jsonb_build_object('url', ta.file_path, 'size', ta.file_size, 'type', ta.file_type)),
+            NULL
+        ) AS attachments, 
         s.status,
         sch.schedule_type,
         sch.start_time,
@@ -373,6 +372,8 @@ GROUP BY
         task_statuses s ON t.id = s.task_id
     LEFT JOIN 
         task_schedules sch ON t.id = sch.task_id 
+    LEFT JOIN 
+        task_attachments ta ON t.id = ta.task_id
     WHERE 
         ($1 = '' OR t.title || ' ' || t.description @@ to_tsquery($1 || ':*'))
 `;
@@ -415,7 +416,7 @@ GROUP BY
     }
 
     searchQ += ` ORDER BY ${
-      sortBy === "relevance" ? " rank DESC" : `t.${sortBy} DESC`
+      sortBy === "relevance" ? " rank DESC" : `t.${sortBy=='newest'?'created_at':sortBy} DESC`
     }`;
     searchQ += ` OFFSET ${filters.limit * (filters.page - 1)} LIMIT ${
       filters.limit
@@ -482,7 +483,7 @@ ORDER BY sk.skills_count DESC, d.distance ASC NULLS LAST;`;
         "an error occured while fetching tasker feed " + error.message
       );
 
-      console.log(data.rows)
+    console.log(data.rows);
     return data.rows;
   }
 }

@@ -22,7 +22,7 @@ const taskController = container.get<TaskController>(INTERFACE_TYPE.TaskControll
 const router = Router();
 
 router.route('/tasks')
-    .post(isAuth ,filesUpload("attachments", "tasks"), createTaskValidations,taskController.createTask.bind(taskController))
+    .post(isAuth , allowTo("user", "tasker"),filesUpload("attachments", "tasks"), createTaskValidations,taskController.createTask.bind(taskController))
     .get(taskController.getAllTasks.bind(taskController))
 
 router.route('/tasks/:taskId')
