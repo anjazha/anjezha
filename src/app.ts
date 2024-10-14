@@ -51,7 +51,7 @@ export class App {
             'http://127.0.0.1:5173/'];
 
             const options: CorsOptions = {
-                origin: allowedOrigins,
+                origin: '*',
                 methods: ['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'PATCH'],
                 credentials: true,
                 allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
@@ -115,6 +115,7 @@ this.app.use('*', (req:Request, res:Response, next:NextFunction) => {
  }
 
 
+ 
  public listen() : void {
 
     this.server.listen(this.port, ()=>{
