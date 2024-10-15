@@ -82,6 +82,15 @@ export const INTERFACE_TYPE = {
 
     OnlineUsersService: Symbol.for("OnlineUsersService"),
 
+    //conversation
+    ConversationRepository: Symbol.for("ConversationRepository"),
+    ConversationService: Symbol.for("ConversationService"),
+    ConversationController: Symbol.for("ConversationController"),
+
+    // message 
+    MessageRepository:Symbol.for("MessageRepository"),
+    MessageService: Symbol.for("MessageService"),
+    MessageController:Symbol.for("MessageController"),
     // review symbol
     ReviewRepository: Symbol.for("ReviewRepository"),
     ReviewService: Symbol.for("ReviewService"),

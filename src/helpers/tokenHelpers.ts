@@ -8,6 +8,9 @@ export const generateToken = (payload:any, expire='1h')=> {
   });
 };
 
+// export const verifyToken =  (token: string) => {
+//   return  jwt.verify(token, String(JWT_SECRET));
+// }
 
 export const verifyToken = (token: string) => {
   return jwt.verify(token, String(JWT_SECRET));

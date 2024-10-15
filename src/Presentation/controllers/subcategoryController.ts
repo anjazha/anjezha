@@ -4,7 +4,6 @@ import { Request, Response, NextFunction } from "express";
 import { ISubCategoryService } from "@/Application/interfaces/ISubCategoryService";
 import { INTERFACE_TYPE } from "@/helpers/containerConst";
 import { SubCategory } from "@/Domain/entities/SubCategory";
-import { console } from "inspector";
 
 @injectable()
 export  class SubCategoryController {
