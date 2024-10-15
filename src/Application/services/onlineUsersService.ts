@@ -10,9 +10,10 @@ class OnlineUsersService implements IOnlineUsersService{
   }
 
   public static getInstance(): OnlineUsersService {
-    if (!OnlineUsersService.instance) {
-      OnlineUsersService.instance = new OnlineUsersService();
-    }
+   
+    if(!OnlineUsersService.instance) 
+         OnlineUsersService.instance = new OnlineUsersService();
+
     return OnlineUsersService.instance;
   }
 

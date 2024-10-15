@@ -15,22 +15,26 @@ export class ConversationRepository implements IConversationRepository{
         this.client= pgClient;
     }
 
-    async createConversation(conversation:Conversation): Promise<string | undefined>{
+    async createConversation(conversation:Conversation): Promise<Conversation | undefined>{
 
-        const {userId, taskerId, conversationId} = conversation;
-        const query = `INSERT INTO conversations (user_id, tasker_id, id) VALUES ($1, $2, $3)`;
+        const {senderId, receiverId, conversationId} = conversation;
+        const query = `INSERT INTO conversations (sender_id, receiver_id) VALUES ($1, $2) RETURNING *`;
 
-        const values = [userId, taskerId, conversationId];
+        const values = [senderId, receiverId];
 
         // handle try catch 
         const [error, result ] = await safePromise( 
             () => this.client.query(query, values)
         );
 
+        if(result.rows.length === 0) throw new HTTP500Error("Error while creating conversation");
+
+        const {sender_id, receiver_id, update_at, id} = result.rows[0];
+// 
         if(error) 
             throw new HTTP500Error("Error while creating conversation" + error.message);
 
-         return "conversation created sucessfuly" ;
+         return new Conversation(sender_id, receiver_id, update_at, id);
     }
  
     async getConversationsByUserId(userId : number): Promise<Conversation[] | undefined>{
@@ -95,6 +99,45 @@ export class ConversationRepository implements IConversationRepository{
 
     }
 
+    async checkConversationExist (senderId:number, receiverId:number) : Promise<number> {
+        
+        const query = `
+                 SELECT id 
+                   FROM conversations 
+                   WHERE ( sender_id = $1 AND receiver_id = $2) 
+                   or  (sender_id = $2 And receiver_id = $1);
+
+        `
+
+        const values = [senderId, receiverId]
+
+        const [error, result] = await safePromise(()=> this.client.query(query, values));
+
+        // if (error) throw new HTTP500Error(error.messaage);
+
+        console.log(result)
+
+       return result.rows[0]?.id;
+
+
+    }
+
+    async updateConversation (conversationId:number): Promise<boolean>{
+
+        const query = `
+        update conversations set update_at = NOW()
+        where id = $1`
+        
+        const values = [conversationId]
+
+        const [error, result] = await safePromise( () => this.client.query(query, values));
+
+        // check 
+        if (error) throw new HTTP500Error(error.messaage);
+
+        return result.rows[0] == true;
+
+    }
     // async getConversationByTaskerId(taskerId : number): Promise<Conversation>{
     //     const query = `SELECT * FROM conversations WHERE tasker_id = $1`;
     //     const values = [taskerId];

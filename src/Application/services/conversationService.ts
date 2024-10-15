@@ -32,6 +32,10 @@ export class ConversationService implements IConversationService{
 
     }
 
+    // async updateConversation(conversation: Conversation): Promise<any|undefined> {
+
+     
+
     // async deleteConversationById(conversationId: number): Promise<any|undefined> {
     //     return await this.conversationRepository.deleteConversationById(conversationId);
     // }

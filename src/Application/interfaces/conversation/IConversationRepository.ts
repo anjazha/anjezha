@@ -3,7 +3,7 @@ import { Conversation } from "../../../Domain/entities/Conversation";
 
 
 export interface IConversationRepository{
-    createConversation(conversation : Conversation): Promise<string|undefined>;
+    createConversation(conversation : Conversation): Promise<Conversation|undefined>;
     getConversationsByUserId(userId : number): Promise<Conversation[]|undefined>
     getUnreadConversations(userId : number): Promise<Conversation[]|undefined>
     markAsRead(conversationIds : number[]): Promise<boolean|undefined>;

@@ -20,6 +20,10 @@ import { TaskerRepository } from "@/Application/repositories/taskerRepository";
 import { UserService } from "@/Application/services/userService";
 import { UserRepository } from "@/Application/repositories/userRepository";
 import { error } from "console";
+import { NotificationService } from "@/Application/services/notificationService";
+import { ENOTIFICATION_TYPES } from "@/Application/interfaces/enums/ENotificationTypes";
+import { NotificationRepository } from "@/Application/repositories/notificationRepository";
+import { Notification } from "@/Domain/entities/Notification";
 
 
 interface CustomSocket extends DefaultSocket {
@@ -33,6 +37,14 @@ interface CustomSocket extends DefaultSocket {
 
 const onlineUsers = OnlineUsersService.getInstance();
 
+const notificationService = new NotificationService(
+  new NotificationRepository(),
+  onlineUsers
+);
+
+const conversationRepository = new ConversationRepository();
+const messageRepository= new MessageRepository();
+
 export let  io : SocketServer | null = null;
 
 export const  setupSocket = (server : Server) : void =>{
@@ -40,7 +52,7 @@ export const  setupSocket = (server : Server) : void =>{
   io = new SocketServer(server, {
      cors: {
         origin:'*',
-        methods: ["GET", "POST"],
+        methods: ["GET", "POST", 'PUT', 'DELETE'],
         // Credential:true
       }
   });
@@ -92,7 +104,10 @@ export const  setupSocket = (server : Server) : void =>{
   // connection to server side
   io.on('connection', (socket : CustomSocket) => {
     
-    const userId = socket.data.userId || null;
+    // const userId = socket.data.userId || null;
+    const userId = socket.data.user.id;
+    socket.data.userId = userId;
+
 
     console.log('A user connected', userId);
     // session id or chat room id 
@@ -102,22 +117,24 @@ export const  setupSocket = (server : Server) : void =>{
 
     // message socket 
    
-
+    onlineUsers.addUser(String(userId), socket);
     // lsiten from client event called `add_user`
-    socket?.on('add_user', (userId : string) => {
-      console.log(userId);
-      // set userId in socket 
-        socket.data.userId = userId;
-        // store userid in onlines users 
-        onlineUsers.addUser(userId, socket);
+    // socket?.on('add_user', (userId : string) => {
+    //   console.log(userId);
+    //   // set userId in socket 
+    //     socket.data.userId = userId;
+    //     // store userid in onlines users 
+    //     onlineUsers.addUser(userId, socket);
 
-        // console.log(`online users ${[...onlineUsers.getAllUsers()]}`)
-    })
+    //     // console.log(`online users ${[...onlineUsers.getAllUsers()]}`)
+    // })
     // get online uses 
-    socket.emit('online_users', [...onlineUsers.getAllUsers()])
+    socket.emit('online-users', [...onlineUsers.getAllUsers()])
 
     // console.log(`online users ${[...onlineUsers.getAllUsers()]}`)
 
+    // create conversation to (sender, receiver )
+     if (io) startConversation(io, socket);
     // handle message socket
     if(io) messageSocket(io, socket);
 
@@ -136,6 +153,49 @@ export const  setupSocket = (server : Server) : void =>{
 }
 
 
+// start conversation by conversation id 
+
+const startConversation =  (io:SocketServer, socket:DefaultSocket) => {
+  io.on('start-conversation', async (senderId:number, receiverId:number) =>{
+    // check conversation exist or not 
+     let conversationId;
+     const [error, result] = await safePromise(()=> conversationRepository.checkConversationExist(senderId, receiverId));
+    //  let conversationId;
+
+    // if(error){
+    //     socket.emit('error', error.message);
+    // }
+
+    // 1- if exist return id else create new conversation and return id to cleint also
+    if(result)  conversationId = result.id;
+
+    else {
+
+        const [errConversation, resConversation] = await safePromise (
+               () => conversationRepository.createConversation(
+                       new Conversation(+senderId, +receiverId) ));
+
+            if(errConversation) {
+              socket.emit('error', 'Could not create or fetch conversation.');
+              console.log(errConversation.message);
+            }
+
+            conversationId = resConversation.conversationId;
+    }
+
+    socket.emit('conversation-started', conversationId);
+
+    socket.on('join-conversation', (conversationId :string)=>{
+      console.log('join-conversation', conversationId);
+      socket.join(String(conversationId));
+    });
+
+    // socket.join(conversationId);
+
+  })
+}
+
+
 const messageSocket = (io:SocketServer, socket:DefaultSocket)=>{
 
      try{
@@ -145,43 +205,13 @@ const messageSocket = (io:SocketServer, socket:DefaultSocket)=>{
 
         
         // listen to client event called privateRoom
-        socket.on('private_room', async (takerId:number) =>{
-
-          const roomId = generateRoomId(userId, takerId);
-          // create room by user id 
-
-          socket.data.recipientId= Number(takerId);
-          socket.data.roomId = roomId;
-          // check if user is in room or not
-          // if user is in room join user to room
-          // if user is not in room join user to room
-          socket.join(roomId);
-
-          // store conversation in db
-          const conversationService = new ConversationService(new ConversationRepository());
-
-          // used instead try... catch
-          const [error, result] = await safePromise(()=> {
-            return conversationService.createConversation(new Conversation(userId, takerId, new Date(), Math.abs(+roomId)));
-          })
-
-          if(error){
-            console.log(error);
-          }
-
-          // console.log(`User joined conversation: ${user.userId}`);
-        // }
-
-          // create room by user id in db
-          console.log(`User joined conversation: ${userId}`);
-        })
-
 
         // handle sendMessage from client to server 
-        socket.on('private_message', async (data:any) =>{
+        socket.on('send-message', async (data:Message) =>{
       
             // extract message from data => {roomId, message, takerId}
-            const {roomId, message} = data;
+           const {senderId, message, conversationId} = data;
+
 
             // get receiver from conversation by roomId
             // await to save date in db
@@ -189,82 +219,77 @@ const messageSocket = (io:SocketServer, socket:DefaultSocket)=>{
             enum messageType {
               SENT="SENT",
             } 
-              const newMessage = new Message(userId, +roomId, message, MessageStatus.SENT , new Date());
+              const newMessage = new Message(senderId, conversationId, message, MessageStatus.SENT , new Date());
 
               // awai to save it message in db
+              const [error, result] = await safePromise(() => {
+                return messageRepository.createMessage(newMessage);
+              })
+  
+              if(error){
+                console.log(error.messaage);
+                //  throw new HTTP500Error('something went wrong!'+ error.messaage);
+                socket.emit('error', 'Could not send message.');
+
+              }
             // specifiy to one room called userId and sned it messsege 
-            io.to(roomId).emit('receive_message', {userId, message, timestamp: new Date()});
+            io.to(String(conversationId)).emit('receive-message', newMessage);
+
+            // update conversaation 
+            await conversationRepository.updateConversation(+conversationId);
+
+             await safePromise(() => notifNewMessage(io, socket));
             // send notification to user
-             notifNewMessage(io, socket);
-
-            const messageService= new MessageService(new MessageRepository());
-
-            // save message in db
-            const [error, result] = await safePromise(() => {
-              return messageService.createMessage(newMessage);
-            })
-
-            if(error){
-              console.log(error);
-            }
+            //  notifNewMessage(io, socket);
             
-        
-
-
         })
 
-
-     } catch(err:any){
-
+      } catch(err:any){
+        console.log('there`s error!'+ err.message);
+        socket.emit('error', `${err.message}`);
      }
 
 }
 
 
-const notifNewMessage= async (io:SocketServer, socket:DefaultSocket) => {
+const notifNewMessage= async (io:SocketServer, socket:DefaultSocket, {
+  message,
+  recipientId,
+  conversationId,
+  role
+}:any) => {
 
   const userId = socket.data.userId || null;
 
-  const message = socket.data.message || null;
-  const recipientId =  socket.data.recipientId || null;
-  const roomId = socket.data.roomId || null;
-  const role = socket.data.user.role || null;
+  // const message = socket.data.message || null;
+  // const recipientId =  socket.data.recipientId || null;
+  // const roomId = socket.data.roomId || null;
+  // const role = socket.data.user.role || null;
   // check if user is online or not 
-  const receiverSocket = onlineUsers.getUserSocket(recipientId);
-  if(receiverSocket){
+  const recipientSocket = onlineUsers.getUserSocket(recipientId);
+  if(recipientSocket){
     // send notification to user
-    io.to(String(receiverSocket.id)).emit('notify_new_message',(socket.data.messaage))
+    io.to(String(recipientSocket.id)).emit('notfiy-new-message',(message));
   }  else {
-    // send notification to user
-    // const conversationService = new ConversationService(new ConversationRepository());
-    // const conversation = conversationService.getConversationById(+roomId);
-    let recipientEmail = '';
-    const taskerService = new TaskerService(new TaskerRepository());
-    const userService = new UserService(new UserRepository());
 
+      // type NotificationType 
+       notificationService.sendNotification(new Notification(recipientId, message, ENOTIFICATION_TYPES.DEFAULT, false));
+    
+       const recipientEmail = 'tahashabaan48@gmail.com' 
+   
+       
+       // send email to user if offline
+      //  sendMail(recipientEmail, message, '');
 
-    if(role === 'tasker'){ // role user 
-      const [error, result] = await safePromise(() => userService.findById(userId));
-      // send email to user if offline
-      recipientEmail = result.email;
-    } else {
-
-      const [error, result] = await safePromise(() => taskerService.getTaskerById(+recipientId));
-      // send email to user if offline
-      const [errorUser, resultUser] = await safePromise(() => userService.findById(Number(result.userId)));
-      recipientEmail = resultUser.email;
-        // Function to get user email
     }
 
-    
-    // send email to user if offline
-    sendMail(recipientEmail, message, '');
   }
 
   // if user is online send notification to user
-  // if user is offline save notification in db', push in web or send to email
+  // if user is offline save notification in db', 
+  // push in web or send to email
   
-  }
+  
 
   
 export const getSocket = () => {
