@@ -84,15 +84,15 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async findById(id: number): Promise<User> {
+  async findById(userId: number): Promise<User> {
     try{// await connectDB();
         const { rows } = await this.client.query("SELECT * FROM users WHERE id = $1", [
-          id,
+          userId,
         ]);
     // await disconnectDB();
-         const {name, email, password, phone_number, profile_picture } = rows[0]
+         const {id, name, email, password, phone_number, profile_picture } = rows[0]
 
-        return  new User(name, email, password, phone_number, profile_picture);
+        return  new User(name, email, password, phone_number, profile_picture, id);
       }  catch(err:any){
       throw new Error('An error occurred' + err);
       }

@@ -64,6 +64,32 @@ export class ConversationRepository implements IConversationRepository{
       
         return conversations;
     }
+    
+    // async getConversationBySenderAndReceiverIds(senderId : number, receiverId: number): Promise<Conversation| null>{
+
+    //     const query = `SELECT * FROM conversations
+    //                    WHERE sender_id IN ($1, $2) AND receiver_id IN ($1, $2) `;
+
+    //     const values = [senderId, receiverId];
+
+    //     const [error, result ] = await safePromise( ()=> this.client.query(query, values));
+
+    //     if(error) 
+    //         throw new HTTP500Error("Error while fetching conversations" + error.message);
+        
+   
+
+    //     if(result.rows.length === 0) return null;
+
+    //     let newConversation = new Conversation(
+    //         result.rows[0].sender_id, 
+    //         result.rows[0].receiver_id, 
+    //         result.rows[0].update_at, 
+    //         result.rows[0].id
+    //     ); 
+
+    //     return newConversation;
+    // }
 
     async getUnreadConversations(userId : number): Promise<Conversation[]> {
 

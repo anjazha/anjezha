@@ -16,7 +16,9 @@ export class ConversationController{
 
     public async createConversation(req: RequestWithUserId, res: Response, next:NextFunction){
         // const {userId} = req.params;
-        const {taskerId, userId} = req.body;
+        // const {taskerId, userId} = req.body;
+        const {receiverId} = req.body;
+        const senderId = req.userId;
         // combine user & tasker id to get conversation id 
         
         // const conversationId = (getRoomId(String(userId), String(taskerId)));
@@ -24,7 +26,7 @@ export class ConversationController{
         // console.log(taskerId, userId, (conversationId));
         // user safepromise instead of try .. catch
         const [error, result] = await safePromise(()=> {
-            this.conversationService.createConversation(new Conversation(+userId, +taskerId,new Date()))
+            this.conversationService.createConversation(new Conversation(Number(senderId), Number(receiverId),new Date()))
         })
 
         // return error if exist 
