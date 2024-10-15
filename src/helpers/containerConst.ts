@@ -91,6 +91,12 @@ export const INTERFACE_TYPE = {
     MessageRepository:Symbol.for("MessageRepository"),
     MessageService: Symbol.for("MessageService"),
     MessageController:Symbol.for("MessageController"),
+    // review symbol
+    ReviewRepository: Symbol.for("ReviewRepository"),
+    ReviewService: Symbol.for("ReviewService"),
+    ReviewController: Symbol.for("ReviewController"),
+    ReviewRoute: Symbol.for("ReviewRoute"),
+    
     
     App: Symbol.for("App"),
     User: Symbol.for("User"),

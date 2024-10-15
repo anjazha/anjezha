@@ -35,18 +35,15 @@ let transporter = nodeMiiler.createTransport({
 
 
 
-export const sendMail = async (to: string, subject: string, html: string) => {
+export const sendMail = async (mail:any) => {
     // console.log(EMAIL_USER, EMAIL_PASS, EMAIL_HOST);
 
 
     try {
         const mailOptions = {
             from: EMAIL_USER,
-            to:to,
-            subject: subject,
-            html: html
-        };
-
+            ...mail
+        }
         const info = await transporter.sendMail(mailOptions);
 
         // console.log(`Message sent: ${info.messageId}`);

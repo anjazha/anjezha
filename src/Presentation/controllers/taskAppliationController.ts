@@ -15,13 +15,13 @@ export class TaskApplicationController {
   ) {}
 
   async apply(req: Request, res: Response, next: NextFunction): Promise<any> {
-    const { taskId, taskerId, content } = req.body;
-    const application = new TaskApplication(+taskId, +taskerId, content);
+    const { taskId, taskerId, content, price } = req.body;
+    const application = new TaskApplication(+taskId, +taskerId, content, price || 0);
 
     const [error, result] = await safePromise(() =>
       this.taskApplicationService.apply(application)
     );
-    if (error) return next(new HTTP500Error(error));
+    if (error) return next(error);
 
     res.json({
       success: true,

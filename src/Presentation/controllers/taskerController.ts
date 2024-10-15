@@ -6,8 +6,7 @@ import { inject, injectable } from "inversify";
 
 import { Request, Response, NextFunction } from "express";
 import RequestWithUserId from "@/Application/interfaces/Request";
-import { IRoleService } from "@/Application/interfaces/User/IRoleService";
-import { Role } from "@/Domain/entities/role";
+import { HTTP500Error } from "@/helpers/ApiError";
 
 
 @injectable()
@@ -19,32 +18,42 @@ export class TaskerController {
 
     public async addTasker(req: RequestWithUserId, res: Response, next:NextFunction) {
         try {
-          
-            const userId = Number(req.userId);
             const taskerBody = req.body;
-            taskerBody.userId = userId;
-            const tasker = new Tasker(taskerBody.userId, taskerBody.bio, taskerBody.pricing, Number(taskerBody.longitude), Number(taskerBody.latitude), taskerBody.categoryId, taskerBody.biding);
 
-            const data = await this.taskerService.createTasker(tasker);
+            taskerBody.userId = req.userId;
 
-            const newTasker = await data.tasker;
+            const tasker = new Tasker(taskerBody.userId, taskerBody.bio, taskerBody.pricing, taskerBody.longitude, taskerBody.latitude, taskerBody.categoryId, taskerBody.biding);
 
-            //   console.log(newTasker);
+            const newTasker = await this.taskerService.createTasker(tasker);
 
-             req.role= await data.role;
-            //  console.log(data.role);
             res.status(201).json(newTasker);
-        } catch (error) {
+        } catch (error : any) {
              next(error);
         }
     }
 
-    public async getTasker(req: RequestWithUserId, res: Response, next:NextFunction) {
+    public async getTaskerById(req: RequestWithUserId, res: Response, next:NextFunction) {
+        try {
+            // const userId = Number(req.userId);
+            const id = Number(req.params.taskerId);
+
+            console.log(id);
+            
+            const tasker = await this.taskerService.getTaskerById(id);
+
+            res.status(200).json(tasker);
+        } catch (error : any) {
+            next(new HTTP500Error('An error occurred ' + error.message + error.stack));
+        }
+    }
+
+    public async getTaskerByUserId(req: RequestWithUserId, res: Response, next:NextFunction) {
         try {
             const id = Number(req.userId);
-            const tasker = await this.taskerService.getTaskerById(id);
+            console.log(id);
+            const tasker = await this.taskerService.getTaskerByUserId(id);
             res.status(200).json(tasker);
-        } catch (error) {
+        } catch (error : any) {
             next(error);
         }
     }
@@ -53,7 +62,7 @@ export class TaskerController {
         try {
             // const taskers = await this.taskerService.getAllTaskers();
             // res.status(200).json(taskers);
-        } catch (error) {
+        } catch (error : any) {
             next(error);
         }
     }
@@ -65,7 +74,7 @@ export class TaskerController {
             tasker.id = id;
             const updateTasker = await this.taskerService.updateTasker(tasker);
             res.status(200).json(updateTasker);
-        } catch (error) {
+        } catch (error : any) {
             next(error);
         }
     }
@@ -75,7 +84,7 @@ export class TaskerController {
             const id = Number(req.userId);
             await this.taskerService.deleteTasker(id);
             res.status(200).json({ message: "Tasker deleted successfully" });
-        } catch (error) {
+        } catch (error : any) {
             next(error);
         }
     }

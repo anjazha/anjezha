@@ -5,6 +5,7 @@ import { pgClient, connectDB, disconnectDB } from "@/Infrastructure/database";
 import { User } from "@/Domain/entities/User";
 import { IUserRepository } from "../interfaces/User/IUserRepository";
 import { HTTP500Error } from "@/helpers/ApiError";
+import { safePromise } from "@/helpers/safePromise";
 
 // repository for user
 
@@ -38,10 +39,19 @@ export class UserRepository implements IUserRepository {
       const { rows } = await this.client.query(query, values);
       // console.log(rows[0]);
       // await disconnectDB();
-      return new User(rows[0].name, rows[0].email, rows[0].password, rows[0].phone_number, rows[0].id, rows[0].profile_picture);
-    } catch(err:any){
-      throw new Error('An error occurred' + err.message + err.stack);
+      return new User(
+         rows[0].name,
+         rows[0].email,
+         rows[0].password,
+         rows[0].phone_number,
+         rows[0].profile_picture,
+         rows[0].id,);
+
+    } catch(err:any) {
+
+         throw new Error('An error occurred' + err.message + err.stack);
     }
+    
   }
 
   async findByEmail(email: string): Promise<User | null> {
@@ -51,7 +61,24 @@ export class UserRepository implements IUserRepository {
       [email]
     );
     // await disconnectDB();
-       return rows[0] || null;
+    // console.log(rows[0]);
+    //  const {name ,email: Email, password, phone_number, profile_picture, id } = rows[0]
+    //  if (rows.length === 0) {
+    //        throw new Error('User not found');
+    //   } 
+
+    if(rows.length === 0) return null;
+
+      return new User(
+        rows[0].name,
+        rows[0].email,
+        rows[0].password,
+        rows[0].phone_number,
+        rows[0].profile_picture,
+        rows[0].id
+    );
+    
+      //  return rows[0];
       } catch(err:any){
         throw new Error('An error occurred ' + err.message + err.stack);
     }
@@ -63,7 +90,9 @@ export class UserRepository implements IUserRepository {
           id,
         ]);
     // await disconnectDB();
-        return rows[0] || null;
+         const {name, email, password, phone_number, profile_picture } = rows[0]
+
+        return  new User(name, email, password, phone_number, profile_picture);
       }  catch(err:any){
       throw new Error('An error occurred' + err);
       }
@@ -200,18 +229,56 @@ async delete(id: number): Promise<string> {
         const { rows } = await this.client.query("SELECT * FROM users");
         // await disconnectDB();
         
-      
-        
-        return rows.map((user:any) =>{
+         const users = rows.map((user:any) =>{
            const {name, email, password, phone_number, profile_picture } = user;
-  
             return  new User(name, email, password, phone_number, profile_picture);
-         
-        }
-        )
+        })
+
+        return users;
+
     } catch(err:any){
       throw new Error('An error occurred' + err.message + err.stack);
     }
+}
+
+async createVerificationCode(email: string, code: string, expirationTime: Date, createAt:Date): Promise<any> {
+  
+    const query = `INSERT INTO email_confirmations (email, code, expiration_time, confirmed_at) VALUES ($1, $2, $3, $4)`;
+    const values = [email, code, expirationTime, createAt];
+    const [error,result] = await safePromise( ()=> this.client.query(query, values));
+ 
+    if(error) throw new Error('An error occurred' + error.message + error.stack);
+
+    return result;
+  
+}
+
+async getVerificationCode(email: string): Promise<any> {
+
+    const query = `SELECT * FROM email_confirmations WHERE email = $1`;
+
+    const values = [email];
+    const [error, result ]= await safePromise(() => this.client.query(query, values));
+
+    if(error) throw new HTTP500Error(error.message);
+
+    return result.rows[0];
+}
+
+async checkEmailConfirmation(email: string): Promise<boolean> {
+    const query = `
+          SELECT * FROM email_confirmations
+           WHERE email = $1 AND confirmed_at IS NOT NULL 
+           order by confirmed_at desc
+           LIMIT 1`;
+
+    const values = [email];
+    const [error, result] = await safePromise(() => this.client.query(query, values));
+
+    if(error) throw new HTTP500Error(error.message);
+
+    return result.rows.length > 0 
+            && new Date() < result.rows[0].expiration_time;
 }
   
 }

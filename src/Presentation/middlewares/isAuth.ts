@@ -8,7 +8,7 @@ import { JwtPayload } from "jsonwebtoken";
 //     userId?: string | Number;
 // }
 
-export const isAuth = (req: Request, res: Response, next: NextFunction) => {
+export const isAuth = (req: RequestWithUserId, res: Response, next: NextFunction) => {
   /*
      1- Check if user is authenticated
         2- Check if user is authorized
@@ -50,7 +50,7 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const allowTo = (...roles: string[]) => {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: RequestWithUserId, res: Response, next: NextFunction) => {
     console.log(req.userId, req.url, req.path, req.originalUrl);
     console.log("roles", roles);
     console.log("req.role", req.role);
@@ -67,8 +67,8 @@ export const allowTo = (...roles: string[]) => {
       console.log(true, "allow to access this route");
 
       return next();
-    } catch (error) {
-      next(error);
+    } catch (error : any) {
+      next(new HTTP500Error(error.message));
     }
   };
 };

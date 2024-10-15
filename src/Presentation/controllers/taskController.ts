@@ -80,6 +80,19 @@ export class TaskController {
     res.status(200).json(apiResponse(tasks));
   }
 
+  async getTasksByUserId(req: RequestWithUserId, res: Response, next: NextFunction) {
+    // 
+    const  userId= Number(req.userId);
+
+    const [error, tasks] = await safePromise(() =>
+      this.taskService.findTasksByUserId(userId!)
+    );
+    if (error) {
+      return next(new HTTP500Error(error.message));
+    }
+    res.status(200).json(apiResponse({ tasks }));
+  }
+
   async getTaskById(req: RequestWithUserId, res: Response, next: NextFunction) {
     const { taskId } = req.params;
     const [error, task] = await safePromise(() =>
@@ -171,4 +184,18 @@ export class TaskController {
   //   }
   //   res.status(200).json(apiResponse({ tasks }));
   // }
+
+
+  async taskerFeed(req:Request , res:Response, next:NextFunction): Promise<any> {
+    const  taskerId  = req.userId;
+    console.log(taskerId);
+    const [error, tasks] = await safePromise(() =>
+      this.taskService.taskerFeed(Number(taskerId))
+    );
+
+    if(error) {
+      return next(new HTTP500Error(error.message));
+    }
+    res.json(apiResponse({ tasks }));
+  }
 }

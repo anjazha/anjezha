@@ -70,34 +70,34 @@ export class CategoryRepository implements ICategoryRepository{
 
             rows.map((row:any) => {
                 // check if category is exist or not
-                if(row.category_id in categoriesMap){ 
+                if(row?.category_id in categoriesMap){ 
                     // check if subcategory is exist or not
-                    if(row.subcategory_id){
-                       categoriesMap[row.category_id].subcategories.push(
+                    if(row?.subcategory_id){
+                       categoriesMap[row?.category_id]?.subcategories.push(
                          new SubCategory(
-                            row.subcategory_name, 
-                            +row.category_id, 
-                            row.subcategory_image_url, 
-                            row.subcategory_description,
-                            +row.subcategory_id));
+                            row?.subcategory_name, 
+                            +row?.category_id, 
+                            row?.subcategory_image_url, 
+                            row?.subcategory_description,
+                            +row?.subcategory_id));
                     }
 
                  } else {
-                     categoriesMap[row.category_id] = 
+                     categoriesMap[row?.category_id] = 
                        new Category(
-                          row.category_name, 
-                          row.category_image_url, 
-                          row.category_description, 
-                          +row.category_id, []);
+                          row?.category_name, 
+                          row?.category_image_url, 
+                          row?.category_description, 
+                          +row?.category_id, []);
 
-                    if(row.subcategory_id){
-                        categoriesMap[row.category_id].subcategories.push(
+                    if(row?.subcategory_id){
+                        categoriesMap[row?.category_id]?.subcategories.push(
                               new SubCategory(
-                                row.subcategory_name, 
-                                +row.category_id, 
-                                row.subcategory_image_url, 
-                                row.subcategory_description,
-                                +row.subcategory_id
+                                row?.subcategory_name, 
+                                +row?.category_id, 
+                                row?.subcategory_image_url, 
+                                row?.subcategory_description,
+                                +row?.subcategory_id
                             ))
 
                     }
@@ -145,15 +145,15 @@ export class CategoryRepository implements ICategoryRepository{
         try{
 
             let query = 'UPDATE categories SET ';
-            const values=[];
+            const values: any[] =[];
             let index=1;
 
             // {category, imageUrl}
             for (let key in categoryData){
-                key = key =='imageUrl'?'image_url': key;
+                const dbkey = key =='imageUrl'?'image_url': key;
                 if(categoryData.hasOwnProperty(key) ){
                     //  if(categoryData[imageUrl]){}
-                    query += `${key} = $${index}, `; // imageUrl => 
+                    query += `${dbkey} = $${index}, `; // imageUrl => 
                     values.push((categoryData as any)[key]); // cateting type from category to any
                     index++;
                 }
