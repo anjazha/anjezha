@@ -39,19 +39,24 @@ export class ConversationRepository implements IConversationRepository{
  
     async getConversationsByUserId(userId : number): Promise<Conversation[] | undefined>{
 
-        const query = `SELECT * FROM conversations WHERE user_id = $1 ORDER BY created_at DESC`;
+        const query = `SELECT * FROM conversations
+                       WHERE sender_id = $1 or receiver_id = $1 
+                       ORDER BY update_at DESC`;
+
         const values = [userId];
 
         const [error, result ] = await safePromise( ()=> this.client.query(query, values));
 
         if(error) 
             throw new HTTP500Error("Error while fetching conversations" + error.message);
-         // mapping to entites       
-        const conversations = result.rows.map((conversation:any) => { 
+         // mapping to entites  
+         let conversations;     
+      if(result.rows)  
+           conversations = result.rows.map((conversation:any) => { 
             return new Conversation(
-                    conversation.user_id, 
-                    conversation.tasker_id, 
-                    conversation.created_at, 
+                    conversation.sender_id, 
+                    conversation.receiver_id, 
+                    conversation.update_at, 
                     conversation.id
                 );
         })    

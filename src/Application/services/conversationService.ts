@@ -14,7 +14,7 @@ export class ConversationService implements IConversationService{
     ){ }
 
 
-    async createConversation(conversation: Conversation): Promise<string|undefined> {
+    async createConversation(conversation: Conversation): Promise<Conversation|undefined> {
        return await this.conversationRepository.createConversation(conversation);
     }
 

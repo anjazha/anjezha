@@ -12,7 +12,7 @@ export class Message{
         public message: string, 
         public messageStatus?:MessageStatus,
         public changeStatusAt?:Date,
-        public reciverId?:number,
+        // public reciverId?:number,
         public sentAt?: Date,
         public id?: number,
         public attechments?:{file_type:string,file_path:string,file_size:number}[],

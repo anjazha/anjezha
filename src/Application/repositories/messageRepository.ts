@@ -48,7 +48,7 @@ export class MessageRepository implements IMessageRepository{
                 message.message, 
                 message.message_status, 
                 message.change_status_at,
-                message.receiver_id, 
+                // message.receiver_id, 
                 message.sent_at, 
                 message.id, 
                 message.attachments)
@@ -95,7 +95,7 @@ export class MessageRepository implements IMessageRepository{
                 message.message, 
                 message.message_status, 
                 message.change_status_at,
-                message.receiver_id, 
+                // message.receiver_id, 
                 message.sent_at, 
                 message.id, 
                 message.attachments)
@@ -148,12 +148,29 @@ export class MessageRepository implements IMessageRepository{
             return result.rows;
         }
 
-        async getMessagesByconversationId(conversationId : number): Promise<Message[]>{
-            const query = `SELECT * FROM messages WHERE conversation_id = $1 ORDER BY created_at DESC`;
-            const values = [conversationId];
+        async getMessagesByconversationId(conversationId : number, limit:number, skip:number): Promise<Message[]>{
+            
+            const query = 
+                `SELECT * FROM messages 
+                 WHERE conversation_id = $1 
+                 ORDER BY sent_at DESC
+                 limit $2 offset $3`;
+
+            const values = [conversationId, limit, skip];
+
             const [error, result ] = await safePromise(()=>this.client.query(query, values));
+
             if(error) throw new HTTP500Error("Error while fetching messages" + error.message);
-            return result.rows;
+
+            return result.rows.map((message:any) => 
+                new Message(
+                             message.sender_id,
+                             message.conversation_id,
+                             message.message,
+                             message.message_status,
+                             message.change_status_at,
+                             message.sent_at,
+                             message.id));
         }
 
         async getMessagesByStatus(messageStatus : string): Promise<Message[]>{

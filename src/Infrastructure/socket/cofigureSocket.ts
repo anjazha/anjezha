@@ -71,7 +71,7 @@ export const  setupSocket = (server : Server) : void =>{
     
     if (!token) {
       console.log('token error!')
-      return (new HTTP500Error('Authentication error'));
+      return next(new HTTP500Error('Authentication error'));
     }
     
     const decoded =  verifyToken(token);
@@ -81,7 +81,7 @@ export const  setupSocket = (server : Server) : void =>{
     
     if (!decoded) {
        console.log('decoded error!')
-       return (new HTTP500Error('Authentication error'));
+       return next(new HTTP500Error('Authentication error'));
     }
     
     // store user data in socket
@@ -94,8 +94,7 @@ export const  setupSocket = (server : Server) : void =>{
     } catch(err:any) {
        console.log('there`s error!'+ err.message);
 
-
-        return new HTTP500Error(`${err.message}`);
+        next(err);
   }
     // verfiy token is valid or not
 
@@ -105,19 +104,22 @@ export const  setupSocket = (server : Server) : void =>{
   io.on('connection', (socket : CustomSocket) => {
     
     // const userId = socket.data.userId || null;
-    const userId = socket.data.user.id;
+    const {userId} = socket.data.user;
     socket.data.userId = userId;
 
 
     console.log('A user connected', userId);
     // session id or chat room id 
-    console.log(socket.id);
+    // console.log(socket.id);
     // console.log(socket.handshake);
-    console.log(socket.rooms);
+    // console.log(socket.rooms);
+    socket.emit('message', JSON.stringify({ userId, message: 'Hello, world!' }));
+
 
     // message socket 
    
-    onlineUsers.addUser(String(userId), socket);
+    // onlineUsers.addUser(String(userId), socket);
+
     // lsiten from client event called `add_user`
     // socket?.on('add_user', (userId : string) => {
     //   console.log(userId);
@@ -134,9 +136,9 @@ export const  setupSocket = (server : Server) : void =>{
     // console.log(`online users ${[...onlineUsers.getAllUsers()]}`)
 
     // create conversation to (sender, receiver )
-     if (io) startConversation(io, socket);
+    if (io) startConversation(io, socket);
     // handle message socket
-    if(io) messageSocket(io, socket);
+     if(io) messageSocket(io, socket);
 
     // handle notification socket when send message
 
@@ -154,7 +156,9 @@ export const  setupSocket = (server : Server) : void =>{
 
 
 // start conversation by conversation id 
-
+// check conversation exist or not 
+// if conversation exist return conversationId 
+// esle create new conversation and return id 
 const startConversation =  (io:SocketServer, socket:DefaultSocket) => {
   io.on('start-conversation', async (senderId:number, receiverId:number) =>{
     // check conversation exist or not 
@@ -170,7 +174,7 @@ const startConversation =  (io:SocketServer, socket:DefaultSocket) => {
     if(result)  conversationId = result.id;
 
     else {
-
+      
         const [errConversation, resConversation] = await safePromise (
                () => conversationRepository.createConversation(
                        new Conversation(+senderId, +receiverId) ));
@@ -181,7 +185,10 @@ const startConversation =  (io:SocketServer, socket:DefaultSocket) => {
             }
 
             conversationId = resConversation.conversationId;
+          
     }
+
+    // console.log(conversationId);
 
     socket.emit('conversation-started', conversationId);
 
@@ -207,10 +214,10 @@ const messageSocket = (io:SocketServer, socket:DefaultSocket)=>{
         // listen to client event called privateRoom
 
         // handle sendMessage from client to server 
-        socket.on('send-message', async (data:Message) =>{
+        socket.on('send-message', async (data:any) =>{
       
             // extract message from data => {roomId, message, takerId}
-           const {senderId, message, conversationId} = data;
+           const {senderId, message, conversationId, receiverId} = data;
 
 
             // get receiver from conversation by roomId
@@ -233,20 +240,23 @@ const messageSocket = (io:SocketServer, socket:DefaultSocket)=>{
 
               }
             // specifiy to one room called userId and sned it messsege 
-            io.to(String(conversationId)).emit('receive-message', newMessage);
+            io.to(String(conversationId)).emit('receive-message', JSON.stringify(newMessage));
 
             // update conversaation 
             await conversationRepository.updateConversation(+conversationId);
 
-             await safePromise(() => notifNewMessage(io, socket));
             // send notification to user
+            await safePromise(() => notifNewMessage(io, socket, {message, receiverId, conversationId}));
             //  notifNewMessage(io, socket);
-            
+
         })
+
+        // event on read message 
+
 
       } catch(err:any){
         console.log('there`s error!'+ err.message);
-        socket.emit('error', `${err.message}`);
+        socket.emit('error', JSON.stringify(`${err.message}`));
      }
 
 }
@@ -256,7 +266,7 @@ const notifNewMessage= async (io:SocketServer, socket:DefaultSocket, {
   message,
   recipientId,
   conversationId,
-  role
+  // role
 }:any) => {
 
   const userId = socket.data.userId || null;
@@ -270,14 +280,13 @@ const notifNewMessage= async (io:SocketServer, socket:DefaultSocket, {
   if(recipientSocket){
     // send notification to user
     io.to(String(recipientSocket.id)).emit('notfiy-new-message',(message));
-  }  else {
 
+  }  else {
       // type NotificationType 
        notificationService.sendNotification(new Notification(recipientId, message, ENOTIFICATION_TYPES.DEFAULT, false));
-    
-       const recipientEmail = 'tahashabaan48@gmail.com' 
+      //  const recipientEmail = 'tahashabaan48@gmail.com' 
    
-       
+
        // send email to user if offline
       //  sendMail(recipientEmail, message, '');
 

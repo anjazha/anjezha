@@ -12,7 +12,7 @@ export interface IMessageRepository{
     deleteMessage(messageId : number): Promise<string>;
     getMessagesBySenderId(senderId : number): Promise<Message[]>
     getMessagesByReceiverId(receiverId : number): Promise<Message[]>
-    getMessagesByconversationId(conversationId : number): Promise<Message[]>
+    getMessagesByconversationId(conversationId : number, limit:number, skip:number): Promise<Message[]>
     getMessagesByStatus(messageStatus : string): Promise<Message[]>
     getMessagesByDate(date : Date): Promise<Message[]>
     // getMessagesByDateRange(startDate : Date,endDate : Date): Promise<Message[]>
