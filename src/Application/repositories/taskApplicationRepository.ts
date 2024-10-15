@@ -40,6 +40,7 @@ export class TaskApplicationRepository implements ITaskApplicationRepository {
   ap.content, 
   ap.price,
   json_build_object(
+    'user_id',users.id,
     'id', ap.tasker_id,
     'name', users.name,
     'profile_picture', users.profile_picture

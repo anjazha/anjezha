@@ -9,7 +9,9 @@ import { User } from "@/Domain/entities/User";
 @injectable()
 export class ProfileService implements IProfileService {
 
-    constructor(@inject(INTERFACE_TYPE.UserRepository) private userRepository:IUserRepository){}
+    constructor(
+        @inject(INTERFACE_TYPE.UserRepository) private userRepository:IUserRepository
+    ){}
 
 
     async getProfile(userID:number) {

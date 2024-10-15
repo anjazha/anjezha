@@ -14,6 +14,8 @@ import {
   taskAssignmentRouter,
   taskApplicationRouter,
   notificationRouter,
+  conversationRouter,
+  messageRouter,
   reviewRouter,
 } from "./Presentation/routes";
 
@@ -31,6 +33,8 @@ const app = new App([
   taskAssignmentRouter,
   taskApplicationRouter,
   notificationRouter,
+  conversationRouter,
+  messageRouter,
   reviewRouter
 ]);
 

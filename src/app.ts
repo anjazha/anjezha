@@ -16,12 +16,13 @@ import { isAuth } from "./Presentation/middlewares/isAuth";
 
 
 export class App {
-    public port : number ;
-    public app : Application;
-    public server : Server;
-    constructor(public readonly routes: Router[]){
-        this.app = express()
-        this.server = createServer(this.app)
+    private port : number ;
+    private app : Application;
+    private server: Server;
+    constructor(public readonly routes: any[]){
+        this.app = express();
+        this.server= createServer(this.app);
+       // console.log(this.app);
         this.port = Number(PORT) || 5000;
         this.initializeDbConnection()
         this.initialzeMiddlewares()
@@ -101,7 +102,9 @@ this.app.use('*', (req:Request, res:Response, next:NextFunction) => {
  }
 
  private initializeSocket() : void {
+    console.log('intial socket')
     setupSocket(this.server)
+    
     // io?.use((socket, next) => {
     //     const req = socket.request as express.Request;
     //     const userId = req.userId;
@@ -119,19 +122,27 @@ this.app.use('*', (req:Request, res:Response, next:NextFunction) => {
     this.app.use('/api-docs',swaggerUi.serve,  swaggerUi.setup(swaggerSpec));
  }
 
+  public getExpressApp(): Application {
+    return this.app;
+  }
+
+  public getServer(){
+    return this.server;
+  }
 
  
  public listen() : void {
+     this.server.listen(this.port, () => {
+        console.log("app is running on port " + this.port);
+     })
 
-    this.server.listen(this.port, ()=>{
-        console.log(`Server is running on port ${this.port}`); 
-    })
-    
-    this.app.on('error', (error:any) => {
-        console.error('Error occurred:', error);
-        disconnectDB();
-    });
- }
+     this.app.on('error', (err) => {
+        console.error('server error', err);
+      }
+    );
+}
+
+
 
 }
 
