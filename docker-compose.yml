@@ -22,11 +22,12 @@ services:
       - ./certs:/etc/letsencrypt  # Volume for SSL certificateset's Encrypt certificates
     depends_on:
       - anjezha
-    certbot:
-       image: certbot/certbot
-       container_name: certbot
-       volumes:
-        - ./certs:/etc/letsencrypt  # Volume for SSL certificates
-        - ./certbot/conf:/etc/letsencrypt/config
-        - ./certbot/www:/var/www/certbot
-       entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'" 
+
+  certbot:
+     image: certbot/certbot
+     container_name: certbot
+     volumes:
+     - ./certs:/etc/letsencrypt  # Volume for SSL certificates
+     - ./certbot/conf:/etc/letsencrypt/config
+      - ./certbot/www:/var/www/certbot
+     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'" 
