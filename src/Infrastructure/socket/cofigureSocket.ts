@@ -121,7 +121,7 @@ export const  setupSocket = (server : Server) : void =>{
 
     // message socket 
    
-    // onlineUsers.addUser(String(userId), socket);
+    onlineUsers.addUser(String(userId), socket.id);
 
     // lsiten from client event called `add_user`
     // socket?.on('add_user', (userId : string) => {
@@ -282,10 +282,10 @@ const notifNewMessage= async (io:SocketServer, socket:DefaultSocket, {
   // const roomId = socket.data.roomId || null;
   // const role = socket.data.user.role || null;
   // check if user is online or not 
-  const recipientSocket = onlineUsers.getUserSocket(recipientId);
-  if(recipientSocket){
+  const recipientSocketId = onlineUsers.getUserSocket(recipientId);
+  if(recipientSocketId){
     // send notification to user
-    socket.to(String(recipientSocket.id)).emit('notfiy-new-message',(message));
+    socket.to(String(recipientSocketId)).emit('notfiy-new-message',(message));
 
   }  else {
       // type NotificationType 
