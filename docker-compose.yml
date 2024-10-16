@@ -1,34 +1,31 @@
-version: '3'
+# version: '3.8'  # Updated to a more recent version
 services:
-    anjezha:
-      container_name: anjezha-api-container
-      image: tahashabaan/anjezha
-      ports:
-        - "5000:5000"
+  anjezha:
+    image: tahashabaan/anjezha 
+    container_name: anjezha
+    restart: always
+    ports:
+      - "5000:5000"
+    # Uncomment the network if needed
+    # networks:
+    #   - anjezha-network
 
-    web:
-      image: nginx
-      container_name: anjezha-nginx-container
-      restart: always
-      volumes:
-        - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-        # - ./certbot/conf:/etc/letsencrypt
-        # - ./certbot/www:/var/www/certbot
-      ports:
-        - "80:80"
-        - "443:443"
-      depends_on:
-        - anjezha
-      environment:
-        - NGINX_HOST=foobar.com
-        - NGINX_PORT=80
-    
-    certbot:
-      image: certbot/certbot
-      container_name: certbot
-      volumes: 
-        - ./certbot/conf:/etc/letsencrypt
-        - ./certbot/www:/var/www/
-      depends_on:
-        - web
-      command: certonly --webroot -w /var/www/certbot --force-renewal --email tahashabaan48@gmail.com -d api.anjez.tech --agree-tos 
+  # nginx:
+  #   image: nginx:latest
+  #   container_name: nginx
+  #   restart: always
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf  # Nginx config
+  #     # - ./certs:/etc/letsencrypt  # Volume for SSL certificates
+  #     # - ./certbot/www:/var/www/certbot  # ACME challenge folder for Let's Encrypt
+  #   depends_on:
+  #     - anjezha
+
+ 
+# Uncomment if you need a network
+# networks:
+#   anjezha-network:
+#     driver: bridge
