@@ -1,4 +1,4 @@
-# version: '3'
+version: '3.8'  # Updated to a more recent version
 services:
   anjezha:
     image: tahashabaan/anjezha 
@@ -6,6 +6,7 @@ services:
     restart: always
     ports:
       - "5000:5000"
+    # Uncomment the network if needed
     # networks:
     #   - anjezha-network
 
@@ -18,16 +19,21 @@ services:
       - "443:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf  # Nginx config
-      # - ./certbot:/var/www/certbot  # ACME challenge folder for Let's Encrypt
-      - ./certs:/etc/letsencrypt  # Volume for SSL certificateset's Encrypt certificates
+      - ./certs:/etc/letsencrypt  # Volume for SSL certificates
+      - ./certbot/www:/var/www/certbot  # ACME challenge folder for Let's Encrypt
     depends_on:
       - anjezha
 
   certbot:
-     image: certbot/certbot
-     container_name: certbot
-     volumes:
-     - ./certs:/etc/letsencrypt  # Volume for SSL certificates
-     - ./certbot/conf:/etc/letsencrypt/config
-      - ./certbot/www:/var/www/certbot
-     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'" 
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./certs:/etc/letsencrypt  # Volume for SSL certificates
+      - ./certbot/conf:/etc/letsencrypt/config  # Configuration directory for certbot
+      - ./certbot/www:/var/www/certbot  # Webroot for the ACME challenge
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+# Uncomment if you need a network
+# networks:
+#   anjezha-network:
+#     driver: bridge
