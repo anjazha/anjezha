@@ -6,6 +6,7 @@ import { ConversationRepository } from '@/Application/repositories/conversationR
 import { IConversationService } from '@/Application/interfaces/conversation/IConversationService';
 import { ConversationService } from '@/Application/services/conversationService';
 import { ConversationController } from '../controllers/conversationController';
+import { isAuth } from '../middlewares/isAuth';
 
 
 const conversationRouter = Router();
@@ -21,7 +22,7 @@ container.bind<ConversationController>(INTERFACE_TYPE.ConversationController).to
 const conversationController = container.get<ConversationController>(INTERFACE_TYPE.ConversationController);
 
 // route to create conversation
-conversationRouter.post('/create-conversation',conversationController.createConversation.bind(conversationController))
+conversationRouter.post('/create-conversation',isAuth, conversationController.createConversation.bind(conversationController))
 // render user conversation 
 conversationRouter.route('/conversations/:userId') 
 .get(conversationController.getConversationByUser.bind(conversationController))

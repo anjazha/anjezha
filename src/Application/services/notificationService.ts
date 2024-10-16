@@ -17,6 +17,7 @@ export class NotificationService implements INotificationService {
   ) {}
 
   async sendNotification(notification: Notification): Promise<boolean> {
+    // console.log(notification)
     const [error, isCreated] = await safePromise(() =>
       this.notificationRepository.create(notification)
     );
