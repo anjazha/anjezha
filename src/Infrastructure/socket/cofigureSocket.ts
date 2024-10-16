@@ -24,6 +24,7 @@ import { NotificationService } from "@/Application/services/notificationService"
 import { ENOTIFICATION_TYPES } from "@/Application/interfaces/enums/ENotificationTypes";
 import { NotificationRepository } from "@/Application/repositories/notificationRepository";
 import { Notification } from "@/Domain/entities/Notification";
+import { decode } from "punycode";
 
 
 interface CustomSocket extends DefaultSocket {
@@ -65,8 +66,9 @@ export const  setupSocket = (server : Server) : void =>{
   io.use(async (socket, next) => {
 
    try{
-     const {token} = socket.handshake.auth;
-    
+    // console.log(socket.handshake)
+    //  const {token} = socket.handshake.auth;
+     const token : string | null = socket.handshake.headers?.token ? String(socket.handshake.headers?.token) : null;
     // console.log(token);
     
     if (!token) {
@@ -76,6 +78,7 @@ export const  setupSocket = (server : Server) : void =>{
     
     const decoded =  verifyToken(token);
 
+    //   console.log(decode)
     // console.log('decode', verifyToken(token));
 
     
@@ -160,15 +163,16 @@ export const  setupSocket = (server : Server) : void =>{
 // if conversation exist return conversationId 
 // esle create new conversation and return id 
 const startConversation =  (io:SocketServer, socket:DefaultSocket) => {
-  io.on('start-conversation', async (senderId:number, receiverId:number) =>{
+  socket.on('start-conversation', async (data : {senderId:number, receiverId:number}) =>{
+    // console.log(senderId, receiverId)
     // check conversation exist or not 
      let conversationId;
-     const [error, result] = await safePromise(()=> conversationRepository.checkConversationExist(senderId, receiverId));
+     const [error, result] = await safePromise(()=> conversationRepository.checkConversationExist(data.senderId, data.receiverId));
     //  let conversationId;
-
-    // if(error){
-    //     socket.emit('error', error.message);
-    // }
+    console.log(result);
+    if(error){
+        socket.emit('error', error.message);
+    }
 
     // 1- if exist return id else create new conversation and return id to cleint also
     if(result)  conversationId = result.id;
@@ -177,29 +181,31 @@ const startConversation =  (io:SocketServer, socket:DefaultSocket) => {
       
         const [errConversation, resConversation] = await safePromise (
                () => conversationRepository.createConversation(
-                       new Conversation(+senderId, +receiverId) ));
+                       new Conversation(+data.senderId, +data.receiverId) ));
 
             if(errConversation) {
               socket.emit('error', 'Could not create or fetch conversation.');
               console.log(errConversation.message);
             }
-
+            console.log(resConversation);
             conversationId = resConversation.conversationId;
           
     }
 
-    // console.log(conversationId);
+    console.log(conversationId);
 
     socket.emit('conversation-started', conversationId);
 
-    socket.on('join-conversation', (conversationId :string)=>{
-      console.log('join-conversation', conversationId);
-      socket.join(String(conversationId));
-    });
-
-    // socket.join(conversationId);
+    
+    // socket.join(conversationId); 
 
   })
+
+  socket.on('join-conversation', (data: {conversationId :string})=>{
+    console.log('join-conversation', data.conversationId);
+    socket.join(String(data.conversationId));
+  });
+
 }
 
 
@@ -218,7 +224,7 @@ const messageSocket = (io:SocketServer, socket:DefaultSocket)=>{
       
             // extract message from data => {roomId, message, takerId}
            const {senderId, message, conversationId, receiverId} = data;
-
+          // console.log
 
             // get receiver from conversation by roomId
             // await to save date in db
@@ -240,13 +246,13 @@ const messageSocket = (io:SocketServer, socket:DefaultSocket)=>{
 
               }
             // specifiy to one room called userId and sned it messsege 
-            io.to(String(conversationId)).emit('receive-message', JSON.stringify(newMessage));
+            socket.to(String(conversationId)).emit('receive-message', JSON.stringify(newMessage));
 
             // update conversaation 
             await conversationRepository.updateConversation(+conversationId);
 
             // send notification to user
-            await safePromise(() => notifNewMessage(io, socket, {message, receiverId, conversationId}));
+            await safePromise(() => notifNewMessage(io, socket, {message, recipientId: data.receiverId, conversationId}));
             //  notifNewMessage(io, socket);
 
         })
@@ -268,7 +274,7 @@ const notifNewMessage= async (io:SocketServer, socket:DefaultSocket, {
   conversationId,
   // role
 }:any) => {
-
+  // console.log(message , recipientId, conversationId);
   const userId = socket.data.userId || null;
 
   // const message = socket.data.message || null;
@@ -279,18 +285,18 @@ const notifNewMessage= async (io:SocketServer, socket:DefaultSocket, {
   const recipientSocket = onlineUsers.getUserSocket(recipientId);
   if(recipientSocket){
     // send notification to user
-    io.to(String(recipientSocket.id)).emit('notfiy-new-message',(message));
+    socket.to(String(recipientSocket.id)).emit('notfiy-new-message',(message));
 
   }  else {
       // type NotificationType 
-       notificationService.sendNotification(new Notification(recipientId, message, ENOTIFICATION_TYPES.DEFAULT, false));
+       notificationService.sendNotification(new Notification(recipientId, message, ENOTIFICATION_TYPES.DEFAULT, false, new Date()));
       //  const recipientEmail = 'tahashabaan48@gmail.com' 
    
 
        // send email to user if offline
       //  sendMail(recipientEmail, message, '');
 
-    }
+    } 
 
   }
 

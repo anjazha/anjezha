@@ -64,7 +64,7 @@ export class ConversationRepository implements IConversationRepository{
       
         return conversations;
     }
-    
+
     // async getConversationBySenderAndReceiverIds(senderId : number, receiverId: number): Promise<Conversation| null>{
 
     //     const query = `SELECT * FROM conversations
@@ -146,9 +146,9 @@ export class ConversationRepository implements IConversationRepository{
 
         // if (error) throw new HTTP500Error(error.messaage);
 
-        console.log(result)
+        // console.log(result)
 
-       return result.rows[0]?.id;
+       return result.rowCount > 0 ? result.rows[0] : null;
 
 
     }
