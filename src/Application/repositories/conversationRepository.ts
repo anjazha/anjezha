@@ -39,10 +39,31 @@ export class ConversationRepository implements IConversationRepository{
  
     async getConversationsByUserId(userId : number): Promise<Conversation[] | undefined>{
 
-        const query = `SELECT * FROM conversations
-                       WHERE sender_id = $1 or receiver_id = $1 
-                       ORDER BY update_at DESC`;
+        // const query = `SELECT * FROM conversations
+        //                WHERE sender_id = $1 or receiver_id = $1 
+        //                ORDER BY update_at DESC`;
 
+        const query = `SELECT 
+                        conversations.id, 
+                        json_build_object(
+                            'senderId', sender_id, 
+                            'name', se.name, 
+                            'profilePicture', se.profile_picture
+                        ) AS sender,
+                        json_build_object(
+                            'receiverId', receiver_id, 
+                            'name', re.name, 
+                            'profilePicture', re.profile_picture
+                        ) AS receiver
+                        FROM 
+                        conversations
+                        LEFT JOIN 
+                        users se ON conversations.sender_id = se.id
+                        LEFT JOIN 
+                        users re ON conversations.receiver_id = re.id
+                        WHERE sender_id = $1 or receiver_id = $1 
+                        ORDER BY update_at DESC 
+                        `
         const values = [userId];
 
         const [error, result ] = await safePromise( ()=> this.client.query(query, values));
@@ -50,19 +71,19 @@ export class ConversationRepository implements IConversationRepository{
         if(error) 
             throw new HTTP500Error("Error while fetching conversations" + error.message);
          // mapping to entites  
-         let conversations;     
-      if(result.rows)  
-           conversations = result.rows.map((conversation:any) => { 
-            return new Conversation(
-                    conversation.sender_id, 
-                    conversation.receiver_id, 
-                    conversation.update_at, 
-                    conversation.id
-                );
-        })    
+    //      let conversations;     
+    //   if(result.rows)  
+    //        conversations = result.rows.map((conversation:any) => { 
+    //         return new Conversation(
+    //                 conversation.sender_id, 
+    //                 conversation.receiver_id, 
+    //                 conversation.update_at, 
+    //                 conversation.id
+    //             );
+    //     })    
 
       
-        return conversations;
+        return result.rows;
     }
 
     // async getConversationBySenderAndReceiverIds(senderId : number, receiverId: number): Promise<Conversation| null>{
