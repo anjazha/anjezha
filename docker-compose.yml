@@ -1,34 +1,31 @@
-version: '3'
+# version: '3'
 services:
-    anjezha:
-      container_name: anjezha-api-container
-      image: tahashabaan/anjezha
-      ports:
-        - "5000:5000"
+  app:
+    image: tahashabaan/anjezha  # Replace with your app's image
+    container_name: anjezha
+    restart: always
+    ports:
+      - "5000:5000"
+    networks:
+      - app-network
 
-    web:
-      image: nginx
-      container_name: anjezha-nginx-container
-      restart: always
-      volumes:
-        - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
-        # - ./certbot/conf:/etc/letsencrypt
-        # - ./certbot/www:/var/www/certbot
-      ports:
-        - "80:80"
-        - "443:443"
-      depends_on:
-        - anjezha
-      environment:
-        - NGINX_HOST=foobar.com
-        - NGINX_PORT=80
-    
-    # certbot:
-    #   image: certbot/certbot
-    #   container_name: certbot
-    #   volumes: 
-    #     - ./certbot/conf:/etc/letsencrypt
-    #     - ./certbot/www:/var/www/
-    #   depends_on:
-    #     - web
-    #   command: certonly --webroot -w /var/www/certbot --force-renewal --email tahashabaan48@gmail.com -d api.anjez.tech --agree-tos 
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf  # Nginx config
+      - ./certbot:/var/www/certbot  # ACME challenge folder for Let's Encrypt
+      - /etc/letsencrypt:/etc/letsencrypt  # Let's Encrypt certificates
+    depends_on:
+      - app
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
