@@ -52,9 +52,9 @@ export const  setupSocket = (server : Server) : void =>{
 
   io = new SocketServer(server, {
      cors: {
-        origin:'*',
+        origin:'http://localhost:5173',
         methods: ["GET", "POST", 'PUT', 'DELETE'],
-        // Credential:true
+        credentials:true
       }
   });
 
@@ -163,6 +163,7 @@ export const  setupSocket = (server : Server) : void =>{
 // if conversation exist return conversationId 
 // esle create new conversation and return id 
 const startConversation =  (io:SocketServer, socket:DefaultSocket) => {
+
   socket.on('start-conversation', async (data : {senderId:number, receiverId:number}) =>{
     // console.log(senderId, receiverId)
     // check conversation exist or not 
@@ -183,7 +184,7 @@ const startConversation =  (io:SocketServer, socket:DefaultSocket) => {
                () => conversationRepository.createConversation(
                        new Conversation(+data.senderId, +data.receiverId) ));
 
-            if(errConversation) {
+           if(errConversation) {
               socket.emit('error', 'Could not create or fetch conversation.');
               console.log(errConversation.message);
             }
@@ -247,6 +248,12 @@ const messageSocket = (io:SocketServer, socket:DefaultSocket)=>{
               }
             // specifiy to one room called userId and sned it messsege 
             socket.to(String(conversationId)).emit('receive-message', JSON.stringify(newMessage));
+            // send message specify to receiver 
+            socket.to(String(receiverId)).emit('receive-message', JSON.stringify(newMessage));
+            // send message sepcify to sender
+            socket.to(String(senderId)).emit('receive-message', JSON.stringify(newMessage));
+
+          
 
             // update conversaation 
             await conversationRepository.updateConversation(+conversationId);
