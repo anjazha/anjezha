@@ -1,13 +1,13 @@
 # version: '3'
 services:
-  app:
-    image: tahashabaan/anjezha  # Replace with your app's image
+  anjezha:
+    image: tahashabaan/anjezha 
     container_name: anjezha
     restart: always
     ports:
       - "5000:5000"
     networks:
-      - app-network
+      - anjezha-network
 
   nginx:
     image: nginx:latest
@@ -21,11 +21,11 @@ services:
       - ./certbot:/var/www/certbot  # ACME challenge folder for Let's Encrypt
       - /etc/letsencrypt:/etc/letsencrypt  # Let's Encrypt certificates
     depends_on:
-      - app
+      - anjezha
     networks:
-      - app-network
+      - anjezha-network
 
 networks:
-  app-network:
+  anjezha-network:
     driver: bridge
 
