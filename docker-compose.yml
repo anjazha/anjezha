@@ -17,7 +17,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf  # Nginx config
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf  # Nginx config
       - ./certbot:/var/www/certbot  # ACME challenge folder for Let's Encrypt
       - /etc/letsencrypt:/etc/letsencrypt  # Let's Encrypt certificates
     depends_on:
