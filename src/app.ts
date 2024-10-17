@@ -46,17 +46,12 @@ export class App {
 //    console.log(NODE_ENV)
 // handle cors 
         const allowedOrigins = [
-            'http://localhost:3000',
-            'http://localhost:5000', 
             'http://localhost:5173',
             'http://127.0.0.1:5173/',
-            'http://anjezha.s3-website.eu-north-1.amazonaws.com',
-            'https://d3f2i7wv6rstlt.cloudfront.net/',
             'https://www.anjez.tech',
-            'https://anjez.tech',
         ];
 
-            const options: CorsOptions = {
+       const options: CorsOptions = {
                 origin: allowedOrigins,
                 methods: ['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'PATCH'],
                 credentials: true,
@@ -65,12 +60,12 @@ export class App {
 
             // handle 
             
-        this.app.use((req:Request, res:Response, next:NextFunction) => {
-                res.setHeader('Access-Control-Allow-Origin', '*'); // Allow requests from any origin
-                res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH');
-                res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-                next();
-         });
+        // this.app.use((req:Request, res:Response, next:NextFunction) => {
+        //         res.setHeader('Access-Control-Allow-Origin', '*'); // Allow requests from any origin
+        //         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH');
+        //         res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        //         next();
+        //  });
 
           // preflight request // crendtails 
         this.app.use(cors(options))
