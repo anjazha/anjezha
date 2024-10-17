@@ -50,12 +50,24 @@ router.post(
   taskerSkillController.createSkill.bind(taskerSkillController)
 );
 
-router.post('/create-skill',isAuth, allowTo('tasker'), taskerSkillController.createSkill.bind(taskerSkillController));
+router.post('/create-skill',
+                isAuth, 
+                allowTo('tasker', ''), 
+                taskerSkillController.createSkill.bind(taskerSkillController));
 
-router.put('/update-skill/:id',isAuth, allowTo('tasker'), taskerSkillController.updateSkill.bind(taskerSkillController));
+router.put('/update-skill/:id',
+                isAuth, 
+                allowTo('tasker'), 
+                taskerSkillController.updateSkill.bind(taskerSkillController));
 
-router.delete('/delete-skill/:id',isAuth, allowTo('tasker'), taskerSkillController.deleteSkill.bind(taskerSkillController));
+router.delete('/delete-skill/:id',
+                isAuth, 
+                allowTo('tasker'), 
+                taskerSkillController.deleteSkill.bind(taskerSkillController));
 
-router.get('/get-skills',isAuth, allowTo('tasker'), taskerSkillController.getSkills.bind(taskerSkillController));
+router.get('/get-skills',
+                isAuth, 
+                allowTo('tasker'), 
+                taskerSkillController.getSkills.bind(taskerSkillController));
 
 export default router;

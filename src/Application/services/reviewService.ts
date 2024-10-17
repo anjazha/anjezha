@@ -26,7 +26,7 @@ export class ReviewService implements IReviewService {
             }
 
             // check if taskerId is equal to userId
-            if (+taskerId! === +review.User!) 
+            if (+tasker.userId! === +review.User! || +taskerId! === +tasker.id! ) 
                 throw new HTTP400Error("You can't write review to yourself");
 
 

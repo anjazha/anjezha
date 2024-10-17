@@ -6,6 +6,7 @@ import { ITaskerRepository } from "../interfaces/User/Tasker/ITaskerRepository";
 import { pgClient } from "@/Infrastructure/database";
 
 import { HTTP500Error } from "@/helpers/ApiError";
+import { safePromise } from "@/helpers/safePromise";
 
 
 @injectable()
@@ -81,7 +82,7 @@ export class TaskerRepository implements ITaskerRepository {
             INNER JOIN 
                 roles rs ON ts.user_id = rs.user_id
             LEFT JOIN 
-                tasker_skills tsk ON ts.user_id = tsk.user_id
+                tasker_skills tsk ON ts.user_id = tsk.tasker_id
             LEFT JOIN 
                 skills sks ON sks.id = tsk.skill_id
              LEFT JOIN 
@@ -148,6 +149,15 @@ export class TaskerRepository implements ITaskerRepository {
         // finally {
         //     this.client.release();
         // }
+    }
+
+    async checkTaskerById(id:number):Promise<any>{
+        
+        const query = `select * from taskers where id = $1 returning *`
+        const [error, result] = await safePromise(()=> this.client.query(query, [+id]));
+
+        if(error) throw new HTTP500Error('tasker not found');
+        return result.rows[0];
     }
 
     async getTaskerByUserId(userId: number): Promise<Tasker| undefined> {
@@ -254,7 +264,7 @@ export class TaskerRepository implements ITaskerRepository {
             INNER JOIN 
                 roles rs ON ts.user_id = rs.user_id
             LEFT JOIN 
-                tasker_skills tsk ON ts.user_id = tsk.user_id
+                tasker_skills tsk ON ts.user_id = tsk.tasker_id
             LEFT JOIN 
                 skills sks ON sks.id = tsk.skill_id
             /* LEFT JOIN 

@@ -67,10 +67,10 @@ export class App {
             
         this.app.use((req:Request, res:Response, next:NextFunction) => {
                 res.setHeader('Access-Control-Allow-Origin', '*'); // Allow requests from any origin
-                res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+                res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH');
                 res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
                 next();
-              });
+         });
 
           // preflight request // crendtails 
         this.app.use(cors(options))

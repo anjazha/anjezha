@@ -43,7 +43,7 @@ const client = new pg.Pool(config);
 const connectDB = async () => {
     try {
         await client.connect();
-        console.log('Database connected');
+        console.log('Database connected', DB_NAME);
     } catch (error) {
         console.error('Database connection error', error); 
     }
