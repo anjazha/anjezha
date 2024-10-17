@@ -43,9 +43,32 @@ export class CategoryController {
     async getCategories(req: Request, res: Response, next:NextFunction) {
 
         try {
-            const categories = await this.categoryService.getCategories();
+
+            const page = Number(req.query.limit) || 1; // default to page 1
+            const limit = Number(req.query.limit) || 10; // default to 10 items per page
+
+    // Calculate the offset (number of items to skip)
+            const offset = (page - 1) * limit;
+            const categories = await this.categoryService.getCategories(limit, offset);
+            const totalCount =  await this.categoryService.totalCountCategory();
+
+            const totalPage = Math.round(totalCount/limit);
+
+            let nextPage =1;
+
+            let prevPage = 1;
+
+            if (page < totalPage) nextPage+=1;
+
+            if(page > 1) prevPage -=1;
+
             return res.status(200).json({
                 status: "success",
+                limit,
+                curPage:page,
+                prevPage,
+                nextPage,
+                totalPage,
                 data: categories
             });
         } catch (err:any) {

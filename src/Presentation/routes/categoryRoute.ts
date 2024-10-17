@@ -38,7 +38,7 @@ const categoryController = container.get<CategoryController>(INTERFACE_TYPE.Cate
 categoryRoute.route('/category')
 .post(
        isAuth, 
-    //    allowTo('admin'), 
+       allowTo('admin'), 
         fileUpload('imageUrl', 'categories'),
        categoryController.createCategory.bind(categoryController))
 

@@ -15,4 +15,6 @@ export interface ICategoryRepository {
 
     deleteCategory(id: number): Promise<any>;
 
+    totalCountCategory():Promise<number>;
+
 }
