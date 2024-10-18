@@ -132,14 +132,16 @@ export const setupSocket = (server: Server): void => {
     //     // console.log(`online users ${[...onlineUsers.getAllUsers()]}`)
     // })
     // get online uses
-        socket.emit("online-users", [...onlineUsers.getAllUsers()]);
+     socket.emit("online-users", [...onlineUsers.getAllUsers()]);
 
     // console.log(`online users ${[...onlineUsers.getAllUsers()]}`)
 
     // create conversation to (sender, receiver )
-    if (io) startConversation(io, socket);
+    // if (io) 
+      startConversation(io!, socket);
     // handle message socket
-    if (io) messageSocket(io, socket);
+    //if (io) 
+      messageSocket(io!, socket);
 
     // handle notification socket when send message
 
@@ -255,21 +257,16 @@ const messageSocket = (io: SocketServer, socket: DefaultSocket) => {
       // send message specify to receiver
       const receiverSocketId = onlineUsers.getUserSocket(String(receiverId));
       // console.log(receiverSocketId);
-      if (receiverSocketId)
-        io.to(String(receiverSocketId)).emit(
-          "receive-message",
-          JSON.stringify(newMessage)
-        );
-      // send message sepcify to sender
-      // const senderSocketId = onlineUsers.getUserSocket(String(senderId));
-      // // console.log(senderSocketId);
-      // if (senderSocketId) {
-      //   io.to(String(senderSocketId)).emit(
-      //     "receive-message",
-      //     JSON.stringify(newMessage)
-      //   );
-      // }
+      const senderSocketId = onlineUsers.getUserSocket(String(senderId));
 
+      if (senderId !== receiverId && receiverSocketId) {
+        io.to(String(receiverSocketId)).emit("receive-message", JSON.stringify(newMessage));
+      }
+
+      if (senderSocketId) {
+        io.to(String(senderSocketId)).emit("receive-message", JSON.stringify(newMessage));
+      }
+      
       // update conversaation
       await conversationRepository.updateConversation(+conversationId);
 
