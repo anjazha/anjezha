@@ -261,14 +261,14 @@ const messageSocket = (io: SocketServer, socket: DefaultSocket) => {
           JSON.stringify(newMessage)
         );
       // send message sepcify to sender
-      const senderSocketId = onlineUsers.getUserSocket(String(senderId));
-      // console.log(senderSocketId);
-      if (senderSocketId) {
-        io.to(String(senderSocketId)).emit(
-          "receive-message",
-          JSON.stringify(newMessage)
-        );
-      }
+      // const senderSocketId = onlineUsers.getUserSocket(String(senderId));
+      // // console.log(senderSocketId);
+      // if (senderSocketId) {
+      //   io.to(String(senderSocketId)).emit(
+      //     "receive-message",
+      //     JSON.stringify(newMessage)
+      //   );
+      // }
 
       // update conversaation
       await conversationRepository.updateConversation(+conversationId);
