@@ -8,6 +8,8 @@ import { Request, Response, NextFunction } from "express";
 import RequestWithUserId from "@/Application/interfaces/Request";
 import { HTTP500Error } from "@/helpers/ApiError";
 import { generateToken } from "@/helpers/tokenHelpers";
+import { safePromise } from "@/helpers/safePromise";
+import { apiResponse } from "@/helpers/apiResponse";
 
 
 @injectable()
@@ -98,5 +100,21 @@ export class TaskerController {
         } catch (error : any) {
             next(error);
         }
+    }
+
+    public async matchTaskerByCategoryAndLocations(req: RequestWithUserId, res: Response, next:NextFunction){
+        //  const 
+        const {longitude, latitude, category, skills} =req.query;
+
+        const [error, result] = await safePromise(() => this.taskerService.matchTaskerByCategoryAndLoactions(req.query) );
+
+        if(error) throw new HTTP500Error(error.message);
+
+        res.status(200).json(apiResponse(
+            
+        ))
+
+
+
     }
 }

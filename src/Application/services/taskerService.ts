@@ -72,6 +72,10 @@ export class TaskerService implements ITaskerService {
          return  await this.taskerRepository.deleteTasker(id);
     }
 
+    async matchTaskerByCategoryAndLoactions(mathc:any):Promise<any[] | undefined>{
+        return await this.taskerRepository.matchTaskerByCategoryAndLocations(mathc)
+    }
+
     // async getTaskerByUserId(userId: number): Promise<Tasker | undefined> {
     //     return await this.taskerRepository.getTaskerByUserId(userId)
     // }

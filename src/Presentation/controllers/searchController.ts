@@ -5,6 +5,7 @@ import { inject, injectable } from "inversify";
 import { safePromise } from "@/helpers/safePromise";
 import { HTTP500Error } from "@/helpers/ApiError";
 import { apiResponse } from "@/helpers/apiResponse";
+import { threadId } from "worker_threads";
 
 @injectable()
 export class SearchController {
@@ -50,4 +51,68 @@ export class SearchController {
       )
     );
   }
+
+
+  async taskerSearch(req:Request, res:Response, next:NextFunction){
+
+    // let {  
+    //   q,
+    //   category,
+    //   minBudget,
+    //   maxBudget,
+    //   minRating,
+    //   maxRating,
+    //   longitude,
+    //   latitude,
+    //   sortBy,
+    //   limit,
+    //   page
+    // } = req.query;
+    
+    // Convert to numbers where applicable
+     const q = req.query.q;
+     const sortBy= req.query.sortBy;
+     const category =  Number(req.query.category);
+     const minBudget = Number(req.query.minBudget);
+     const maxBudget = Number(req.query.maxBudget);
+     const minRating = Number(req.query.minRating);
+     const maxRating = Number(req.query.maxRating);
+     const longitude = Number(req.query.longitude);
+     const latitude =  Number(req.query.latitude);
+     const limit =     Number(req.query.limit);
+     const page =      Number(req.query.page);
+
+           const limitNum = limit ? limit: 10;
+           const pageNum = page? +page : 1;
+           // calc offest to skip 
+           const offset = (page - 1 ) * limitNum;
+
+          const [error, result] = await safePromise(
+                 () => this.searchService.taskersSearch(String(q), 
+                     { 
+                        category,
+                        minBudget,
+                        maxBudget,
+                        minRating,
+                        maxRating,
+                        longitude,
+                        latitude,
+                        pageNum,
+                        offset,
+                        limitNum}, String(sortBy)));
+
+            // console.log(values)
+
+          // check if error exist 
+          if(error) throw new HTTP500Error('error in search controller'+ error.message + error.stack);
+
+          res.json(apiResponse(
+            result,
+            "taksers fetched successfully",
+          ))
+  }
+
+
 }
+
+

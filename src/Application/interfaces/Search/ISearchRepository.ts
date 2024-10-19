@@ -10,5 +10,5 @@ export interface ISearchRepository {
     sortBy: string,
   ): Promise<Task[]>;
 
-  // taskersSearch(filters: {}): Promise<Tasker[]>;
+  taskersSearch(q:string, filters: {}, sortBy:string): Promise<any[] |undefined>;
 }

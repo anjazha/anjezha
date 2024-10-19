@@ -17,6 +17,10 @@ export class SearchRepository implements ISearchRepository {
     async tasksSearch(q : string, filters: {}, sortBy : string): Promise<Task[]> {
         return await this.taskRepository.search(q, filters, sortBy);
     }
+
+    async taskersSearch(q : string, filters: {}, sortBy : string): Promise<any[] | undefined> {
+        return await this.taskerRepository.search(q, filters, sortBy);
+    }
     
     // async taskersSearch(filters: {}): Promise<Tasker[]> {
     //     // return await this.taskerRepository.search(filters);

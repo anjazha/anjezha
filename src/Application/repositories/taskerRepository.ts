@@ -7,6 +7,7 @@ import { pgClient } from "@/Infrastructure/database";
 
 import { HTTP500Error } from "@/helpers/ApiError";
 import { safePromise } from "@/helpers/safePromise";
+import { tsConfigLoader } from "tsconfig-paths/lib/tsconfig-loader";
 
 
 @injectable()
@@ -313,6 +314,184 @@ export class TaskerRepository implements ITaskerRepository {
         //     this.client.release();
         // }
     }
+
+  async matchTaskerByCategoryAndLocations(match:any): Promise<any[] | undefined>{
+
+        const {longitude, latitude, category, skills} = match;
+        const VALUES =[latitude, longitude, category, 10, skills];
+        let idx=1;
+        const len = VALUES.length;
+
+
+     let query = `
+        SELECT 
+            ts.id,
+            count(ts.id) as totalTasksCount,
+            ts.user_id as userId,
+            us.email,
+            us.phone_number as phoneNumber,
+            us.profile_picture as profilePicture,   
+            us.name,
+            ts.bio,
+            sks.name as skillName,
+             2 * 6371 * asin(
+                    sqrt(
+                        sin(radians($1) - radians(coalesce(ts.latitude, 0)) / 2) ^ 2 +
+                        cos(radians(coalesce(ts.latitude, 0))) * 
+                        cos(radians($1)) * 
+                        sin(radians($2) - radians(coalesce(ts.longitude, 0)) / 2) ^ 2
+                    )
+                ) AS distance
+           FROM 
+            taskers ts 
+              INNER JOIN users us ON us.id = ts.user_id
+              -- INNER JOIN roles rs ON ts.user_id = rs.user_id
+              LEFT JOIN tasker_skills tsk ON ts.user_id = tsk.tasker_id
+              LEFT JOIN skills sks ON sks.id = tsk.skill_id
+          WHERE 
+              category_id =$3
+               AND 
+              distance <= $4;
+        `;
+
+    const [error, result] = await safePromise(() => this.client.query(query, VALUES));
+
+    if(error) throw new HTTP500Error(error.message)
+
+    return result.rows;
+    }
+
+
+    async search(q: string = " ", filters: any, sortBy: string): Promise<any[] | undefined> {
+        console.log('q', q);
+        console.log('filters', filters);
+        console.log('sortBy', sortBy);
+    
+        let {
+            category,
+            minBudget,
+            maxBudget,
+            minRating,
+            maxRating,
+            longitude,
+            latitude,
+            maxDistance,
+            limitNum: limit,
+            offset,
+        } = filters || {};
+    
+        let query = `
+            SELECT 
+                ts.id,
+                count(ts.id) as totalTasksCount,
+                ts.user_id as userId,
+                us.email,
+                us.phone_number as phoneNumber,
+                us.profile_picture as profilePicture,   
+                us.name,
+                ts.bio,
+                sks.name as skillName
+
+            `;
+        const values = [q || ""];
+        let idx = values.length + 1;
+    
+        if (longitude && latitude) {
+              query += `,
+                2 * 6371 * asin(
+                    sqrt(
+                        sin(radians($${idx}) - radians(coalesce(ts.latitude, 0)) / 2) ^ 2 +
+                        cos(radians(coalesce(ts.latitude, 0))) * 
+                        cos(radians($${idx})) * 
+                        sin(radians($${idx + 1}) - radians(coalesce(ts.longitude, 0)) / 2) ^ 2
+                    )
+                ) AS distance
+            `;
+            values.push(latitude, longitude);
+            idx += 2;
+        }
+    
+        query += `
+          FROM 
+            taskers ts 
+            INNER JOIN users us ON us.id = ts.user_id
+            INNER JOIN roles rs ON ts.user_id = rs.user_id
+            LEFT JOIN tasker_skills tsk ON ts.user_id = tsk.tasker_id
+            LEFT JOIN skills sks ON sks.id = tsk.skill_id
+          WHERE 
+             to_tsvector('english', coalesce(us.name, '') || ' ' || coalesce(ts.bio, '') || ' ' || coalesce(sks.name, '')) @@ to_tsquery($1  ) 
+              OR 
+            to_tsvector('arabic', coalesce(us.name, '') || ' ' || coalesce(ts.bio, '') || ' ' || coalesce(sks.name, '')) @@ to_tsquery($1 ) 
+        `;
+    
+        // Handle filters
+        if (category) {
+            query += ` AND category_id = $${idx} `;
+            values.push(category);
+            idx++;
+        }
+        if (minBudget) {
+            query += `AND coalesce(price, 0) >= $${idx} `;
+            values.push(minBudget);
+            idx++;
+        }
+        if (maxBudget && maxBudget < 10000) {
+            query += `AND coalesce(price, 0) <= $${idx} `;
+            values.push(maxBudget);
+            idx++;
+        }
+
+        if (minRating) {
+            query += `AND coalesce(rating, 0) >= $${idx} `;
+            values.push(minRating);
+            idx++;
+        }
+        if (maxRating && maxRating <= 5) {
+            query += `AND coalesce(rating, 0) <= $${idx} `;
+            values.push(maxRating);
+            idx++;
+        }
+    
+        if (longitude && latitude && maxDistance) {
+            query += `AND distance <= $${idx} `;
+            values.push(maxDistance);
+            idx++;
+        }
+
+        query +=` GROUP BY ts.id, us.name, us.email, us.phone_number, us.profile_picture, sks.name`;
+    
+        if (sortBy !==undefined) {
+            query += ` ORDER BY $${idx}`;
+            values.push(sortBy);
+            idx++;
+              // Sorting by column name directly
+        } 
+
+         if(sortBy === undefined && longitude && latitude) {
+            query += ` ORDER BY distance ASC`;
+        }
+
+        console.log(query);
+        console.log(values);
+    
+        query += ` LIMIT $${idx} OFFSET $${idx + 1}`;
+        values.push(limit, offset);
+    
+        const [error, result] = await safePromise(() => this.client.query(query, values));
+        if (error) throw new HTTP500Error('An error occurred ' + error.message + error.stack);
+    
+        // console.log(result.rows);
+
+        return result.rows;
+    }
+
+    async countAllTasker():Promise<number> {
+        const query = `select count(*)  from taskers`
+        const [error, result ] = await safePromise(()=> this.client.query(query));
+        if(error) throw new HTTP500Error(error.message);
+        return result.count;
+    }
+    
 
     async getTaskerByEmail(email: string): Promise<Tasker | undefined> {
         throw new Error("Method not implemented.");
