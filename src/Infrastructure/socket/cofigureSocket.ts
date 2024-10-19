@@ -202,13 +202,17 @@ const startConversation = (io: SocketServer, socket: DefaultSocket) => {
       socket.emit("conversation-started", conversationId);
 
       // socket.join(conversationId);
-    }
-  );
+      socket.on("join-conversation", (data: { conversationId: string }) => {
+        console.log("join-conversation", data.conversationId);
+        socket.join(String(data.conversationId));
+      });
+      
+    });
 
-  socket.on("join-conversation", (data: { conversationId: string }) => {
-    console.log("join-conversation", data.conversationId);
-    socket.join(String(data.conversationId));
-  });
+  // socket.on("join-conversation", (data: { conversationId: string }) => {
+  //   console.log("join-conversation", data.conversationId);
+  //   socket.join(String(data.conversationId));
+  // });
 };
 
 const messageSocket = (io: SocketServer, socket: DefaultSocket) => {
