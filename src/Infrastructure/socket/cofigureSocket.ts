@@ -162,58 +162,50 @@ export const setupSocket = (server: Server): void => {
 // if conversation exist return conversationId
 // esle create new conversation and return id
 const startConversation = (io: SocketServer, socket: DefaultSocket) => {
-  socket.on(
-    "start-conversation",
-    async (data: { senderId: number; receiverId: number }) => {
-      // console.log(senderId, receiverId)
-      // check conversation exist or not
-      let conversationId;
-      const [error, result] = await safePromise(() =>
-        conversationRepository.checkConversationExist(
-          data.senderId,
-          data.receiverId
-        )
+  socket.on("start-conversation", async (data: { senderId: number; receiverId: number }) => {
+    let conversationId;
+    
+    // Check if the conversation exists
+    const [error, result] = await safePromise(() =>
+      conversationRepository.checkConversationExist(data.senderId, data.receiverId)
+    );
+
+    if (error) {
+      socket.emit("error", error.message);
+      return; // Stop execution if there's an error
+    }
+
+    // If a conversation exists, return the ID; otherwise, create a new conversation
+    if (result) {
+      conversationId = result.id;
+    } else {
+      const [errConversation, resConversation] = await safePromise(() =>
+        conversationRepository.createConversation(new Conversation(+data.senderId, +data.receiverId))
       );
-      //  let conversationId;
-      console.log(result);
-      if (error) {
-        socket.emit("error", error.message);
+
+      if (errConversation) {
+        socket.emit("error", "Could not create or fetch conversation.");
+        console.log(errConversation.message);
+        return; // Stop execution if there's an error
       }
 
-      // 1- if exist return id else create new conversation and return id to cleint also
-      if (result) conversationId = result.id;
-      else {
-        const [errConversation, resConversation] = await safePromise(() =>
-          conversationRepository.createConversation(
-            new Conversation(+data.senderId, +data.receiverId)
-          )
-        );
+      conversationId = resConversation.conversationId;
+    }
 
-        if (errConversation) {
-          socket.emit("error", "Could not create or fetch conversation.");
-          console.log(errConversation.message);
-        }
-        console.log(resConversation);
-        conversationId = resConversation.conversationId;
-      }
+    // Emit conversation started event
+    socket.emit("conversation-started", conversationId);
+    
+    // Join the conversation
+    // socket.join(String(conversationId));
 
-      console.log(conversationId);
-
-      socket.emit("conversation-started", conversationId);
-
-      // socket.join(conversationId);
-      socket.on("join-conversation", (data: { conversationId: string }) => {
-        console.log("join-conversation", data.conversationId);
-        socket.join(String(data.conversationId));
-      });
-      
+    // Listen for joining conversation
+    socket.on("join-conversation", (data: { conversationId: string }) => {
+      console.log("join-conversation", data.conversationId);
+      socket.join(String(data.conversationId));
     });
-
-  // socket.on("join-conversation", (data: { conversationId: string }) => {
-  //   console.log("join-conversation", data.conversationId);
-  //   socket.join(String(data.conversationId));
-  // });
+  });
 };
+
 
 const messageSocket = (io: SocketServer, socket: DefaultSocket) => {
   try {
