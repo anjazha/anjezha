@@ -7,7 +7,7 @@ export interface ITaskerService {
     updateTasker(tasker: Tasker): Promise<string | undefined>;
     deleteTasker(id: number): Promise<string | undefined>;
     getTaskerByUserId(userId: number): Promise<Tasker | undefined>;
-    matchTaskerByCategoryAndLoactions(mathc:any):Promise<any[] | undefined>
+    getTaskerFeed(match:any):Promise<any[] | undefined>
 
     // getTaskerByEmail(email: string): Promise<Tasker | undefined>;
     // getTaskerByCategory(category: string): Promise<Tasker[] | undefined>;

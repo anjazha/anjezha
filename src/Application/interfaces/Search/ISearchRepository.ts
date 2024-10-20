@@ -4,6 +4,7 @@ import { Tasker } from "@/Domain/entities/Tasker";
 // import {}  from '@'
 
 export interface ISearchRepository {
+  // taskersSearch(q: string, filters: any, sortBy: string): unknown;
   tasksSearch(
     q: string,
     filters: {},

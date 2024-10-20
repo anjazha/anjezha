@@ -53,6 +53,9 @@ taskerRouter.get('/about-tasker', isAuth,allowTo('tasker'), taskerController.get
 // 
 taskerRouter.get('/tasker/:taskerId', taskerController.getTaskerById.bind(taskerController));
 
+// taskerRouter.get('/tasker', taskerController.getAllTaskers.bind(taskerController));
+taskerRouter.get('/tasker/feed', taskerController.getTaskerFeed.bind(taskerController));
+
 taskerRouter.put('/update-tasker', isAuth, allowTo('tasker'), taskerController.updateTasker.bind(taskerController));
 
 taskerRouter.delete('/delete-tasker', isAuth, allowTo('tasker'), taskerController.deleteTasker.bind(taskerController));

@@ -42,6 +42,10 @@ export class SearchService implements ISearchService {
     async taskersSearch(q:string, filters: any, sortBy:string): Promise<any | undefined> {
         
         const {limitNum:limit, offset, pageNum:page} = filters;
+
+        // console.log(offset);
+
+
         const taskers = await this.searchRepository.taskersSearch(q, filters, sortBy);
 
         
@@ -50,11 +54,12 @@ export class SearchService implements ISearchService {
       }
 
         // const totalTasker = this.searchRepository.;
-        const totalTasker = taskers[0]?.totalTasksCount;
-        console.log(totalTasker)
+        const totalTasker =Number(taskers[0].totaltasker);
+    
+        console.log('totalTasker',totalTasker);
 
         // calculate all total page specify by tasker 
-        const totalPages = Math.ceil(limit/totalTasker);
+        const totalPages = Math.round(totalTasker/limit);
 
         let prevPage =1, nextPage=1;
 
@@ -69,10 +74,9 @@ export class SearchService implements ISearchService {
             prevPage,
             nextPage,
             totalPages,
-            taskers
         }
 
-        return pagination;
+        return {pagination,taskers};
         
            
     }

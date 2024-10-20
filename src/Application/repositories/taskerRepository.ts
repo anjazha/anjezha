@@ -315,10 +315,10 @@ export class TaskerRepository implements ITaskerRepository {
         // }
     }
 
-  async matchTaskerByCategoryAndLocations(match:any): Promise<any[] | undefined>{
+  async getTaskerFeed(match:any): Promise<any[] | undefined>{
 
         const {longitude, latitude, category, skills} = match;
-        const VALUES =[latitude, longitude, category, 10, skills];
+        const VALUES =[latitude, longitude, category, 10];
         let idx=1;
         const len = VALUES.length;
 
@@ -326,33 +326,48 @@ export class TaskerRepository implements ITaskerRepository {
      let query = `
         SELECT 
             ts.id,
-            count(ts.id) as totalTasksCount,
+            count(distinct ts.id) as totalTasksCount,
             ts.user_id as userId,
             us.email,
             us.phone_number as phoneNumber,
             us.profile_picture as profilePicture,   
             us.name,
             ts.bio,
-            sks.name as skillName,
-             2 * 6371 * asin(
-                    sqrt(
-                        sin(radians($1) - radians(coalesce(ts.latitude, 0)) / 2) ^ 2 +
-                        cos(radians(coalesce(ts.latitude, 0))) * 
-                        cos(radians($1)) * 
-                        sin(radians($2) - radians(coalesce(ts.longitude, 0)) / 2) ^ 2
-                    )
-                ) AS distance
-           FROM 
-            taskers ts 
-              INNER JOIN users us ON us.id = ts.user_id
-              -- INNER JOIN roles rs ON ts.user_id = rs.user_id
-              LEFT JOIN tasker_skills tsk ON ts.user_id = tsk.tasker_id
-              LEFT JOIN skills sks ON sks.id = tsk.skill_id
-          WHERE 
+            ARRAY_AGG(DISTINCT sks.name) AS skillName,
+            COUNT(DISTINCT CASE WHEN sks.name = ANY($5) THEN sks.id END) AS matchedSkillsCount,  -- Count of matched skills
+            2 * 6371 * asin(
+                sqrt(
+                     sin((radians($1) - radians(coalesce(ts.latitude, 0))) / 2) ^ 2 + 
+                     cos(radians($1)) * cos(radians(coalesce(ts.latitude, 0))) * 
+                     sin((radians($2) - radians(coalesce(ts.longitude, 0))) / 2) ^ 2
+                  ) 
+                     ) AS distance
+        FROM 
+              taskers ts 
+            INNER JOIN 
+              users us ON us.id = ts.user_id
+            LEFT JOIN 
+              tasker_skills tsk ON ts.user_id = tsk.tasker_id
+            LEFT JOIN 
+              skills sks ON sks.id = tsk.skill_id
+        WHERE 
               category_id =$3
-               AND 
-              distance <= $4;
+            AND 
+              distance <= $4
         `;
+
+    if(skills && skills.length>0 ){
+          query += ` AND sks.name IS NOT NULL`;
+
+          VALUES.push(skills);
+    }
+
+    query += `
+         GROUP BY ts.id, us.email, us.phone_number, us.profile_picture, us.name, ts.bio
+         ORDER BY matchedSkillsCount DESC, distance `
+    // query = `
+        
+    // `;
 
     const [error, result] = await safePromise(() => this.client.query(query, VALUES));
 
@@ -363,9 +378,9 @@ export class TaskerRepository implements ITaskerRepository {
 
 
     async search(q: string = " ", filters: any, sortBy: string): Promise<any[] | undefined> {
-        console.log('q', q);
-        console.log('filters', filters);
-        console.log('sortBy', sortBy);
+        // console.log('q', q);
+        // console.log('filters', filters);
+        // console.log('sortBy', sortBy);
     
         let {
             category,
@@ -378,21 +393,27 @@ export class TaskerRepository implements ITaskerRepository {
             maxDistance,
             limitNum: limit,
             offset,
+            
         } = filters || {};
+
+        // console.log(offset);
+
+
     
         let query = `
             SELECT 
                 ts.id,
-                count(ts.id) as totalTasksCount,
+                count(DISTINCT  us.id) as totalTasker,
                 ts.user_id as userId,
+                ts.pricing as price,
                 us.email,
                 us.phone_number as phoneNumber,
                 us.profile_picture as profilePicture,   
                 us.name,
                 ts.bio,
-                sks.name as skillName
-
+                array_agg(sks.name) as skillName
             `;
+
         const values = [q || ""];
         let idx = values.length + 1;
     
@@ -407,6 +428,7 @@ export class TaskerRepository implements ITaskerRepository {
                     )
                 ) AS distance
             `;
+
             values.push(latitude, longitude);
             idx += 2;
         }
@@ -418,10 +440,11 @@ export class TaskerRepository implements ITaskerRepository {
             INNER JOIN roles rs ON ts.user_id = rs.user_id
             LEFT JOIN tasker_skills tsk ON ts.user_id = tsk.tasker_id
             LEFT JOIN skills sks ON sks.id = tsk.skill_id
-          WHERE 
-             to_tsvector('english', coalesce(us.name, '') || ' ' || coalesce(ts.bio, '') || ' ' || coalesce(sks.name, '')) @@ to_tsquery($1  ) 
-              OR 
-            to_tsvector('arabic', coalesce(us.name, '') || ' ' || coalesce(ts.bio, '') || ' ' || coalesce(sks.name, '')) @@ to_tsquery($1 ) 
+            LEFT JOIN reviews rvs ON ts.id = rvs.tasker_id
+             WHERE 
+                 (to_tsvector('english', coalesce(us.name, '') || ' ' || coalesce(ts.bio, '') || ' ' || coalesce(sks.name, '')) @@ to_tsquery($1)
+                   OR
+                  to_tsvector('arabic', coalesce(us.name, '') || ' ' || coalesce(ts.bio, '') || ' ' || coalesce(sks.name, '')) @@ to_tsquery($1))
         `;
     
         // Handle filters
@@ -431,12 +454,12 @@ export class TaskerRepository implements ITaskerRepository {
             idx++;
         }
         if (minBudget) {
-            query += `AND coalesce(price, 0) >= $${idx} `;
+            query += `AND coalesce(pricing, 0) >= $${idx} `;
             values.push(minBudget);
             idx++;
         }
         if (maxBudget && maxBudget < 10000) {
-            query += `AND coalesce(price, 0) <= $${idx} `;
+            query += `AND coalesce(pricing, 0) <= $${idx} `;
             values.push(maxBudget);
             idx++;
         }
@@ -458,7 +481,7 @@ export class TaskerRepository implements ITaskerRepository {
             idx++;
         }
 
-        query +=` GROUP BY ts.id, us.name, us.email, us.phone_number, us.profile_picture, sks.name`;
+        query +=` GROUP BY ts.id, us.name, us.email, us.phone_number, us.profile_picture, ts.bio`;
     
         if (sortBy !==undefined) {
             query += ` ORDER BY $${idx}`;
@@ -471,16 +494,16 @@ export class TaskerRepository implements ITaskerRepository {
             query += ` ORDER BY distance ASC`;
         }
 
-        console.log(query);
-        console.log(values);
-    
+        
         query += ` LIMIT $${idx} OFFSET $${idx + 1}`;
         values.push(limit, offset);
-    
+        
+        // console.log(query);
+        // console.log(values);
         const [error, result] = await safePromise(() => this.client.query(query, values));
         if (error) throw new HTTP500Error('An error occurred ' + error.message + error.stack);
     
-        // console.log(result.rows);
+        console.log(result.rows[0].totaltasker);
 
         return result.rows;
     }

@@ -5,5 +5,5 @@ import { IPaginagion } from "../IPagination";
 
 export interface ISearchService {
     tasksSearch(q: string, filters : {}, sortBy: string) : Promise<{tasks:Task[], pagination:IPaginagion}>;
-    taskersSearch(q:string, filters : {}, sortBy:string) : Promise<any[] | undefined>;
+    taskersSearch(q:string, filters : {}, sortBy:string) : Promise<any | undefined>;
 }

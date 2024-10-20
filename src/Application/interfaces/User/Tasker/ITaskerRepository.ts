@@ -14,7 +14,7 @@ export interface ITaskerRepository {
     getTaskerByTask?(task: any): Promise<Tasker[] | undefined>;
     updateTasker(tasker: Tasker): Promise<string | undefined>;
     deleteTasker(tasker: number): Promise<string | undefined>;
-    matchTaskerByCategoryAndLocations(mathc:any):Promise<any[]>
+    getTaskerFeed(mathc:any):Promise<any[] | undefined>
     // getTaskerByCategory(category: string): Promise<Tasker[]>;
     // getTaskerBySkill(skill: string): Promise<Tasker[]>;
     // getTaskerByPrice(price: number): Promise<Tasker[]>;

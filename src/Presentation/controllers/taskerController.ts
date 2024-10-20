@@ -102,16 +102,25 @@ export class TaskerController {
         }
     }
 
-    public async matchTaskerByCategoryAndLocations(req: RequestWithUserId, res: Response, next:NextFunction){
+    public async getTaskerFeed(req: RequestWithUserId, res: Response, next:NextFunction){
         //  const 
-        const {longitude, latitude, category, skills} =req.query;
+        let {longitude, latitude, category, skills} =req.query;
 
-        const [error, result] = await safePromise(() => this.taskerService.matchTaskerByCategoryAndLoactions(req.query) );
+        // skills =skills?.split(',') ;
 
-        if(error) throw new HTTP500Error(error.message);
+        req.query.skills= String(skills)?.split(',');
 
-        res.status(200).json(apiResponse(
-            
+        const [error, result] = await safePromise(() => this.taskerService.getTaskerFeed(req.query) );
+
+        // if any error
+        if(error) return next(new HTTP500Error(error.message));
+
+        res.json(
+            apiResponse(
+             result.tasker,
+            'Tasker feed',
+             true,
+            result.pagination
         ))
 
 

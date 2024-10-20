@@ -77,6 +77,7 @@ export class SearchController {
      const maxBudget = Number(req.query.maxBudget);
      const minRating = Number(req.query.minRating);
      const maxRating = Number(req.query.maxRating);
+     const maxDistance = Number(req.query.maxDistance);
      const longitude = Number(req.query.longitude);
      const latitude =  Number(req.query.latitude);
      const limit =     Number(req.query.limit);
@@ -85,7 +86,9 @@ export class SearchController {
            const limitNum = limit ? limit: 10;
            const pageNum = page? +page : 1;
            // calc offest to skip 
-           const offset = (page - 1 ) * limitNum;
+           const offset = (pageNum - 1 ) * limitNum;
+          
+          //  console.log(offset)
 
           const [error, result] = await safePromise(
                  () => this.searchService.taskersSearch(String(q), 
@@ -95,6 +98,7 @@ export class SearchController {
                         maxBudget,
                         minRating,
                         maxRating,
+                        maxDistance,
                         longitude,
                         latitude,
                         pageNum,
@@ -104,11 +108,14 @@ export class SearchController {
             // console.log(values)
 
           // check if error exist 
-          if(error) throw new HTTP500Error('error in search controller'+ error.message + error.stack);
+          if(error) {
+              return next(new HTTP500Error('error in search controller'+ error.message + error.stack));
+            }
 
           res.json(apiResponse(
-            result,
+            result.taskers,
             "taksers fetched successfully",
+            result.pagination
           ))
   }
 
