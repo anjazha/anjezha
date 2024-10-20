@@ -43,7 +43,9 @@ const notificationService = new NotificationService(
 const conversationRepository = new ConversationRepository();
 const messageRepository = new MessageRepository();
 
-export let io: SocketServer | null = null;
+// export let io: SocketServer | null = null;
+let io: SocketServer;
+
 
 const allowedOrigins = [
   'http://localhost:5173',
