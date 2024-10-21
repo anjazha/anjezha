@@ -4,11 +4,12 @@ import { Tasker } from "@/Domain/entities/Tasker";
 // import {}  from '@'
 
 export interface ISearchRepository {
+  // taskersSearch(q: string, filters: any, sortBy: string): unknown;
   tasksSearch(
     q: string,
     filters: {},
     sortBy: string,
   ): Promise<Task[]>;
 
-  // taskersSearch(filters: {}): Promise<Tasker[]>;
+  taskersSearch(q:string, filters: {}, sortBy:string): Promise<any[] |undefined>;
 }

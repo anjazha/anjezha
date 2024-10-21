@@ -10,9 +10,11 @@ export interface ITaskerRepository {
     getTaskerByPhoneNumber?(phoneNumber: string): Promise<Tasker | undefined>;
     getTaskerByLocation?(location: string): Promise<Tasker[] | undefined>;
     getTaskerByRating?(rating: number): Promise<Tasker[] | undefined>;
+    search(q: string, filters: {}, sortBy: string): Promise<any[] | undefined>;
     getTaskerByTask?(task: any): Promise<Tasker[] | undefined>;
     updateTasker(tasker: Tasker): Promise<string | undefined>;
     deleteTasker(tasker: number): Promise<string | undefined>;
+    getTaskerFeed(mathc:any):Promise<any[] | undefined>
     // getTaskerByCategory(category: string): Promise<Tasker[]>;
     // getTaskerBySkill(skill: string): Promise<Tasker[]>;
     // getTaskerByPrice(price: number): Promise<Tasker[]>;
