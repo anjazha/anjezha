@@ -3,12 +3,12 @@ import {Message} from "../../../Domain/entities/Message"
 
 
 export interface IMessageRepository{
-    createMessage(message : Message): Promise<string>;
+    createMessage(message : Message): Promise<Message>;
     getMessages(conversationId : number): Promise<Message[]>
     getUnreadMessages(conversationId : number): Promise<Message[]>
     markAsRead(messageIds : number[]): Promise<boolean>;
     getMessageById(messageId : number): Promise<Message>
-    updateMessage(message : Message, messageId:number): Promise<string>;
+    updateMessage(message : string, messageId:number): Promise<string>;
     deleteMessage(messageId : number): Promise<string>;
     getMessagesBySenderId(senderId : number): Promise<Message[]>
     getMessagesByReceiverId(receiverId : number): Promise<Message[]>

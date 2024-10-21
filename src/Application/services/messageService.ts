@@ -14,7 +14,7 @@ export class MessageService implements IMessageService{
         @inject(INTERFACE_TYPE.MessageRepository) private messageRepository:IMessageRepository
     ){}
 
-    async createMessage(message : Message): Promise<string>{
+    async createMessage(message : Message): Promise<Message>{
         return await this.messageRepository.createMessage(message); 
     }
 
@@ -36,7 +36,7 @@ export class MessageService implements IMessageService{
     }
 
     async updateMessage(message : Message, messageId:number): Promise<string>{
-        return await this.messageRepository.updateMessage(message, +messageId)
+        return await this.messageRepository.updateMessage(message.message, +messageId)
     }
 
     async deleteMessage(messageId : number): Promise<string>{

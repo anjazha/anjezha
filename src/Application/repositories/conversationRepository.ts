@@ -144,10 +144,10 @@ export class ConversationRepository implements IConversationRepository{
         if (result.rows.length === 0) throw new HTTP500Error("Conversation not found");
         
 
-        const {user_id, tasker_id, created_at, id} =  result.rows[0];
+        const {sender_id, receiver_id, created_at, id} =  result.rows[0];
 
         // return conversation
-        return new Conversation(user_id, tasker_id, created_at, id);
+        return new Conversation(sender_id, receiver_id, created_at, id);
 
     }
 

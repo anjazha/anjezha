@@ -3,7 +3,7 @@ import {Message} from "@/Domain/entities/Message"
 
 
 export interface IMessageService{
-    createMessage(message : Message): Promise<string>;
+    createMessage(message : Message): Promise<Message>;
     getMessages(chatId : number): Promise<Message[]>
     getMessageById(messageId:number):Promise<Message>
     updateMessage(message:Message, messageId:number):Promise<string>

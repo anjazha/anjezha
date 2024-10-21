@@ -17,18 +17,18 @@ export class MessageRepository implements IMessageRepository{
         this.client= pgClient;
     }
 
-     async createMessage(message : Message): Promise<string>{
+     async createMessage(message : Message): Promise<Message>{
 
-        const query = `INSERT INTO messages (conversation_id, sender_id, message) VALUES ($1, $2, $3)`;
+        const query = `INSERT INTO messages (conversation_id, sender_id, message) VALUES ($1, $2, $3) RETURNING *`;
 
         const values = [message.conversationId, message.senderId,message.message];
 
         const [error, result ] = await safePromise(()=> this.client.query(query, values));
-
+        console.log(result)
         if(error)  
              throw new HTTP500Error("Error while creating message" + error.message);
-
-        return "message is created";
+        const newMessage = result.rows[0];
+        return new Message(newMessage.sender_id, newMessage.conversation_id, newMessage.message, newMessage.message_status, newMessage.change_status_at, newMessage.sent_at, newMessage.id);
      }
     
 
@@ -101,12 +101,12 @@ export class MessageRepository implements IMessageRepository{
                 message.attachments)
         }
 
-        async updateMessage(message : Message, messageId:number): Promise<string>{
+        async updateMessage(message : string, messageId:number): Promise<string>{
             // update the message with the given id
             const query = `UPDATE messages SET message = $1 WHERE id = $2`;
 
             // values to be updated
-            const values = [message.message, messageId];
+            const values = [message, messageId];
 
             // use safePromise to handle the promise rejection
             const [error, result ] = await safePromise( ()=>this.client.query(query, values));

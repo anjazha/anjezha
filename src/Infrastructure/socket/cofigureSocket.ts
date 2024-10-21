@@ -46,11 +46,10 @@ const messageRepository = new MessageRepository();
 // export let io: SocketServer | null = null;
 let io: SocketServer;
 
-
 const allowedOrigins = [
-  'http://localhost:5173',
-  'http://127.0.0.1:5173/',
-  'https://www.anjez.tech',
+  "http://localhost:5173",
+  "http://127.0.0.1:5173/",
+  "https://www.anjez.tech",
 ];
 
 export const setupSocket = (server: Server): void => {
@@ -134,16 +133,16 @@ export const setupSocket = (server: Server): void => {
     //     // console.log(`online users ${[...onlineUsers.getAllUsers()]}`)
     // })
     // get online uses
-     socket.emit("online-users", [...onlineUsers.getAllUsers()]);
+    socket.emit("online-users", [...onlineUsers.getAllUsers()]);
 
     // console.log(`online users ${[...onlineUsers.getAllUsers()]}`)
 
     // create conversation to (sender, receiver )
-    // if (io) 
-      startConversation(io!, socket);
+    // if (io)
+    startConversation(io!, socket);
     // handle message socket
-    //if (io) 
-      messageSocket(io!, socket);
+    //if (io)
+    messageSocket(io!, socket);
 
     // handle notification socket when send message
 
@@ -164,50 +163,57 @@ export const setupSocket = (server: Server): void => {
 // if conversation exist return conversationId
 // esle create new conversation and return id
 const startConversation = (io: SocketServer, socket: DefaultSocket) => {
-  socket.on("start-conversation", async (data: { senderId: number; receiverId: number }) => {
-    let conversationId;
-    
-    // Check if the conversation exists
-    const [error, result] = await safePromise(() =>
-      conversationRepository.checkConversationExist(data.senderId, data.receiverId)
-    );
+  socket.on(
+    "start-conversation",
+    async (data: { senderId: number; receiverId: number }) => {
+      let conversationId;
 
-    if (error) {
-      socket.emit("error", error.message);
-      return; // Stop execution if there's an error
-    }
-
-    // If a conversation exists, return the ID; otherwise, create a new conversation
-    if (result) {
-      conversationId = result.id;
-    } else {
-      const [errConversation, resConversation] = await safePromise(() =>
-        conversationRepository.createConversation(new Conversation(+data.senderId, +data.receiverId))
+      // Check if the conversation exists
+      const [error, result] = await safePromise(() =>
+        conversationRepository.checkConversationExist(
+          data.senderId,
+          data.receiverId
+        )
       );
 
-      if (errConversation) {
-        socket.emit("error", "Could not create or fetch conversation.");
-        console.log(errConversation.message);
+      if (error) {
+        socket.emit("error", error.message);
         return; // Stop execution if there's an error
       }
 
-      conversationId = resConversation.conversationId;
+      // If a conversation exists, return the ID; otherwise, create a new conversation
+      if (result) {
+        conversationId = result.id;
+      } else {
+        const [errConversation, resConversation] = await safePromise(() =>
+          conversationRepository.createConversation(
+            new Conversation(+data.senderId, +data.receiverId)
+          )
+        );
+
+        if (errConversation) {
+          socket.emit("error", "Could not create or fetch conversation.");
+          console.log(errConversation.message);
+          return; // Stop execution if there's an error
+        }
+
+        conversationId = resConversation.conversationId;
+      }
+
+      // Emit conversation started event
+      socket.emit("conversation-started", conversationId);
+
+      // Join the conversation
+      // socket.join(String(conversationId));
+
+      // Listen for joining conversation
+      socket.on("join-conversation", (data: { conversationId: string }) => {
+        console.log("join-conversation", data.conversationId);
+        socket.join(String(data.conversationId));
+      });
     }
-
-    // Emit conversation started event
-    socket.emit("conversation-started", conversationId);
-    
-    // Join the conversation
-    // socket.join(String(conversationId));
-
-    // Listen for joining conversation
-    socket.on("join-conversation", (data: { conversationId: string }) => {
-      console.log("join-conversation", data.conversationId);
-      socket.join(String(data.conversationId));
-    });
-  });
+  );
 };
-
 
 const messageSocket = (io: SocketServer, socket: DefaultSocket) => {
   try {
@@ -242,6 +248,7 @@ const messageSocket = (io: SocketServer, socket: DefaultSocket) => {
         return messageRepository.createMessage(newMessage);
       });
 
+      console.log(result)
       if (error) {
         console.log(error.messaage);
         //  throw new HTTP500Error('something went wrong!'+ error.messaage);
@@ -258,13 +265,19 @@ const messageSocket = (io: SocketServer, socket: DefaultSocket) => {
       const senderSocketId = onlineUsers.getUserSocket(String(senderId));
 
       if (senderId !== receiverId && receiverSocketId) {
-        io.to(String(receiverSocketId)).emit("receive-message", JSON.stringify(newMessage));
+        io.to(String(receiverSocketId)).emit(
+          "receive-message",
+          JSON.stringify(result)
+        );
       }
 
       if (senderSocketId) {
-        io.to(String(senderSocketId)).emit("receive-message", JSON.stringify(newMessage));
+        io.to(String(senderSocketId)).emit(
+          "receive-message",
+          JSON.stringify(result)
+        );
       }
-      
+
       // update conversaation
       await conversationRepository.updateConversation(+conversationId);
 
@@ -279,6 +292,76 @@ const messageSocket = (io: SocketServer, socket: DefaultSocket) => {
       //  notifNewMessage(io, socket);
     });
 
+    socket.on("delete-message", async (data: any) => {
+      const { messageId } = data;
+      try {
+        if (!messageId) throw new Error("messageId is required");
+
+        const oldMessage = await messageRepository.getMessageById(messageId);
+        const { receiverId, senderId } =
+          await conversationRepository.getConversationById(
+            oldMessage.conversationId
+          );
+        console.log(oldMessage, receiverId);
+        if (!oldMessage) throw new Error("Message not found");
+
+        const updatedMessage = await messageRepository.deleteMessage(messageId);
+        console.log(updatedMessage);
+
+        const receiverSocketId = onlineUsers.getUserSocket(String(receiverId));
+        const senderSocketId = onlineUsers.getUserSocket(String(senderId));
+        if (receiverSocketId) {
+          io.to(receiverSocketId).emit("message-deleted", {
+            messageId: oldMessage.id,
+          });
+        }
+        if (senderSocketId)
+          io.to(senderSocketId).emit("message-deleted", {
+            messageId: oldMessage.id,
+          });
+        // console.log(receiverSocketId);
+      } catch (e: any) {
+        socket.emit("error", JSON.stringify(`${e.message}`));
+      }
+    });
+
+    socket.on("update-message", async (data: any) => {
+      try {
+        const { message, messageId } = data;
+        if (!message || !messageId)
+          throw new Error("message and messageId are required");
+
+        const oldMessage = await messageRepository.getMessageById(messageId);
+        const { receiverId, senderId } = await conversationRepository.getConversationById(
+          oldMessage.conversationId
+        );
+        console.log(oldMessage, receiverId);
+        if (!oldMessage) throw new Error("Message not found");
+
+        const updatedMessage = await messageRepository.updateMessage(
+          message,
+          messageId
+        );
+        console.log(updatedMessage);
+
+        const receiverSocketId = onlineUsers.getUserSocket(String(receiverId));
+        const senderSocketId = onlineUsers.getUserSocket(String(senderId));
+        if (receiverSocketId) {
+          io.to(receiverSocketId).emit("message-updated", {
+            messageId: oldMessage.id,
+            message
+          });
+        }
+        if (senderSocketId)
+          io.to(senderSocketId).emit("message-updated", {
+            messageId: oldMessage.id,
+            message
+          });
+      } catch (err: any) {
+        socket.emit("error", JSON.stringify(`${err.message}`));
+      }
+      // console.log(receiverSocketId);
+    });
     // event on read message
   } catch (err: any) {
     console.log("there`s error!" + err.message);
