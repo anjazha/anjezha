@@ -41,6 +41,9 @@ export class TaskerService implements ITaskerService {
            role = await this.roleRepository!.updateRole(new Role(userId, 'tasker'))
          }
 
+
+
+
         //  console.log(role.name);
 
          // generte new token with new role

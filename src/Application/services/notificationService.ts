@@ -25,7 +25,7 @@ export class NotificationService implements INotificationService {
 
     // send real-time notification
     const userScoketId = this.onlineUsers.getUserSocket(String(notification.userId));
-    if (userScoketId) io?.to(userScoketId).emit("notification", notification);
+    if (userScoketId) io?.to(String(userScoketId)).emit("notification", notification);
     
     return isCreated;
   }

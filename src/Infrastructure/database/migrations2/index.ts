@@ -4,7 +4,7 @@ import { migrate } from "postgres-migrations";
 async function runMigrations(): Promise<void> {
   await connectDB();
   try {
-    await migrate({ client: pgClient }, "src/Infrastructure/database/migrations/");
+    await migrate({ client: pgClient }, "src/Infrastructure/database/migrations2");
     console.log("migration complete");
   }catch (error) {
     console.log(error)

@@ -23,7 +23,12 @@ export class CategoryService implements ICategoryService {
         }
     }
 
-    async getCategories(): Promise<Category[]> {
+    async totalCountCategory():Promise<number>{
+        return await this.categoryRepository.totalCountCategory();
+    }
+    
+
+    async getCategories(limit:number, offset:number): Promise<Category[]> {
         try {
             return await this.categoryRepository.getCategories();
         } catch (err:any) {

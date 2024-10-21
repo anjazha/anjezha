@@ -76,7 +76,7 @@ export class TaskerSkillController   {
 
             const skill = await this.taskerSkillsService.getSkillById(Number(id));
 
-            return res.status(200).json(skill);
+            return res.status(200).json({skill});
         } catch (error) {
             return next(error);
         }
@@ -91,7 +91,7 @@ export class TaskerSkillController   {
 
             const taskerSkills = await this.taskerSkillsService.getTaskerSkills(taskerId);
 
-            return res.status(200).json(taskerSkills);
+            return res.status(200).json({taskerSkills});
         } catch (error) {
             return next(error);
         }
@@ -107,7 +107,7 @@ export class TaskerSkillController   {
 
             const deleteSkill = await this.taskerSkillsService.deleteTaskerSkill(taskerId, Number(id));
 
-            return res.status(200).json(deleteSkill);
+            return res.status(200).json({deleteSkill});
         } catch (error) {
             return next(error);
         }
@@ -120,7 +120,7 @@ export class TaskerSkillController   {
                 throw new Error("TaskerSkillsService is not initialized");
             }
                 const skills = await this.taskerSkillsService.getSkills();
-            return res.status(200).json(skills);
+            return res.status(200).json({skills});
         } catch (error) {
             return next(error);
         }

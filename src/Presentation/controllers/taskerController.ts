@@ -7,6 +7,7 @@ import { inject, injectable } from "inversify";
 import { Request, Response, NextFunction } from "express";
 import RequestWithUserId from "@/Application/interfaces/Request";
 import { HTTP500Error } from "@/helpers/ApiError";
+import { generateToken } from "@/helpers/tokenHelpers";
 
 
 @injectable()
@@ -22,13 +23,23 @@ export class TaskerController {
 
             taskerBody.userId = req.userId;
 
-            const tasker = new Tasker(taskerBody.userId, taskerBody.bio, taskerBody.pricing, taskerBody.longitude, taskerBody.latitude, taskerBody.categoryId, taskerBody.biding);
+            const tasker = new Tasker(taskerBody.userId,
+                                      taskerBody.bio,
+                                      taskerBody.pricing,
+                                      taskerBody.longitude,
+                                      taskerBody.latitude,
+                                      taskerBody.categoryId,
+                                      taskerBody.biding);
 
-            const newTasker = await this.taskerService.createTasker(tasker);
+            await this.taskerService.createTasker(tasker);
 
-            res.status(201).json(newTasker);
+            const token =  generateToken({userId:req.userId, role:'tasker'});
+
+
+            res.status(201).json({token});
+
         } catch (error : any) {
-             next(error);
+             next(new HTTP500Error('An error occurred ' + error.message));
         }
     }
 

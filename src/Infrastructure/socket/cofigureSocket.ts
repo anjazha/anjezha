@@ -45,17 +45,23 @@ const messageRepository = new MessageRepository();
 
 export let io: SocketServer | null = null;
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173/',
+  'https://www.anjez.tech',
+];
+
 export const setupSocket = (server: Server): void => {
   io = new SocketServer(server, {
     cors: {
-      origin: ["http://localhost:5173", "https://www.anjez.tech"],
+      origin: allowedOrigins,
       methods: ["GET", "POST", "PUT", "DELETE"],
       credentials: true,
     },
   });
 
   // Create a custom namespace '/chat'
-  const chatNameSpace = io.of("/chat");
+  // const chatNameSpace = io.of("/chat");
 
   // hnadle authorization middleware
   io.use(async (socket, next) => {
@@ -113,7 +119,7 @@ export const setupSocket = (server: Server): void => {
 
     // message socket
 
-    onlineUsers.addUser(String(userId), socket.id);
+    onlineUsers.addUser(String(userId), String(socket.id));
 
     // lsiten from client event called `add_user`
     // socket?.on('add_user', (userId : string) => {
@@ -126,14 +132,16 @@ export const setupSocket = (server: Server): void => {
     //     // console.log(`online users ${[...onlineUsers.getAllUsers()]}`)
     // })
     // get online uses
-    socket.emit("online-users", [...onlineUsers.getAllUsers()]);
+     socket.emit("online-users", [...onlineUsers.getAllUsers()]);
 
     // console.log(`online users ${[...onlineUsers.getAllUsers()]}`)
 
     // create conversation to (sender, receiver )
-    if (io) startConversation(io, socket);
+    // if (io) 
+      startConversation(io!, socket);
     // handle message socket
-    if (io) messageSocket(io, socket);
+    //if (io) 
+      messageSocket(io!, socket);
 
     // handle notification socket when send message
 
@@ -243,27 +251,22 @@ const messageSocket = (io: SocketServer, socket: DefaultSocket) => {
       }
 
       // specifiy to one room called userId and sned it messsege
-      socket
-        .to(String(conversationId))
-        .emit("receive-message", JSON.stringify(newMessage));
+      // socket
+      //   .to(String(conversationId))
+      //   .emit("receive-message", JSON.stringify(newMessage));
       // send message specify to receiver
       const receiverSocketId = onlineUsers.getUserSocket(String(receiverId));
       // console.log(receiverSocketId);
-      if (receiverSocketId)
-        io.to(receiverSocketId).emit(
-          "receive-message",
-          JSON.stringify(newMessage)
-        );
-      // send message sepcify to sender
       const senderSocketId = onlineUsers.getUserSocket(String(senderId));
-      // console.log(senderSocketId);
-      if (senderSocketId) {
-        io.to(senderSocketId).emit(
-          "receive-message",
-          JSON.stringify(newMessage)
-        );
+
+      if (senderId !== receiverId && receiverSocketId) {
+        io.to(String(receiverSocketId)).emit("receive-message", JSON.stringify(newMessage));
       }
 
+      if (senderSocketId) {
+        io.to(String(senderSocketId)).emit("receive-message", JSON.stringify(newMessage));
+      }
+      
       // update conversaation
       await conversationRepository.updateConversation(+conversationId);
 

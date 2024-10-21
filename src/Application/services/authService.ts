@@ -117,6 +117,8 @@ export class AuthService implements IAuthService {
       // check on  it user exist roles or not
        let role = await this.roleRepository.getRoleByUserId(Number(user.id));
 
+       
+
     //    console.log("role", role);
 
     //  if(!role){

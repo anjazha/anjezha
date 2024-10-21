@@ -6,6 +6,7 @@ import { Client, Pool } from "pg";
 import { Category } from "@/Domain/entities/Category";
 import { SubCategory } from "@/Domain/entities/SubCategory";
 import { HTTP500Error } from "@/helpers/ApiError";
+import { safePromise } from "@/helpers/safePromise";
 // import { an } from "@faker-js/faker/dist/airline-BBTAAfHZ";
 
 @injectable()
@@ -41,7 +42,7 @@ export class CategoryRepository implements ICategoryRepository{
       }
     }
 
-    async getCategories(): Promise<Category[]> {
+    async getCategories(limit:number = 10, offset:number=0): Promise<Category[]> {
         try{
             // wreite query to get all categories
           const query = `
@@ -55,10 +56,11 @@ export class CategoryRepository implements ICategoryRepository{
                 sc.description as subcategory_description,
                 sc.subcategory as subcategory_name 
               FROM categories c
-              LEFT JOIN subcategories sc ON c.id = sc.category_id`;
+              LEFT JOIN subcategories sc ON c.id = sc.category_id
+              LIMIT $1 OFFSET $2;              `;
 
             // execute query
-            const { rows } = await this.client.query(query);
+            const { rows } = await this.client.query(query, [limit, offset]);
 
             console.log(rows)
             // map rows to category object
@@ -113,6 +115,17 @@ export class CategoryRepository implements ICategoryRepository{
         }
     }
 
+    async totalCountCategory(): Promise<number> {
+
+        const totalCountQuery = `SELECT COUNT(*) FROM categories`; 
+
+        const [error, result] = await safePromise(() => this.client.query(totalCountQuery));
+
+        if (error) throw new HTTP500Error(error.message);
+
+        return result.rows[0].count;
+
+     }
 
     async getCategoryById(id: number): Promise<Category> {
         try{
