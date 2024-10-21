@@ -1,0 +1,63 @@
+[
+    {
+      "name": "محمد عارف",
+      "email": "mo@gmail.com",
+      "password": "123456",
+      "phoneNumber": "01147846428"
+    },
+    {
+      "name": "أحمد علي",
+      "email": "ahmed.ali@gmail.com",
+      "password": "123456",
+      "phoneNumber": "01122334455"
+    },
+    {
+      "name": "خالد محمد",
+      "email": "khaled.mohamed@gmail.com",
+      "password": "123456",
+      "phoneNumber": "01098765432"
+    },
+    {
+      "name": "سامي حسن",
+      "email": "sami.hassan@gmail.com",
+      "password": "123456",
+      "phoneNumber": "01234567890"
+    },
+    {
+      "name": "محمود عماد",
+      "email": "mahmoud.emad@gmail.com",
+      "password": "123456",
+      "phoneNumber": "01555667788"
+    },
+    {
+      "name": "يوسف إبراهيم",
+      "email": "youssef.ibrahim@gmail.com",
+      "password": "123456",
+      "phoneNumber": "01011223344"
+    },
+    {
+      "name": "عمر سمير",
+      "email": "omar.samir@gmail.com",
+      "password": "123456",
+      "phoneNumber": "01166778899"
+    },
+    {
+      "name": "حسن مصطفى",
+      "email": "hassan.mostafa@gmail.com",
+      "password": "123456",
+      "phoneNumber": "01233445566"
+    },
+    {
+      "name": "إبراهيم سعيد",
+      "email": "ibrahim.saeed@gmail.com",
+      "password": "123456",
+      "phoneNumber": "01599887766"
+    },
+    {
+      "name": "علي عبد الله",
+      "email": "ali.abdullah@gmail.com",
+      "password": "123456",
+      "phoneNumber": "01099887766"
+    }
+  ]
+  
