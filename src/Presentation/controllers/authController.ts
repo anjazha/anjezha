@@ -9,6 +9,7 @@ import { Notification } from "@/Domain/entities/Notification";
 import { ENOTIFICATION_TYPES } from "@/Application/interfaces/enums/ENotificationTypes";
 import { HTTP500Error } from "@/helpers/ApiError";
 import { verfiyEmail } from "@/helpers/verfiyEmail";
+import { safePromise } from "@/helpers/safePromise";
 
 
 @injectable()
@@ -33,9 +34,9 @@ export class AuthController {
          const {code, email} = req.body;
     
          // check code okay or  not if code true return true else throw error
-         const verfiedCode = await verfiyEmail.verifyCode(email, code);
+          const [error, result] =  await safePromise(( )=>  verfiyEmail.verifyCode(email, code));
 
-         if(!verfiedCode) return next(new HTTP500Error("Code not valid"));
+         if(error) return next(new HTTP500Error(error.message));
 
          res.status(200).json({message: 'Code verified'});
 

@@ -37,14 +37,18 @@ import { safePromise } from './safePromise';
 
 
   async verifyCode(email: string, inputCode: string): Promise<boolean> {
-    const record = await this.userRepository.getVerificationCode(email); 
-
-    if (!record)  throw new HTTP500Error('code not valid');  // No matching email found
-    if (new Date() > record.expirationTime) throw new HTTP500Error('code not valid'); // Code expired
 
     const hashedInputCode = await this.hashCode(inputCode);
+
+    const record = await this.userRepository.getVerificationCode(email, hashedInputCode ); 
+
+    if (!record)  throw new HTTP500Error('code not valid or exipered'); 
+     // No matching email found
+    // if (new Date() > record.expiration_time) throw new HTTP500Error('code not valid'); // Code expired
+
+    await this.updateCode(true, email, hashedInputCode);
     // set is_verfied=true
-    return hashedInputCode === record.code;  // Check if codes match
+    return record;  // Check if codes match
   }
 
 
@@ -69,6 +73,15 @@ import { safePromise } from './safePromise';
     await sendMail(mailOptions);
   }
   
+   updateCode = async (status:boolean, email:string, hashCode:string ) => {
+
+     const [error, result] =  await safePromise(()=> this.userRepository.updateConfirmation(status, email, hashCode));
+
+      if(error) throw new HTTP500Error(error.message);
+
+      return
+
+  }
 }
 
 export const verfiyEmail = new VerfiyEmail(new UserRepository());

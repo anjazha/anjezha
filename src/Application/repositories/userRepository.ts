@@ -6,6 +6,7 @@ import { User } from "@/Domain/entities/User";
 import { IUserRepository } from "../interfaces/User/IUserRepository";
 import { HTTP500Error } from "@/helpers/ApiError";
 import { safePromise } from "@/helpers/safePromise";
+import { hashCode } from "@/helpers/hashCode";
 
 // repository for user
 
@@ -257,32 +258,49 @@ async createVerificationCode(email: string, code: string, expirationTime: Date, 
   
 }
 
-async getVerificationCode(email: string): Promise<any> {
+async getVerificationCode(email: string, inputCode:string): Promise<boolean> {
 
-    const query = `SELECT * FROM email_confirmations WHERE email = $1`;
+    const query = `
+           SELECT * FROM email_confirmations 
+           WHERE email = $1 
+           AND code = $2
+           AND expiration_time >= NOW()`;
 
-    const values = [email];
+    const values = [email, inputCode];
     const [error, result ]= await safePromise(() => this.client.query(query, values));
 
     if(error) throw new HTTP500Error(error.message);
 
-    return result.rows[0];
+    if(!result.rows.length) return false;
+
+    return true;
 }
 
 async checkEmailConfirmation(email: string): Promise<boolean> {
     const query = `
-          SELECT * FROM email_confirmations
+          SELECT verify FROM email_confirmations
            WHERE email = $1 AND confirmed_at IS NOT NULL 
-           order by confirmed_at desc
-           LIMIT 1`;
+           order by confirmed_at desc limit 1`;
 
     const values = [email];
     const [error, result] = await safePromise(() => this.client.query(query, values));
 
     if(error) throw new HTTP500Error(error.message);
 
-    return result.rows.length > 0 
-            && new Date() < result.rows[0].expiration_time;
+     if (!result.rows.length ) return false;
+
+    return result.rows[0].verify;
+}
+
+async updateConfirmation(status:boolean,email:string,  hashCode:string):Promise<boolean>{
+
+  const query = `update email_confirmations set verify=$1 where email= $2 and code = $3`
+
+  const [error, result ]= await safePromise(() => this.client.query(query, [status, email,  hashCode]));
+
+  if(error) throw new HTTP500Error(error.message);
+
+   return result.rows.length? true: false;
 }
   
 }

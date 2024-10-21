@@ -59,7 +59,7 @@ export class AuthService implements IAuthService {
         // console.log("user", user);
         // console.log(await this.checkCodeValid(email));
 
-        if(!await this.checkCodeValid(email)) throw new HTTP500Error("Code not valid");
+        if(!await this.checkCodeValid(email)) throw new HTTP500Error("email not verfied..");
 
 
        
