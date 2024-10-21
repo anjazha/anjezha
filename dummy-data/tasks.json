@@ -1,0 +1,853 @@
+[
+  {
+    "title": "بناء حائط صغير",
+    "description": "لدي حائط صغير يفصل المطبخ والحمام وأريد بناءه",
+    "date": "2024-08-27",
+    "budget": 200.0,
+    "location": { "longitude": 31.205753, "latitude": 29.924526 },
+    "address": "القاهرة",
+    "category_id": 3,
+    "skills": ["بناء"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "08:00:00",
+      "schedule_type": "Morning",
+      "end_time": "10:00:00"
+    },
+    "user_id": 1
+  },
+  {
+    "title": "إصلاح حنفية الحمام",
+    "description": "حنفية الحمام بها تسريب وأحتاج إلى إصلاحها",
+    "date": "2024-09-01",
+    "budget": 100.0,
+    "location": { "longitude": 31.235711, "latitude": 30.04442 },
+    "address": "الإسكندرية",
+    "category_id": 1,
+    "skills": ["سباكه"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "09:00:00",
+      "schedule_type": "Morning",
+      "end_time": "10:30:00"
+    },
+    "user_id": 2
+  },
+  {
+    "title": "تركيب كهرباء غرفة",
+    "description": "أريد تركيب إضاءة جديدة في غرفة المعيشة",
+    "date": "2024-09-10",
+    "budget": 150.0,
+    "location": { "longitude": 30.987654, "latitude": 29.876543 },
+    "address": "الجيزة",
+    "category_id": 2,
+    "skills": ["كهرباء"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "11:00:00",
+      "schedule_type": "Afternoon",
+      "end_time": "13:00:00"
+    },
+    "user_id": 3
+  },
+  {
+    "title": "دهان شقة",
+    "description": "أحتاج إلى دهان الشقة بالكامل",
+    "date": "2024-09-15",
+    "budget": 500.0,
+    "location": { "longitude": 32.115831, "latitude": 30.456712 },
+    "address": "طنطا",
+    "category_id": 5,
+    "skills": ["دهانات"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "09:00:00",
+      "schedule_type": "Morning",
+      "end_time": "16:00:00"
+    },
+    "user_id": 4
+  },
+  {
+    "title": "بناء سور",
+    "description": "أحتاج إلى بناء سور حول حديقة المنزل",
+    "date": "2024-09-20",
+    "budget": 800.0,
+    "location": { "longitude": 30.122344, "latitude": 29.987654 },
+    "address": "بني سويف",
+    "category_id": 3,
+    "skills": ["بناء"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "08:00:00",
+      "schedule_type": "Morning",
+      "end_time": "12:00:00"
+    },
+    "user_id": 5
+  },
+  {
+    "title": "إصلاح باب",
+    "description": "أحتاج إلى إصلاح باب خشبي قديم في المنزل",
+    "date": "2024-09-25",
+    "budget": 120.0,
+    "location": { "longitude": 30.034032, "latitude": 29.98345 },
+    "address": "المنصورة",
+    "category_id": 4,
+    "skills": ["نجارة"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "10:00:00",
+      "schedule_type": "Morning",
+      "end_time": "12:00:00"
+    },
+    "user_id": 6
+  },
+  {
+    "title": "تركيب تكييف",
+    "description": "أريد تركيب تكييف جديد في غرفة النوم",
+    "date": "2024-09-30",
+    "budget": 600.0,
+    "location": { "longitude": 31.212345, "latitude": 30.123456 },
+    "address": "الزقازيق",
+    "category_id": 8,
+    "skills": ["تبريد وتكييف"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "13:00:00",
+      "schedule_type": "Afternoon",
+      "end_time": "15:30:00"
+    },
+    "user_id": 7
+  },
+  {
+    "title": "دهان باب معدني",
+    "description": "أحتاج إلى دهان باب معدني في المنزل",
+    "date": "2024-10-05",
+    "budget": 80.0,
+    "location": { "longitude": 31.987654, "latitude": 29.54321 },
+    "address": "دمياط",
+    "category_id": 6,
+    "skills": ["حدادة"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "09:00:00",
+      "schedule_type": "Morning",
+      "end_time": "11:00:00"
+    },
+    "user_id": 8
+  },
+  {
+    "title": "إصلاح تسريب غاز",
+    "description": "تسريب غاز في المطبخ يحتاج إلى إصلاح عاجل",
+    "date": "2024-10-10",
+    "budget": 300.0,
+    "location": { "longitude": 32.765432, "latitude": 31.123456 },
+    "address": "بورسعيد",
+    "category_id": 9,
+    "skills": ["سباكة وغاز"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "14:00:00",
+      "schedule_type": "Afternoon",
+      "end_time": "16:00:00"
+    },
+    "user_id": 9
+  },
+  {
+    "title": "تركيب نافذة خشبية",
+    "description": "أحتاج إلى تركيب نافذة خشبية جديدة في غرفة الجلوس",
+    "date": "2024-10-15",
+    "budget": 250.0,
+    "location": { "longitude": 31.456789, "latitude": 30.987654 },
+    "address": "الفيوم",
+    "category_id": 10,
+    "skills": ["نجارة خشب"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "10:00:00",
+      "schedule_type": "Morning",
+      "end_time": "12:30:00"
+    },
+    "user_id": 10
+  },
+
+  {
+    "title": "تسوية أرضية",
+    "description": "تسوية الأرضية في الحديقة الخلفية",
+    "date": "2024-10-20",
+    "budget": 300.0,
+    "location": { "longitude": 31.111111, "latitude": 29.222222 },
+    "address": "بني سويف",
+    "category_id": 3,
+    "skills": ["بناء"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "08:00:00",
+      "schedule_type": "Morning",
+      "end_time": "10:00:00"
+    },
+    "user_id": 1
+  },
+  {
+    "title": "استبدال سلك كهرباء",
+    "description": "استبدال سلك كهرباء معطل في السقف",
+    "date": "2024-10-21",
+    "budget": 150.0,
+    "location": { "longitude": 31.222222, "latitude": 30.333333 },
+    "address": "الجيزة",
+    "category_id": 2,
+    "skills": ["كهرباء"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "10:00:00",
+      "schedule_type": "Morning",
+      "end_time": "12:00:00"
+    },
+    "user_id": 2
+  },
+  {
+    "title": "تجديد دهانات الحائط",
+    "description": "تجديد دهانات الحائط في غرفة النوم",
+    "date": "2024-10-22",
+    "budget": 400.0,
+    "location": { "longitude": 31.333333, "latitude": 29.444444 },
+    "address": "الإسكندرية",
+    "category_id": 5,
+    "skills": ["دهانات"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "09:00:00",
+      "schedule_type": "Morning",
+      "end_time": "15:00:00"
+    },
+    "user_id": 3
+  },
+  {
+    "title": "إصلاح عطل في السخان",
+    "description": "إصلاح السخان الكهربائي في الحمام",
+    "date": "2024-10-23",
+    "budget": 200.0,
+    "location": { "longitude": 31.444444, "latitude": 30.555555 },
+    "address": "طنطا",
+    "category_id": 1,
+    "skills": ["سباكه"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "08:00:00",
+      "schedule_type": "Morning",
+      "end_time": "09:30:00"
+    },
+    "user_id": 4
+  },
+  {
+    "title": "تجديد السقف",
+    "description": "تجديد السقف المكسور في غرفة المعيشة",
+    "date": "2024-10-24",
+    "budget": 600.0,
+    "location": { "longitude": 31.555555, "latitude": 29.666666 },
+    "address": "المنصورة",
+    "category_id": 3,
+    "skills": ["بناء"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "09:00:00",
+      "schedule_type": "Morning",
+      "end_time": "12:00:00"
+    },
+    "user_id": 5
+  },
+  {
+    "title": "تركيب أبواب خشبية",
+    "description": "تركيب أبواب خشبية جديدة في المنزل",
+    "date": "2024-10-25",
+    "budget": 250.0,
+    "location": { "longitude": 31.666666, "latitude": 30.777777 },
+    "address": "بورسعيد",
+    "category_id": 10,
+    "skills": ["نجارة خشب"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "11:00:00",
+      "schedule_type": "Morning",
+      "end_time": "14:00:00"
+    },
+    "user_id": 6
+  },
+  {
+    "title": "إصلاح وصلة الغاز",
+    "description": "إصلاح وصلة الغاز المتسربة في المطبخ",
+    "date": "2024-10-26",
+    "budget": 250.0,
+    "location": { "longitude": 31.777777, "latitude": 29.888888 },
+    "address": "الفيوم",
+    "category_id": 9,
+    "skills": ["سباكة وغاز"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "14:00:00",
+      "schedule_type": "Afternoon",
+      "end_time": "16:00:00"
+    },
+    "user_id": 7
+  },
+  {
+    "title": "إصلاح نافذة مكسورة",
+    "description": "إصلاح نافذة مكسورة في المنزل",
+    "date": "2024-10-27",
+    "budget": 100.0,
+    "location": { "longitude": 31.888888, "latitude": 30.999999 },
+    "address": "دمياط",
+    "category_id": 10,
+    "skills": ["نجارة خشب"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "09:00:00",
+      "schedule_type": "Morning",
+      "end_time": "11:00:00"
+    },
+    "user_id": 8
+  },
+  {
+    "title": "تركيب تكييف مركزي",
+    "description": "أريد تركيب تكييف مركزي في المنزل",
+    "date": "2024-10-28",
+    "budget": 1200.0,
+    "location": { "longitude": 31.234567, "latitude": 30.345678 },
+    "address": "الإسكندرية",
+    "category_id": 8,
+    "skills": ["تبريد وتكييف"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "10:00:00",
+      "schedule_type": "Morning",
+      "end_time": "12:00:00"
+    },
+    "user_id": 9
+  },
+  {
+    "title": "دهان شرفة",
+    "description": "أحتاج إلى دهان شرفة المنزل",
+    "date": "2024-10-29",
+    "budget": 200.0,
+    "location": { "longitude": 31.345678, "latitude": 30.456789 },
+    "address": "بني سويف",
+    "category_id": 5,
+    "skills": ["دهانات"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "09:00:00",
+      "schedule_type": "Morning",
+      "end_time": "11:00:00"
+    },
+    "user_id": 10
+  },
+  {
+    "title": "تركيب إضاءة جديدة",
+    "description": "تركيب إضاءة جديدة في المطبخ",
+    "date": "2024-10-30",
+    "budget": 150.0,
+    "location": { "longitude": 31.456789, "latitude": 30.56789 },
+    "address": "القاهرة",
+    "category_id": 2,
+    "skills": ["كهرباء"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "15:00:00",
+      "schedule_type": "Afternoon",
+      "end_time": "17:00:00"
+    },
+    "user_id": 1
+  },
+  {
+    "title": "إصلاح باب حديدي",
+    "description": "إصلاح باب حديدي مكسور في الحديقة",
+    "date": "2024-10-31",
+    "budget": 100.0,
+    "location": { "longitude": 31.56789, "latitude": 30.678901 },
+    "address": "الجيزة",
+    "category_id": 6,
+    "skills": ["حدادة"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "14:00:00",
+      "schedule_type": "Afternoon",
+      "end_time": "15:30:00"
+    },
+    "user_id": 2
+  },
+  {
+    "title": "إصلاح برميل مياه",
+    "description": "إصلاح برميل مياه معطل في الحديقة",
+    "date": "2024-11-01",
+    "budget": 80.0,
+    "location": { "longitude": 31.678901, "latitude": 30.789012 },
+    "address": "طنطا",
+    "category_id": 1,
+    "skills": ["سباكه"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "10:00:00",
+      "schedule_type": "Morning",
+      "end_time": "12:00:00"
+    },
+    "user_id": 3
+  },
+  {
+    "title": "تثبيت أثاث",
+    "description": "تثبيت أثاث في الصالة",
+    "date": "2024-11-02",
+    "budget": 50.0,
+    "location": { "longitude": 31.789012, "latitude": 29.890123 },
+    "address": "الإسكندرية",
+    "category_id": 4,
+    "skills": ["نجارة"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "09:00:00",
+      "schedule_type": "Morning",
+      "end_time": "11:00:00"
+    },
+    "user_id": 4
+  },
+  {
+    "title": "تثبيت كاميرات مراقبة",
+    "description": "تثبيت كاميرات مراقبة في المنزل",
+    "date": "2024-11-03",
+    "budget": 500.0,
+    "location": { "longitude": 31.890123, "latitude": 30.901234 },
+    "address": "بورسعيد",
+    "category_id": 7,
+    "skills": ["كاميرات"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "15:00:00",
+      "schedule_type": "Afternoon",
+      "end_time": "17:00:00"
+    },
+    "user_id": 5
+  },
+  {
+    "title": "ترتيب حديقة",
+    "description": "تنظيف وترتيب الحديقة",
+    "date": "2024-11-04",
+    "budget": 150.0,
+    "location": { "longitude": 31.901234, "latitude": 30.012345 },
+    "address": "المنصورة",
+    "category_id": 3,
+    "skills": ["تنسيق حدائق"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "08:00:00",
+      "schedule_type": "Morning",
+      "end_time": "10:00:00"
+    },
+    "user_id": 6
+  },
+  {
+    "title": "تنظيف شرفة",
+    "description": "تنظيف شرفة المنزل",
+    "date": "2024-11-05",
+    "budget": 100.0,
+    "location": { "longitude": 31.012345, "latitude": 29.123456 },
+    "address": "الفيوم",
+    "category_id": 5,
+    "skills": ["تنظيف"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "09:00:00",
+      "schedule_type": "Morning",
+      "end_time": "11:00:00"
+    },
+    "user_id": 7
+  },
+  {
+    "title": "توصيل أنابيب الغاز",
+    "description": "توصيل أنابيب الغاز إلى المطبخ",
+    "date": "2024-11-06",
+    "budget": 200.0,
+    "location": { "longitude": 31.123456, "latitude": 30.234567 },
+    "address": "دمياط",
+    "category_id": 1,
+    "skills": ["سباكة وغاز"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "10:00:00",
+      "schedule_type": "Morning",
+      "end_time": "12:00:00"
+    },
+    "user_id": 8
+  },
+  {
+    "title": "تركيب خزائن",
+    "description": "تركيب خزائن جديدة في غرفة النوم",
+    "date": "2024-11-07",
+    "budget": 700.0,
+    "location": { "longitude": 31.234567, "latitude": 30.345678 },
+    "address": "القاهرة",
+    "category_id": 4,
+    "skills": ["نجارة"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "15:00:00",
+      "schedule_type": "Afternoon",
+      "end_time": "17:00:00"
+    },
+    "user_id": 9
+  },
+  {
+    "title": "تنظيف وتلميع أرضية",
+    "description": "تنظيف وتلميع أرضية المنزل",
+    "date": "2024-11-08",
+    "budget": 150.0,
+    "location": { "longitude": 31.345678, "latitude": 30.456789 },
+    "address": "الجيزة",
+    "category_id": 5,
+    "skills": ["تنظيف"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "10:00:00",
+      "schedule_type": "Morning",
+      "end_time": "12:00:00"
+    },
+    "user_id": 10
+  },
+  {
+    "title": "إصلاح تسرب مياه",
+    "description": "إصلاح تسرب مياه في الحمام",
+    "date": "2024-11-09",
+    "budget": 200.0,
+    "location": { "longitude": 31.456789, "latitude": 30.56789 },
+    "address": "بني سويف",
+    "category_id": 1,
+    "skills": ["سباكه"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "14:00:00",
+      "schedule_type": "Afternoon",
+      "end_time": "16:00:00"
+    },
+    "user_id": 1
+  },
+  {
+    "title": "صيانة تكييف",
+    "description": "صيانة وإصلاح تكييف الهواء",
+    "date": "2024-11-10",
+    "budget": 300.0,
+    "location": { "longitude": 31.56789, "latitude": 30.678901 },
+    "address": "الإسكندرية",
+    "category_id": 8,
+    "skills": ["تبريد وتكييف"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "10:00:00",
+      "schedule_type": "Morning",
+      "end_time": "12:00:00"
+    },
+    "user_id": 2
+  },
+  {
+    "title": "تركيب سيراميك",
+    "description": "تركيب سيراميك جديد في الحمام",
+    "date": "2024-11-11",
+    "budget": 600.0,
+    "location": { "longitude": 31.678901, "latitude": 30.789012 },
+    "address": "المنصورة",
+    "category_id": 3,
+    "skills": ["سيراميك"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "09:00:00",
+      "schedule_type": "Morning",
+      "end_time": "15:00:00"
+    },
+    "user_id": 3
+  },
+  {
+    "title": "فحص كهرباء",
+    "description": "فحص الكهرباء في المنزل للتأكد من الأمان",
+    "date": "2024-11-12",
+    "budget": 120.0,
+    "location": { "longitude": 31.789012, "latitude": 29.890123 },
+    "address": "القاهرة",
+    "category_id": 2,
+    "skills": ["كهرباء"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "08:00:00",
+      "schedule_type": "Morning",
+      "end_time": "09:00:00"
+    },
+    "user_id": 4
+  },
+  {
+    "title": "تنظيف كنب",
+    "description": "تنظيف كنب الصالة",
+    "date": "2024-11-13",
+    "budget": 100.0,
+    "location": { "longitude": 31.890123, "latitude": 30.901234 },
+    "address": "بورسعيد",
+    "category_id": 5,
+    "skills": ["تنظيف"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "14:00:00",
+      "schedule_type": "Afternoon",
+      "end_time": "16:00:00"
+    },
+    "user_id": 5
+  },
+  {
+    "title": "توصيل الإنترنت",
+    "description": "توصيل خدمة الإنترنت إلى المنزل",
+    "date": "2024-11-14",
+    "budget": 150.0,
+    "location": { "longitude": 31.901234, "latitude": 30.012345 },
+    "address": "الفيوم",
+    "category_id": 7,
+    "skills": ["تكنولوجيا المعلومات"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "09:00:00",
+      "schedule_type": "Morning",
+      "end_time": "11:00:00"
+    },
+    "user_id": 6
+  },
+  {
+    "title": "تنظيف السجاد",
+    "description": "تنظيف السجاد في غرفة المعيشة",
+    "date": "2024-11-15",
+    "budget": 80.0,
+    "location": { "longitude": 31.012345, "latitude": 29.123456 },
+    "address": "دمياط",
+    "category_id": 5,
+    "skills": ["تنظيف"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "10:00:00",
+      "schedule_type": "Morning",
+      "end_time": "12:00:00"
+    },
+    "user_id": 7
+  },
+  {
+    "title": "إصلاح غسالة",
+    "description": "إصلاح غسالة الملابس",
+    "date": "2024-11-16",
+    "budget": 200.0,
+    "location": { "longitude": 31.123456, "latitude": 30.234567 },
+    "address": "القاهرة",
+    "category_id": 8,
+    "skills": ["أجهزة منزلية"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "10:00:00",
+      "schedule_type": "Morning",
+      "end_time": "12:00:00"
+    },
+    "user_id": 8
+  },
+  {
+    "title": "توصيل أثاث",
+    "description": "توصيل أثاث جديد إلى المنزل",
+    "date": "2024-11-17",
+    "budget": 120.0,
+    "location": { "longitude": 31.234567, "latitude": 30.345678 },
+    "address": "الجيزة",
+    "category_id": 4,
+    "skills": ["نقل"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "09:00:00",
+      "schedule_type": "Morning",
+      "end_time": "11:00:00"
+    },
+    "user_id": 9
+  },
+  {
+    "title": "فحص الغاز",
+    "description": "فحص نظام الغاز في المنزل",
+    "date": "2024-11-18",
+    "budget": 100.0,
+    "location": { "longitude": 31.345678, "latitude": 30.456789 },
+    "address": "بني سويف",
+    "category_id": 1,
+    "skills": ["سباكة وغاز"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "14:00:00",
+      "schedule_type": "Afternoon",
+      "end_time": "16:00:00"
+    },
+    "user_id": 1
+  },
+  {
+    "title": "تنظيف نافذة",
+    "description": "تنظيف نافذة غرفة المعيشة",
+    "date": "2024-11-19",
+    "budget": 50.0,
+    "location": { "longitude": 31.456789, "latitude": 30.56789 },
+    "address": "الإسكندرية",
+    "category_id": 5,
+    "skills": ["تنظيف"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "08:00:00",
+      "schedule_type": "Morning",
+      "end_time": "09:00:00"
+    },
+    "user_id": 2
+  },
+  {
+    "title": "تركيب صنبور",
+    "description": "تركيب صنبور في المطبخ",
+    "date": "2024-11-20",
+    "budget": 100.0,
+    "location": { "longitude": 31.56789, "latitude": 30.678901 },
+    "address": "المنصورة",
+    "category_id": 1,
+    "skills": ["سباكة"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "10:00:00",
+      "schedule_type": "Morning",
+      "end_time": "12:00:00"
+    },
+    "user_id": 3
+  },
+  {
+    "title": "فحص تسرب مياه",
+    "description": "فحص تسرب مياه في الأنابيب",
+    "date": "2024-11-21",
+    "budget": 80.0,
+    "location": { "longitude": 31.678901, "latitude": 30.789012 },
+    "address": "دمياط",
+    "category_id": 1,
+    "skills": ["سباكة"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "14:00:00",
+      "schedule_type": "Afternoon",
+      "end_time": "16:00:00"
+    },
+    "user_id": 4
+  },
+  {
+    "title": "تنظيف سيارة",
+    "description": "تنظيف السيارة من الداخل والخارج",
+    "date": "2024-11-22",
+    "budget": 80.0,
+    "location": { "longitude": 31.789012, "latitude": 29.890123 },
+    "address": "القاهرة",
+    "category_id": 5,
+    "skills": ["تنظيف"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "10:00:00",
+      "schedule_type": "Morning",
+      "end_time": "12:00:00"
+    },
+    "user_id": 5
+  },
+  {
+    "title": "تركيب مكيف",
+    "description": "تركيب مكيف هواء جديد",
+    "date": "2024-11-23",
+    "budget": 400.0,
+    "location": { "longitude": 31.890123, "latitude": 30.901234 },
+    "address": "الجيزة",
+    "category_id": 8,
+    "skills": ["تبريد وتكييف"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "10:00:00",
+      "schedule_type": "Morning",
+      "end_time": "12:00:00"
+    },
+    "user_id": 6
+  },
+  {
+    "title": "إصلاح فرن",
+    "description": "إصلاح فرن المطبخ",
+    "date": "2024-11-24",
+    "budget": 200.0,
+    "location": { "longitude": 31.901234, "latitude": 30.012345 },
+    "address": "الإسكندرية",
+    "category_id": 8,
+    "skills": ["أجهزة منزلية"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "15:00:00",
+      "schedule_type": "Afternoon",
+      "end_time": "17:00:00"
+    },
+    "user_id": 7
+  },
+  {
+    "title": "تسليم أثاث",
+    "description": "تسليم أثاث جديد للعميل",
+    "date": "2024-11-25",
+    "budget": 100.0,
+    "location": { "longitude": 31.234567, "latitude": 30.345678 },
+    "address": "بني سويف",
+    "category_id": 4,
+    "skills": ["نقل"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "14:00:00",
+      "schedule_type": "Afternoon",
+      "end_time": "16:00:00"
+    },
+    "user_id": 8
+  },
+  {
+    "title": "تنظيف حيوانات أليفة",
+    "description": "تنظيف ورعاية الحيوانات الأليفة",
+    "date": "2024-11-26",
+    "budget": 70.0,
+    "location": { "longitude": 31.345678, "latitude": 30.456789 },
+    "address": "دمياط",
+    "category_id": 5,
+    "skills": ["رعاية حيوانات"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "09:00:00",
+      "schedule_type": "Morning",
+      "end_time": "11:00:00"
+    },
+    "user_id": 9
+  },
+  {
+    "title": "تثبيت تلفاز",
+    "description": "تثبيت تلفاز في غرفة المعيشة",
+    "date": "2024-11-27",
+    "budget": 100.0,
+    "location": { "longitude": 31.456789, "latitude": 30.56789 },
+    "address": "القاهرة",
+    "category_id": 6,
+    "skills": ["أجهزة إلكترونية"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "10:00:00",
+      "schedule_type": "Morning",
+      "end_time": "12:00:00"
+    },
+    "user_id": 10
+  },
+  {
+    "title": "إزالة غطاء السجاد",
+    "description": "إزالة غطاء السجاد القديم",
+    "date": "2024-11-28",
+    "budget": 80.0,
+    "location": { "longitude": 31.56789, "latitude": 30.678901 },
+    "address": "الإسكندرية",
+    "category_id": 5,
+    "skills": ["تنظيف"],
+    "status": "Pending",
+    "schedule": {
+      "start_time": "14:00:00",
+      "schedule_type": "Afternoon",
+      "end_time": "16:00:00"
+    },
+    "user_id": 1
+  }
+]
