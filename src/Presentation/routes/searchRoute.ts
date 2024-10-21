@@ -43,4 +43,6 @@ router.get(
   searchController.tasksSearch.bind(searchController)
 );
 
+router.get("/search/taskers", searchController.taskerSearch.bind(searchController));
+
 export default router;

@@ -8,6 +8,7 @@ import { ITaskerRepository } from "../interfaces/User/Tasker/ITaskerRepository";
 import { IRoleRepository } from "../interfaces/User/IRoleRepository";
 import { Role } from "@/Domain/entities/role";
 import { generateToken } from "@/helpers/tokenHelpers";
+import { HTTP500Error } from "@/helpers/ApiError";
 
 @injectable()
 export class TaskerService implements ITaskerService {
@@ -70,6 +71,41 @@ export class TaskerService implements ITaskerService {
 
     async deleteTasker(id: number): Promise<string | undefined> {
          return  await this.taskerRepository.deleteTasker(id);
+    }
+
+    async getTaskerFeed(match:any):Promise<any | undefined>{
+
+        const {page, limit} = match;
+
+        
+        const offset = (page - 1) * limit;
+        match.offset = offset;
+
+        const taskers = await this.taskerRepository.getTaskerFeed(match);
+
+        if (!taskers) throw new HTTP500Error('not found any tasker about this data');
+
+        const totalTaser = taskers[0].totaltaskerscount;
+
+        const totalPages = Math.ceil(totalTaser / limit);
+
+        let prevPage = 1, nextPage=1;
+
+        if(page>1) prevPage = page -1;
+
+        if (page<totalPages) nextPage = page +1;
+
+        const pagination={
+            page,
+            totalPages,
+            prevPage,
+            nextPage,
+            limit
+        }
+
+        return { taskers, pagination}
+
+
     }
 
     // async getTaskerByUserId(userId: number): Promise<Tasker | undefined> {

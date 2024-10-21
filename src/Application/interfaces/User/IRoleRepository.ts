@@ -13,5 +13,7 @@ export interface IRoleRepository {
 
     deleteRole(id: number): Promise<string>;
     getRoleByUserId(userId: number): Promise<Role>;
+    
+    
 
 }
