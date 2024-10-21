@@ -54,20 +54,21 @@ export class SearchService implements ISearchService {
       }
 
         // const totalTasker = this.searchRepository.;
-        const totalTasker =Number(taskers[0].totaltasker);
+        let totalTasker =Number(taskers[0]?.totaltasker);
     
         console.log('totalTasker',totalTasker);
 
+        totalTasker = totalTasker? totalTasker: 1;
         // calculate all total page specify by tasker 
-        const totalPages = Math.round(totalTasker/limit);
+        const totalPages = Math.ceil(totalTasker/limit);
 
         let prevPage =1, nextPage=1;
 
         // find prevPage if page great than equal current page 
-        if(page>1) prevPage = page -1;
+        if( page > 1 ) prevPage = page -1;
 
         // can move to next page when  current page less than totalPages
-        if ( page< totalPages )  nextPage = page +1;
+        if ( page < totalPages )  nextPage = page + 1;
 
         const pagination={
             page,

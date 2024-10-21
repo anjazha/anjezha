@@ -51,10 +51,11 @@ taskerRouter.post('/become-tasker', isAuth, taskerController.addTasker.bind(task
 taskerRouter.get('/about-tasker', isAuth,allowTo('tasker'), taskerController.getTaskerByUserId.bind(taskerController));
 // taskerRouter.get('/about-tasker/:taskerId', taskerController.getTasker.bind(taskerController));
 // 
+taskerRouter.get('/tasker/feed', taskerController.getTaskerFeed.bind(taskerController));
+
 taskerRouter.get('/tasker/:taskerId', taskerController.getTaskerById.bind(taskerController));
 
 // taskerRouter.get('/tasker', taskerController.getAllTaskers.bind(taskerController));
-taskerRouter.get('/tasker/feed', taskerController.getTaskerFeed.bind(taskerController));
 
 taskerRouter.put('/update-tasker', isAuth, allowTo('tasker'), taskerController.updateTasker.bind(taskerController));
 
