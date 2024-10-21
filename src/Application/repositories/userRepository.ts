@@ -185,10 +185,14 @@ export class UserRepository implements IUserRepository {
 
       
       const { rows } = await this.client.query(query, values);
-    // await disconnectDB();
-     const {name, email, password, phone_number, profile_picture } = rows[0]
+      console.log(rows);
 
-    return  new User(name, email, password, phone_number, profile_picture);
+      if(rows.length === 0) return null;
+    // await disconnectDB();
+      const {name, email, password, phone_number, profile_picture } = rows[0];
+      // console.log(name, email, password, phone_number, profile_picture);
+  
+      return new User(name, email, password, phone_number, profile_picture, id);
     
     
     } catch(err:any){

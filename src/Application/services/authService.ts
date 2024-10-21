@@ -29,10 +29,15 @@ export class AuthService implements IAuthService {
     }
 
 
+    async getUserByEmail(email:string):Promise<any>{
+        return await this.userRepository.findByEmail(email)
+    }
+
+
      async checkCodeValid(email:string) : Promise<Boolean>{
 
 
-       return await this.userRepository.checkEmailConfirmation(email)
+       return await this.userRepository.checkEmailConfirmation(email);
         
      }
 
@@ -143,9 +148,10 @@ export class AuthService implements IAuthService {
             const user = await this.userRepository.findByEmail(email);
 
             if(!user){
-                throw new Error('User not found');
+                throw new Error('User not exist');
             }
 
+            // console.log(user.id);
             // generate token
             const token =  generateToken({userId:Number(user?.id)}, '15m');
 
@@ -187,22 +193,26 @@ export class AuthService implements IAuthService {
         }
 
 
+
             const userId = Number(decoded.userId);
 
             console.log("userId", userId);
+            
 
             const user = await this.userRepository.findById(userId);
 
             const role = await this.roleRepository.getRoleByUserId(userId);
             
             // check if user exists   // handle unit test 7
-            if (!user) {
-                throw new Error('User not found');
+            if (!user || !role) {
+                throw new Error('User or role not found');
             }
             
             const hashedPassword = await hasPass(newPassword, 10);
             user.password = hashedPassword;
-            user.id=+userId;
+            user.id= +userId;
+            
+            
             
             await this.userRepository.update(Number(userId), user);
 

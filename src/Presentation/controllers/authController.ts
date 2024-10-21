@@ -8,7 +8,7 @@ import { INotificationService } from "@/Application/interfaces/Notification/INot
 import { Notification } from "@/Domain/entities/Notification";
 import { ENOTIFICATION_TYPES } from "@/Application/interfaces/enums/ENotificationTypes";
 import { HTTP500Error } from "@/helpers/ApiError";
-import { verfiyEmail } from "@/helpers/generateCode";
+import { verfiyEmail } from "@/helpers/verfiyEmail";
 
 
 @injectable()
@@ -18,7 +18,11 @@ export class AuthController {
        async sendCode(req:Request, res:Response, next:NextFunction){
         const { email} = req.body;
         req.body.email = email;
-    
+
+        const user = await this.authService.getUserByEmail(email);
+
+        if(user) return next(new HTTP500Error("User already exists... login or reset-password"));
+
          await verfiyEmail.handleEmailVerification(email);
 
          res.status(200).json({message: 'Code sent to your email'});
@@ -26,10 +30,12 @@ export class AuthController {
 
        async verifyCode(req:Request, res:Response, next:NextFunction){
 
-         const {code,email} = req.body;
+         const {code, email} = req.body;
     
          // check code okay or  not if code true return true else throw error
-         await verfiyEmail.verifyCode(email, code);
+         const verfiedCode = await verfiyEmail.verifyCode(email, code);
+
+         if(!verfiedCode) return next(new HTTP500Error("Code not valid"));
 
          res.status(200).json({message: 'Code verified'});
 
@@ -117,7 +123,7 @@ export class AuthController {
             
             res.status(200).json({ newToken });
                 } catch(err : any){
-                    next(new HTTP500Error("An error ocurred " + err.message))
+                    next(new HTTP500Error("An error ocurred " + err.message + err.stack))
                 }
         }
 
