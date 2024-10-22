@@ -55,7 +55,7 @@ export class App {
                 origin: allowedOrigins,
                 methods: ['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'PATCH'],
                 credentials: true,
-                allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
+                allowedHeaders: ['Content-Type', 'Authorization', 'token'], // Allowed headers
             };
 
             // handle 

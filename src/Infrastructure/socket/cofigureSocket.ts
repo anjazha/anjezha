@@ -58,6 +58,7 @@ export const setupSocket = (server: Server): void => {
       origin: allowedOrigins,
       methods: ["GET", "POST", "PUT", "DELETE"],
       credentials: true,
+      allowedHeaders: ['token'] // Add 'token' here
     },
   });
 
