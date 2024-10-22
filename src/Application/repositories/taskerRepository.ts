@@ -443,10 +443,9 @@ async search(q: string = "", filters: any, sortBy: string): Promise<any[] | unde
         LEFT JOIN skills sks ON sks.id = tsk.skill_id
         LEFT JOIN reviews rvs ON ts.id = rvs.tasker_id
       WHERE 
-        (to_tsvector('english', coalesce(us.name, '') || ' ' || coalesce(ts.bio, '') || ' ' || coalesce(sks.name, '')) @@ to_tsquery($1)
-          OR
-         to_tsvector('arabic', coalesce(us.name, '') || ' ' || coalesce(ts.bio, '') || ' ' || coalesce(sks.name, '')) @@ to_tsquery($1))
-    `;
+        (to_tsvector('english', coalesce(us.name, '') || ' ' || coalesce(ts.bio, '') || ' ' || coalesce(sks.name, '')) @@ plainto_tsquery('english', $1)
+         OR
+         to_tsvector('arabic', coalesce(us.name, '') || ' ' || coalesce(ts.bio, '') || ' ' || coalesce(sks.name, '')) @@ plainto_tsquery('arabic', $1))`;
 
     // Handle filters
     if (category) {
