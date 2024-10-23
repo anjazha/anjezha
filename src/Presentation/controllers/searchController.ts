@@ -70,7 +70,7 @@ export class SearchController {
     // } = req.query;
     
     // Convert to numbers where applicable
-     const q = String(req.query.q);
+     const q = String(req.query.q).trim();
      const sortBy= req.query.sortBy;
      const category =  Number(req.query.category);
      const minBudget = Number(req.query.minBudget);

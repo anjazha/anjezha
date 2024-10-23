@@ -445,7 +445,17 @@ async search(q: string = "", filters: any, sortBy: string): Promise<any[] | unde
       WHERE 
         (to_tsvector('english', coalesce(us.name, '') || ' ' || coalesce(ts.bio, '') || ' ' || coalesce(sks.name, '')) @@ plainto_tsquery('english', $1)
          OR
-         to_tsvector('arabic', coalesce(us.name, '') || ' ' || coalesce(ts.bio, '') || ' ' || coalesce(sks.name, '')) @@ plainto_tsquery('arabic', $1))`;
+         to_tsvector('arabic', coalesce(us.name, '') || ' ' || coalesce(ts.bio, '') || ' ' || coalesce(sks.name, '')) @@ plainto_tsquery('arabic', $1)
+         ) 
+         OR
+         (
+              coalesce(us.name, '') ILIKE '%' || $1 || '%'
+               OR
+              coalesce(ts.bio, '') ILIKE '%' || $1 || '%'
+               OR
+              coalesce(sks.name, '') ILIKE '%' || $1 || '%'
+          )
+          `;
 
     // Handle filters
     if (category) {
