@@ -75,8 +75,6 @@ export class App {
         this.app.use(express.urlencoded({extended: true}))
 
 
-        // this.app.set('allow-access-contorl', 'https://e-learning-0wji.onrender.com/' )
-
        
   }
 
