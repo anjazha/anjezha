@@ -51,13 +51,18 @@ export class App {
             'https://www.anjez.tech',
         ];
 
-       const options: CorsOptions = {
-                origin: allowedOrigins,
-                methods: ['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'PATCH'],
-                credentials: true,
-                allowedHeaders: ['Content-Type', 'Authorization', 'token'], // Allowed headers
-            };
-
+        const corsOptions: CorsOptions = {
+            origin: (origin, callback) => {
+                if (allowedOrigins.includes(origin || '')) {
+                    callback(null, true);
+                } else {
+                    callback(new Error('Not allowed by CORS'));
+                }
+            },
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'PATCH'],
+            credentials: true,
+            allowedHeaders: ['Content-Type', 'Authorization', 'token'],
+        };
             // handle 
             
         // this.app.use((req:Request, res:Response, next:NextFunction) => {
@@ -68,8 +73,8 @@ export class App {
         //  });
 
           // preflight request // crendtails 
-        this.app.use(cors(options))
-        this.app.options('*', cors(options));
+        this.app.use(cors(corsOptions))
+        this.app.options('*', cors(corsOptions));
         this.app.use(compression())
         this.app.use(express.json())
         this.app.use(bodyParser.json({ type: 'application/json; charset=utf-8' }));
