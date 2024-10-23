@@ -449,6 +449,7 @@ async search(q: string = "", filters: any, sortBy: string): Promise<any[] | unde
          ) 
          OR
          (
+         -- coalesce(us.name, '') like '%' || $1 || '%'
               coalesce(us.name, '') ILIKE '%' || $1 || '%'
                OR
               coalesce(ts.bio, '') ILIKE '%' || $1 || '%'
