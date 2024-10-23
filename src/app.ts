@@ -52,13 +52,7 @@ export class App {
         ];
 
         const corsOptions: CorsOptions = {
-            origin: (origin, callback) => {
-                if (allowedOrigins.includes(origin || '')) {
-                    callback(null, true);
-                } else {
-                    callback(new Error('Not allowed by CORS'));
-                }
-            },
+            origin: allowedOrigins,
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'PATCH'],
             credentials: true,
             allowedHeaders: ['Content-Type', 'Authorization', 'token'],
