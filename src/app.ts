@@ -74,7 +74,7 @@ export class App {
 
           // preflight request // crendtails 
         this.app.use(cors(corsOptions))
-        this.app.options('*', cors(corsOptions));
+        // this.app.options('*', cors(corsOptions));
         this.app.use(compression())
         this.app.use(express.json())
         this.app.use(bodyParser.json({ type: 'application/json; charset=utf-8' }));
