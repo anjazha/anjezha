@@ -134,6 +134,7 @@ export class TaskController {
       category_id,
       schedule,
       skills,
+      attachments
     } = req.body;
     const task = new Task(
       +req.userId!,
@@ -146,7 +147,7 @@ export class TaskController {
       status,
       category_id,
       schedule,
-      [],
+      attachments,
       skills
     );
     const [error, updatedTask] = await safePromise(() =>

@@ -156,6 +156,7 @@ export class TaskRepository implements ITaskRepository {
         );
         if (error) throw new Error(error);
 
+        // console.log("attachments", task.attachments)
         task.attachments.forEach(
           async (attachment: {
             file_type: string;
@@ -294,7 +295,10 @@ GROUP BY
             t.address,
             tc.category as category,
             ARRAY_AGG(distinct ts.name) AS skills,  
-            ARRAY_AGG(distinct ta.file_path) AS attachmets ,
+            COALESCE(
+            ARRAY_AGG(DISTINCT jsonb_build_object('url', ta.file_path, 'size', ta.file_size, 'type', ta.file_type)),
+            NULL
+            ) AS attachments, 
             s.status,
             sch.schedule_type,
             sch.start_time,
@@ -416,7 +420,9 @@ GROUP BY
     }
 
     searchQ += ` ORDER BY ${
-      sortBy === "relevance" ? " rank DESC" : `t.${sortBy=='newest'?'created_at':sortBy} DESC`
+      sortBy === "relevance"
+        ? " rank DESC"
+        : `t.${sortBy == "newest" ? "created_at" : sortBy} DESC`
     }`;
     searchQ += ` OFFSET ${filters.limit * (filters.page - 1)} LIMIT ${
       filters.limit

@@ -27,7 +27,7 @@ router.route('/tasks')
 
 router.route('/tasks/:taskId')
         .get(taskController.getTaskById.bind(taskController))
-        .put(isAuth, updateTaskValidations,taskController.updateTask.bind(taskController))
+        .put(isAuth,filesUpload("attachments", "tasks"), updateTaskValidations,taskController.updateTask.bind(taskController))
         .delete(isAuth, taskController.deleteTask.bind(taskController))
 
 
