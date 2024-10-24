@@ -193,15 +193,21 @@ export class TaskerRepository implements ITaskerRepository {
 
     async updateTasker(tasker: Tasker): Promise<string | undefined> {
       
-        try {
-
+        // try {  {categoryId , bio, pricing }
             let query = `UPDATE taskers SET `;
-            const values = [];
+            const values:any = [];
+            let idx = values.length + 1;
 
             // loop through tasker object and build query
             for (const key in tasker) {
-                if (key !== 'id') {
-                    query += `${key} = $${values.length + 1}, `;
+                if (key !== 'id' && key !== "userId") {
+                    let dbKey;
+                    if(key === 'categoryId')  dbKey = 'category_id';
+                    // if(key === 'userId')  dbKey = 'user_id';
+                    else dbKey = key;
+
+            
+                    query += `${dbKey} = $${idx++}, `;
                     values.push((tasker as any)[key]);
                 }
             }
@@ -210,15 +216,30 @@ export class TaskerRepository implements ITaskerRepository {
             query = query.slice(0, -2);
 
             // add where clause to query
-            query += ` WHERE user_id = ${tasker.userId}`;
+            query += ` WHERE user_id = $${idx}`;
+            values.push(tasker['userId'])
+            // query += ` returning *`
 
-            await this.client.query(query, values);
+            console.log(query);
+            console.log(values);
 
-            return 'Tasker updated successfully';
+            const [error, result] =  await safePromise(() =>  this.client.query(query, values));
 
-        } catch (error:any) {
-            throw new HTTP500Error('An error occurred ' + error.message + error.stack);
-        } 
+            console.log(result.rows);
+
+            
+            if (error) {
+                throw new HTTP500Error(`An error occurred + ${error.message} + ${error.stack}`);
+                console.log(error.message);
+                console.log(error.stack);
+            } 
+
+            // if(result.rows.length == 0) throw {};
+
+            // console.log(result.rows[0])
+
+            // const {user_id, }
+            return  'tasker updated'
         // finally {
         //     this.client.release();
         // }

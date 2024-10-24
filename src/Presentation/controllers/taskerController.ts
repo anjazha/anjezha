@@ -81,15 +81,24 @@ export class TaskerController {
     }
 
     public async updateTasker(req: RequestWithUserId, res: Response, next:NextFunction) {
-        try {
-            const id = Number(req.userId);
-            const tasker = req.body;
-            tasker.id = id;
-            const updateTasker = await this.taskerService.updateTasker(tasker);
-            res.status(200).json(updateTasker);
-        } catch (error : any) {
-            next(error);
-        }
+        const tasker = req.body;
+        console.log(tasker);
+
+            const userId = Number(req.userId);
+            tasker.userId = userId;
+
+            const [error, result] = await safePromise( () =>{ 
+                return this.taskerService.updateTasker(tasker)
+            });
+ 
+                // console.log(error.message);
+                // console.log(error.stack);
+
+                
+            if(error) return next(new HTTP500Error(error.message + error.stack));
+
+            res.status(200).json({tasker:result});
+        
     }
 
     public async deleteTasker(req: RequestWithUserId, res: Response, next:NextFunction) {

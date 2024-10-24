@@ -66,7 +66,7 @@ export class TaskerService implements ITaskerService {
     }
 
     async updateTasker(tasker: Tasker): Promise<string | undefined> {
-         return  await this.taskerRepository.updateTasker(tasker);
+         return await this.taskerRepository.updateTasker(tasker);
     }
 
     async deleteTasker(id: number): Promise<string | undefined> {
@@ -82,8 +82,8 @@ export class TaskerService implements ITaskerService {
         match.offset = offset;
 
         const taskers = await this.taskerRepository.getTaskerFeed(match);
-
-        if (!taskers) throw new HTTP500Error('not found any tasker about this data');
+        // HTTP500Error('not found any tasker about this data')
+        if (!taskers) throw  [];
 
         const totalTaser = taskers[0].totaltaskerscount;
 
