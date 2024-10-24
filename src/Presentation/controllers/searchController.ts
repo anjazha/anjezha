@@ -88,7 +88,7 @@ export class SearchController {
            // calc offest to skip 
            const offset = (pageNum - 1 ) * limitNum;
 
-           maxDistance = maxDistance? maxDistance:10;
+           maxDistance = maxDistance? maxDistance:100;
 
           
           //  console.log(offset)
