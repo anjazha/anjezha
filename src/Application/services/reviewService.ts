@@ -25,8 +25,9 @@ export class ReviewService implements IReviewService {
                 throw new HTTP400Error("Tasker id is required");
             }
 
+            console.log(review, taskerId)
             // check if taskerId is equal to userId
-            if (+tasker.userId! === +review.User! || +taskerId! === +tasker.id! ) 
+            if (+tasker.userId! === +review.User!  ) 
                 throw new HTTP400Error("You can't write review to yourself");
 
 
