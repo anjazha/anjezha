@@ -8,6 +8,7 @@ export interface IProfileService {
     updateProfilePicture(userID:number, data: any): Promise<any>;
     changePassword: (userId: number, oldPassword: string, newPassword: string) => Promise<string>;
     logout: (userId: number) => Promise<void>;
+    deleteProfileTasker: (userId: number, taskerId: number) => Promise<string>;
 
     // getProfile(): Promise<any>;
 

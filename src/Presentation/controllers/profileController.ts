@@ -55,6 +55,17 @@ export class ProfileController {
         }
     }
 
+    async deleteProfileTasker(req: RequestWithUserId, res: Response, next: NextFunction) {
+        const userId = Number(req.userId);
+        const {taskerId} = req.body;
+        try{
+            const profile = await this.profileService.deleteProfileTasker(userId, taskerId);
+            res.status(200).json(profile);
+        } catch(err:any){
+            next(new HTTP500Error(`An error occurred message:${err.message}\n stack:${err.stack}`));
+        }
+    }
+
     async updateProfilePicture(req: RequestWithUserId, res: Response, next: NextFunction) {
         const userId = Number(req.userId);
         const {imageUrl : profilePicture} = req.body;

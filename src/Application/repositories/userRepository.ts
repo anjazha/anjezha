@@ -219,15 +219,51 @@ export class UserRepository implements IUserRepository {
     
   }
 
-async delete(id: number): Promise<string> {
-   try{ // await connectDB();
-    await this.client.query("DELETE FROM users WHERE id = $1", [id]);
+  async delete(id: number): Promise<string> {
+    
+    const query = `
+           DELETE FROM users WHERE id = $1
+           delete from roles where user_id = $1
+           delete from tasks where user_id = $1
+     `
+
+     const [error, result] = await safePromise(() => this.client.query(query, [id]));
+
+      if(error) throw new HTTP500Error(error.message);
+
+      return result.rowCount === 0? 'user not found': 'user deleted';
+  }
+
+async deleteProfileTasker(userId: number, taskerId:number): Promise<string> {
+  //  try{ // await connectDB();
+
+  if(!userId || !taskerId) throw new HTTP500Error('user or taskr id is missing');
+
+    const query = `
+              begin;
+                 DELETE FROM users WHERE id = $1
+                 delete from email_confirmations where email = (select email from users where id = $1)
+                 delete from user_roles where user_id = $1
+                 delete from user_tasks where user_id = $1
+                 delete from applies where tasker_id = $2
+                 delete from conversations where sender = $1 or receiver = $1
+                 delete from messages where conversation_id in (select id from conversations where sender = $1 or receiver = $1)
+                 delete from notifications where user_id = $1
+              commit;
+    `
+    const [error, result] = await safePromise( () => this.client.query(query, [userId, taskerId]));
+
+    if(error) throw new HTTP500Error(error.message);
+
+    if(result.rowCount === 0) return 'user not found';
+
     // await disconnectDB();
     return "user deleted";
-      } catch(err:any){
-         throw new Error('An error occurred' + err);
-      }
+      // } catch(err:any){
+      //    throw new Error('An error occurred' + err);
+      // }
   }
+
 
   async findAll(): Promise<User[]> {
     try { // await connectDB();

@@ -35,10 +35,20 @@ export class ProfileService implements IProfileService {
         // }
     }
 
+
+    async deleteProfileTasker(userId: number, taskerId: number) {
+         return await this.userRepository.deleteProfileTasker(userId, taskerId);
+    }
+
     async dleteProfile(userID:number) {
         try{
             console.log(userID);
             return await this.userRepository.delete(userID);
+
+            //1-user => role -> task -> user
+            // 2- tasker =>(user_id) role ->tasker -> (tasker_id) -> applies  
+            // -> conversation(sender, receiver) -> message(conversation_id) -> notification(user_id)
+
         }catch (error:any) {
             return new Error(error)
         }

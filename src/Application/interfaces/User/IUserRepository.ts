@@ -13,6 +13,7 @@ export interface IUserRepository {
     findById(id: number): Promise<User>;
     update(id:number, user: User): Promise<User>;
     delete(id: number): Promise<string>;
+    deleteProfileTasker(userId: number, taskerId:number): Promise<string>;
     findAll(): Promise<User[]>;
 }
 

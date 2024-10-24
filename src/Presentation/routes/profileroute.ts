@@ -59,6 +59,8 @@ router.delete(
   profileController.deleteProfile.bind(profileController)
 );
 
+router.delete('/delete-profile-tasker', isAuth, allowTo('user', 'tasker'), profileController.deleteProfileTasker.bind(profileController));
+
 router.patch(
   "/profile/picture",
   // allow to access only if user is authenticated
