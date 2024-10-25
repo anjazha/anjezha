@@ -44,10 +44,10 @@ export const createTaskValidations = [
       return true;
     }),
 
-  body("status")
-    .isString()
-    .isLength({ min: 1, max: 255 })
-    .withMessage("Status must be a string between 1 and 255 characters"),
+  // body("status")
+  //   .isString()
+  //   .isLength({ min: 1, max: 255 })
+  //   .withMessage("Status must be a string between 1 and 255 characters"),
 
   body("schedule.start_time")
     .isString()
@@ -136,12 +136,14 @@ export const updateTaskValidations = [
     .custom((skills:any) => skills.every((skill: any) => typeof skill === 'string'))
     .withMessage('Each skill must be a string'),
 
-  check('status')
-    .optional()
-    .isString()
-    .withMessage('Status must be a string')
-    .isLength({ max: 255 })
-    .withMessage('Status cannot exceed 255 characters'),
+
+    
+  // check('status')
+  //   .optional()
+  //   .isString()
+  //   .withMessage('Status must be a string')
+  //   .isLength({ max: 255 })
+  //   .withMessage('Status cannot exceed 255 characters'),
 
   body('schedule')
     .optional()
